@@ -1,0 +1,107 @@
+:root {
+  --primary: #00717a;
+  --danger: #c0392b;
+  --warning: #f39c12;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+.app-header {
+  background: linear-gradient(135deg, #00717a, #0099a8);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.container {
+  padding: 16px;
+  max-width: 720px;
+  margin: auto;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.card h2 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+label {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+input, textarea {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.secondary {
+  background: #ecf0f1;
+}
+
+.warning {
+  background: var(--warning);
+  color: white;
+}
+
+.danger {
+  background: var(--danger);
+  color: white;
+}
+
+.ghost {
+  background: transparent;
+  border: 1px dashed #aaa;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+}
