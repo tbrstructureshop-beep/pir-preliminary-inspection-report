@@ -122,7 +122,7 @@ async function submitPIR() {
 
   try {
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwJw0NmVGvN4gWy4sgOtQuBBTZzuSFdFnqc4lcjSSCLTevtTrO95F1Iz0PmevNHA_aw/exec",
+      "https://script.google.com/macros/s/AKfycbxCRSeuuOvyc2G4RsLv59uNH8BsGU27v4dGnriHoJd9-TSGaFSsljhcCj4x0ZjVtfNpfg/exec",
       {
         method: "POST",
         body: formData
@@ -143,5 +143,6 @@ async function submitPIR() {
     alert("Connection error");
   }
 }
+
 
 
