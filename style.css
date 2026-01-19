@@ -16,6 +16,8 @@ body {
   background: var(--bg);
 }
 
+/* ================= HEADER ================= */
+
 .app-header {
   background: linear-gradient(135deg, #00717a, #0099a8);
   color: white;
@@ -27,6 +29,8 @@ body {
   font-size: 13px;
   opacity: 0.9;
 }
+
+/* ================= LAYOUT ================= */
 
 .container {
   padding: 16px;
@@ -48,6 +52,15 @@ body {
   color: var(--primary);
 }
 
+/* Finding title (PIR 1, PIR 2...) */
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+/* ================= FORM ================= */
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -57,19 +70,50 @@ body {
 label {
   font-size: 13px;
   margin-bottom: 4px;
+  color: #444;
 }
 
-input, textarea {
+input,
+textarea {
   padding: 10px;
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 14px;
+  background: white;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 textarea {
   min-height: 70px;
   resize: vertical;
 }
+
+/* PIR Number (display-only) */
+.pir-no {
+  padding: 10px;
+  border-radius: 10px;
+  background: #eef6f7;
+  border: 1px solid #cfe4e6;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* ================= IMAGE PREVIEW ================= */
+
+.preview {
+  display: none;
+  max-width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* ================= BUTTONS ================= */
 
 .btn {
   width: 100%;
@@ -80,6 +124,10 @@ textarea {
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
+}
+
+.btn:active {
+  transform: scale(0.98);
 }
 
 .secondary {
@@ -101,7 +149,17 @@ textarea {
   border: 1px dashed #aaa;
 }
 
+/* ================= ACTIONS ================= */
+
 .actions {
   display: grid;
   gap: 10px;
+}
+
+/* ================= MOBILE TOUCH IMPROVEMENTS ================= */
+
+input,
+textarea,
+button {
+  min-height: 44px; /* iOS / Android thumb rule */
 }
