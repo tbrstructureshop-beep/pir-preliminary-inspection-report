@@ -101,18 +101,19 @@ async function submitPIR() {
     return;
   }
 
+  const formData = new FormData();
+  formData.append("woNo", woNo);
+
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ woNo })
-    });
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec",
+      {
+        method: "POST",
+        body: formData   // 🔥 SIMPLE REQUEST → NO PREFLIGHT
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error("HTTP error " + response.status);
-    }
-
-    const result = await response.json();
+    const result = await res.json();
 
     if (!result.success) {
       alert("Backend error: " + result.error);
@@ -123,9 +124,10 @@ async function submitPIR() {
 
   } catch (err) {
     console.error(err);
-    alert("Connection error: " + err.message);
+    alert("Connection error");
   }
 }
+
 
 
 
