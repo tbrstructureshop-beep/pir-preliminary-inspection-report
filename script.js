@@ -95,7 +95,44 @@ function resetPIR() {
 }
 
 async function submitPIR() {
-  alert("Submit PIR → connect to Apps Script backend");
+  const woNo = document.getElementById("woNo").value.trim();
+
+  if (!woNo) {
+    alert("W/O No is required before submit");
+    return;
+  }
+
+  if (!confirm("Submit PIR and create report file?")) return;
+
+  const payload = {
+    woNo: woNo
+  };
+
+  try {
+    const res = await fetch("PASTE_YOUR_GAS_WEBAPP_URL_HERE", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+
+    if (!result.success) {
+      alert("Failed: " + result.message);
+      return;
+    }
+
+    // 🔁 Redirect to copied Google Sheet
+    window.location.href = result.fileUrl;
+
+  } catch (err) {
+    alert("Connection error");
+    console.error(err);
+  }
 }
+
+
 
 
