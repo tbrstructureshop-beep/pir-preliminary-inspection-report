@@ -106,7 +106,7 @@ async function submitPIR() {
 
   try {
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec",
+      "https://script.google.com/macros/s/AKfycbwJw0NmVGvN4gWy4sgOtQuBBTZzuSFdFnqc4lcjSSCLTevtTrO95F1Iz0PmevNHA_aw/exec",
       {
         method: "POST",
         body: formData   // 🔥 SIMPLE REQUEST → NO PREFLIGHT
@@ -127,6 +127,7 @@ async function submitPIR() {
     alert("Connection error");
   }
 }
+
 
 
 
