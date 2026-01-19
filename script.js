@@ -109,7 +109,7 @@ async function submitPIR() {
   };
 
   try {
-    const res = await fetch("PASTE_YOUR_GAS_WEBAPP_URL_HERE", {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -132,6 +132,7 @@ async function submitPIR() {
     console.error(err);
   }
 }
+
 
 
 
