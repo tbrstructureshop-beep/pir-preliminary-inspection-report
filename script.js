@@ -96,42 +96,37 @@ function resetPIR() {
 
 async function submitPIR() {
   const woNo = document.getElementById("woNo").value.trim();
-
   if (!woNo) {
-    alert("W/O No is required before submit");
+    alert("W/O No is required");
     return;
   }
 
-  if (!confirm("Submit PIR and create report file?")) return;
-
-  const payload = {
-    woNo: woNo
-  };
-
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec", {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbysU09aQWpj5z5gjgyTszIz1J3Fz4VqouozPLEBmtIWmCqVbckYsVriUn5fXmGmoTxw/exec", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ woNo })
     });
 
-    const result = await res.json();
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const result = await response.json();
 
     if (!result.success) {
-      alert("Failed: " + result.message);
+      alert("Backend error: " + result.error);
       return;
     }
 
-    // 🔁 Redirect to copied Google Sheet
     window.location.href = result.fileUrl;
 
   } catch (err) {
-    alert("Connection error");
     console.error(err);
+    alert("Connection error: " + err.message);
   }
 }
+
 
 
 
