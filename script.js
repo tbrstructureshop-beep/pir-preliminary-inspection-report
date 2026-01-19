@@ -1,26 +1,22 @@
-let findingCount = 0;
-
 function addFinding() {
-  findingCount++;
-
   const container = document.getElementById("findingList");
+  const index = container.children.length + 1;
 
   const div = document.createElement("div");
-  div.className = "card";
-  div.dataset.index = findingCount;
+  div.className = "card finding";
 
   div.innerHTML = `
-    <h3>Finding ${findingCount}</h3>
+    <h3>PIR ${index}</h3>
 
     <div class="form-group">
-      <label>No. (W/O No + 01)</label>
-      <input type="text" value="${document.getElementById("woNo").value}-${String(findingCount).padStart(2,"0")}">
+      <label>Finding No.</label>
+      <div class="pir-no" data-pir-no>PIR ${index}</div>
     </div>
 
     <div class="form-group">
       <label>Picture</label>
       <input type="file" accept="image/*" onchange="previewImage(this)">
-      <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;">
+      <img class="preview">
     </div>
 
     <div class="form-group">
@@ -35,30 +31,49 @@ function addFinding() {
   `;
 
   container.appendChild(div);
+  renumberPIR(); // keep order safe
 }
 
 function previewImage(input) {
   const file = input.files[0];
-  const img = input.nextElementSibling;
+  if (!file) return;
 
+  const img = input.nextElementSibling;
   const reader = new FileReader();
-  reader.onload = () => img.src = reader.result;
+
+  reader.onload = () => {
+    img.src = reader.result;
+    img.style.display = "block";
+  };
+
   reader.readAsDataURL(file);
 }
 
 function cancelFinding() {
-  const list = document.getElementById("findingList");
-  if (list.lastChild) {
-    list.removeChild(list.lastChild);
-    findingCount--;
-  }
+  const container = document.getElementById("findingList");
+  if (!container.lastElementChild) return;
+
+  container.removeChild(container.lastElementChild);
+  renumberPIR();
+}
+
+function renumberPIR() {
+  document.querySelectorAll(".finding").forEach((card, i) => {
+    const num = i + 1;
+    card.querySelector("h3").textContent = `PIR ${num}`;
+    card.querySelector("[data-pir-no]").textContent = `PIR ${num}`;
+  });
 }
 
 function resetPIR() {
   if (!confirm("Reset all PIR data?")) return;
-  document.querySelector("form")?.reset();
+
+  // Clear all text inputs & textareas
+  document.querySelectorAll("input[type=text], input[type=date], textarea")
+    .forEach(el => el.value = "");
+
+  // Clear findings
   document.getElementById("findingList").innerHTML = "";
-  findingCount = 0;
 }
 
 async function submitPIR() {
