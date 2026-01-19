@@ -13,7 +13,7 @@ function addFinding() {
   }
 
   const formattedIndex = String(index).padStart(2, "0");
-  const findingNo = `${woNo}-${formattedIndex}`;
+  const findingNo = `${woNo}${formattedIndex}`;
 
   const div = document.createElement("div");
   div.className = "card finding";
@@ -97,4 +97,5 @@ function resetPIR() {
 async function submitPIR() {
   alert("Submit PIR → connect to Apps Script backend");
 }
+
 
