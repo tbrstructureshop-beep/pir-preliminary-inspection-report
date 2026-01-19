@@ -96,22 +96,29 @@ function resetPIR() {
 }
 
 async function submitPIR() {
-  const woNo = document.getElementById("woNo").value.trim();
-  const partDesc = document.getElementById("partDesc").value.trim();
-
-  if (!woNo) {
-    alert("W/O No is required");
-    return;
-  }
-
-  if (!partDesc) {
-    alert("Part Description is required");
-    return;
-  }
-
   const formData = new FormData();
-  formData.append("woNo", woNo);
-  formData.append("partDesc", partDesc); // ✅ ADD THIS
+
+  const fields = [
+    "customer",
+    "acReg",
+    "woNo",
+    "partDesc",
+    "partNo",
+    "serialNo",
+    "qty",
+    "dateReceived",
+    "reason",
+    "adStatus",
+    "attachedParts",
+    "missingParts",
+    "modStatus",
+    "docId"
+  ];
+
+  for (const id of fields) {
+    const el = document.getElementById(id);
+    formData.append(id, el ? el.value : "");
+  }
 
   try {
     const res = await fetch(
@@ -125,11 +132,10 @@ async function submitPIR() {
     const result = await res.json();
 
     if (!result.success) {
-      alert("Backend error: " + result.error);
+      alert(result.error);
       return;
     }
 
-    // 🚀 Redirect to copied Google Sheet
     window.location.href = result.fileUrl;
 
   } catch (err) {
@@ -137,3 +143,4 @@ async function submitPIR() {
     alert("Connection error");
   }
 }
+
