@@ -78,9 +78,10 @@ function renumberPIR() {
     const formatted = String(num).padStart(2, "0");
 
     card.querySelector("h3").textContent = `PIR ${num}`;
-    card.querySelector("[data-pir-no]").textContent = `${woNo}-${formatted}`;
+    card.querySelector("[data-pir-no]").textContent = `${woNo}${formatted}`;
   });
 }
+
 
 
 function resetPIR() {
@@ -96,20 +97,28 @@ function resetPIR() {
 
 async function submitPIR() {
   const woNo = document.getElementById("woNo").value.trim();
+  const partDesc = document.getElementById("partDesc").value.trim();
+
   if (!woNo) {
     alert("W/O No is required");
     return;
   }
 
+  if (!partDesc) {
+    alert("Part Description is required");
+    return;
+  }
+
   const formData = new FormData();
   formData.append("woNo", woNo);
+  formData.append("partDesc", partDesc); // ✅ ADD THIS
 
   try {
     const res = await fetch(
       "https://script.google.com/macros/s/AKfycbwJw0NmVGvN4gWy4sgOtQuBBTZzuSFdFnqc4lcjSSCLTevtTrO95F1Iz0PmevNHA_aw/exec",
       {
         method: "POST",
-        body: formData   // 🔥 SIMPLE REQUEST → NO PREFLIGHT
+        body: formData
       }
     );
 
@@ -120,6 +129,7 @@ async function submitPIR() {
       return;
     }
 
+    // 🚀 Redirect to copied Google Sheet
     window.location.href = result.fileUrl;
 
   } catch (err) {
@@ -127,12 +137,3 @@ async function submitPIR() {
     alert("Connection error");
   }
 }
-
-
-
-
-
-
-
-
-
