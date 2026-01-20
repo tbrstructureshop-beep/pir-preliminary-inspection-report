@@ -99,11 +99,15 @@ function collectFindings() {
   const findings = [];
 
   document.querySelectorAll(".finding").forEach(card => {
+    const findingNo = card.querySelector("[data-pir-no]")?.textContent || "";
+    const textareas = card.querySelectorAll("textarea");
+    const img = card.querySelector("img.preview");
+
     findings.push({
-      findingNo: card.querySelector("[data-pir-no]").textContent,
-      identification: card.querySelector("textarea:nth-of-type(1)").value,
-      action: card.querySelector("textarea:nth-of-type(2)").value,
-      imageBase64: card.querySelector("img.preview")?.src || ""
+      findingNo: findingNo,
+      identification: textareas[0]?.value || "",
+      action: textareas[1]?.value || "",
+      imageBase64: (img && img.src && img.src.startsWith("data:")) ? img.src : ""
     });
   });
 
@@ -112,13 +116,13 @@ function collectFindings() {
 
 
 async function submitPIR() {
-  const woNo = document.getElementById("woNo").value.trim();
+  const woNo = document.getElementById("woNo")?.value.trim();
   if (!woNo) {
     alert("W/O No is required");
     return;
   }
 
-  showLoading(); // 👈 your overlay
+  showLoading();
 
   const formData = new FormData();
 
@@ -128,31 +132,50 @@ async function submitPIR() {
     "qty","dateReceived","reason","adStatus",
     "attachedParts","missingParts","modStatus","docId"
   ].forEach(id => {
-    formData.append(id, document.getElementById(id)?.value || "");
+    const el = document.getElementById(id);
+    formData.append(id, el ? el.value : "");
   });
 
   // FINDINGS
-  formData.append("findings", JSON.stringify(collectFindings()));
+  const findings = collectFindings();
+  formData.append("findings", JSON.stringify(findings));
 
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec", {
-      method: "POST",
-      body: formData
-    });
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("HTTP Error " + res.status);
+    }
 
     const result = await res.json();
 
     hideLoading();
-    resetPIR();
 
+    if (!result.success) {
+      alert("Backend error:\n" + result.error);
+      console.error("Backend error:", result.error);
+      return;
+    }
+
+    // ✅ reset AFTER success only
+    resetPIR(true);
+
+    // ✅ redirect last
     window.location.href = result.fileUrl;
 
   } catch (err) {
     hideLoading();
-    alert("Connection error");
     console.error(err);
+    alert("Connection / backend error.\nCheck console.");
   }
 }
+
 
 function showLoading() {
   const overlay = document.querySelector(".loading-overlay");
@@ -165,6 +188,7 @@ function hideLoading() {
   if (overlay) overlay.classList.add("hidden");
   document.body.classList.remove("loading");
 }
+
 
 
 
