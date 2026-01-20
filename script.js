@@ -135,7 +135,7 @@ async function submitPIR() {
   formData.append("findings", JSON.stringify(collectFindings()));
 
   try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbxCRSeuuOvyc2G4RsLv59uNH8BsGU27v4dGnriHoJd9-TSGaFSsljhcCj4x0ZjVtfNpfg/exec", {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec", {
       method: "POST",
       body: formData
     });
@@ -165,6 +165,7 @@ function hideLoading() {
   if (overlay) overlay.classList.add("hidden");
   document.body.classList.remove("loading");
 }
+
 
 
 
