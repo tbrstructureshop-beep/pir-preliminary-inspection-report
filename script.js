@@ -84,41 +84,46 @@ function renumberPIR() {
 
 
 
-function resetPIR() {
-  if (!confirm("Reset all PIR data?")) return;
+function resetPIR(skipConfirm = false) {
+  if (!skipConfirm && !confirm("Reset all PIR data?")) return;
 
-  // Clear all text inputs & textareas
-  document.querySelectorAll("input[type=text], input[type=date], textarea")
-    .forEach(el => el.value = "");
+  document.querySelectorAll(
+    "input[type=text], input[type=number], input[type=date], textarea"
+  ).forEach(el => el.value = "");
 
-  // Clear findings
   document.getElementById("findingList").innerHTML = "";
 }
 
+
 async function submitPIR() {
+  const woNo = document.getElementById("woNo").value.trim();
+  const partDesc = document.getElementById("partDesc").value.trim();
+
+  if (!woNo) {
+    alert("W/O No is required");
+    return;
+  }
+
+  const overlay = document.getElementById("loadingOverlay");
+  overlay.classList.remove("hidden");
+
   const formData = new FormData();
 
-  const fields = [
-    "customer",
-    "acReg",
-    "woNo",
-    "partDesc",
-    "partNo",
-    "serialNo",
-    "qty",
-    "dateReceived",
-    "reason",
-    "adStatus",
-    "attachedParts",
-    "missingParts",
-    "modStatus",
-    "docId"
-  ];
-
-  for (const id of fields) {
-    const el = document.getElementById(id);
-    formData.append(id, el ? el.value : "");
-  }
+  // GENERAL INFO
+  formData.append("customer", document.getElementById("customer").value);
+  formData.append("acReg", document.getElementById("acReg").value);
+  formData.append("woNo", woNo);
+  formData.append("partDesc", partDesc);
+  formData.append("partNo", document.getElementById("partNo").value);
+  formData.append("serialNo", document.getElementById("serialNo").value);
+  formData.append("qty", document.getElementById("qty").value);
+  formData.append("dateReceived", document.getElementById("dateReceived").value);
+  formData.append("reason", document.getElementById("reason").value);
+  formData.append("adStatus", document.getElementById("adStatus").value);
+  formData.append("attachedParts", document.getElementById("attachedParts").value);
+  formData.append("missingParts", document.getElementById("missingParts").value);
+  formData.append("modStatus", document.getElementById("modStatus").value);
+  formData.append("docId", document.getElementById("docId").value);
 
   try {
     const res = await fetch(
@@ -132,17 +137,24 @@ async function submitPIR() {
     const result = await res.json();
 
     if (!result.success) {
-      alert(result.error);
-      return;
+      throw new Error(result.error || "Unknown error");
     }
 
-    window.location.href = result.fileUrl;
+    // RESET FORM BEFORE REDIRECT
+    resetPIR(true);
+
+    // SHORT DELAY SO RESET IS VISIBLE
+    setTimeout(() => {
+      window.location.href = result.fileUrl;
+    }, 400);
 
   } catch (err) {
     console.error(err);
-    alert("Connection error");
+    alert("Failed to submit PIR");
+    overlay.classList.add("hidden");
   }
 }
+
 
 
 
