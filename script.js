@@ -154,5 +154,19 @@ async function submitPIR() {
   }
 }
 
+function showLoading() {
+  const overlay = document.querySelector(".loading-overlay");
+  if (overlay) overlay.classList.remove("hidden");
+  document.body.classList.add("loading");
+}
+
+function hideLoading() {
+  const overlay = document.querySelector(".loading-overlay");
+  if (overlay) overlay.classList.add("hidden");
+  document.body.classList.remove("loading");
+}
+
+
+
 
 
