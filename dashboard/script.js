@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/XXXXX/exec";
+const API = "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec";
 
 async function loadDashboard() {
   const res = await fetch(`${API}?action=getMaster`);
@@ -42,3 +42,4 @@ function editPIR(id) {
 }
 
 loadDashboard();
+
