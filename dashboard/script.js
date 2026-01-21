@@ -13,20 +13,20 @@ function render(rows) {
   rows.forEach((r, i) => {
     tbody.innerHTML += `
       <tr>
-        <td>${r.WO_NO}</td>
-        <td>${r.AC_REG}</td>
-        <td>${r.PART_DESC}</td>
+        <td>${r["W/O No"]}</td>
+        <td>${r["A/C Reg"]}</td>
+        <td>${r["Part Description"]}</td>
         <td>
-          <select onchange="setStatus(${i+2}, this.value)">
+          <select onchange="setStatus(${i + 2}, this.value)">
             ${["DRAFT","OPEN","CLOSED"].map(s =>
-              `<option ${s===r.STATUS?"selected":""}>${s}</option>`
+              `<option ${s === r["Status"] ? "selected" : ""}>${s}</option>`
             ).join("")}
           </select>
         </td>
         <td>
-          <a href="${r.SHEET_URL}" target="_blank">Sheet</a>
+          <a href="${r["Sheet URL"]}" target="_blank">Sheet</a>
           |
-          <button onclick="editPIR('${r.SHEET_ID}')">Edit</button>
+          <button onclick="editPIR('${r["Sheet ID"]}')">Edit</button>
         </td>
       </tr>
     `;
@@ -42,4 +42,5 @@ function editPIR(id) {
 }
 
 loadDashboard();
+
 
