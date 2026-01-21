@@ -1,63 +1,130 @@
+:root {
+  --primary: #00717a;
+  --bg: #f6f8fa;
+  --card: #ffffff;
+  --border: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Inter, system-ui, sans-serif;
-  background: #f4f7fb;
   margin: 0;
-  color: #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: #333;
 }
 
-header {
-  background: linear-gradient(135deg, #00717a, #0fb9b1);
-  color: white;
-  padding: 20px 32px;
+/* ================= HEADER ================= */
+
+.topbar {
+  background: linear-gradient(135deg, #00717a, #0099a1);
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-h1 {
+.topbar h1 {
+  font-size: 18px;
   margin: 0;
-  font-size: 20px;
 }
 
-main {
-  padding: 24px;
+.badge {
+  background: rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* ================= LAYOUT ================= */
+
+.container {
+  padding: 16px;
+}
+
+.toolbar {
+  margin-bottom: 12px;
+}
+
+.toolbar input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  min-width: 600px;
+}
+
+thead {
+  background: #f0f4f6;
 }
 
 th, td {
-  padding: 14px 16px;
+  padding: 12px 14px;
   text-align: left;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
 }
 
 th {
-  background: #f0f4f8;
   font-weight: 600;
-  font-size: 13px;
+  white-space: nowrap;
 }
 
-tr:not(:last-child) {
-  border-bottom: 1px solid #e5e7eb;
+tbody tr:hover {
+  background: #f9fbfc;
 }
+
+/* ================= STATUS ================= */
 
 select {
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
-button {
-  padding: 6px 10px;
-  border-radius: 6px;
+/* ================= ACTIONS ================= */
+
+.actions a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.actions button {
+  background: none;
   border: none;
+  color: var(--primary);
   cursor: pointer;
-  background: #00717a;
-  color: white;
+  font-weight: 600;
 }
 
-button:hover {
-  opacity: 0.9;
+/* ================= MOBILE ================= */
+
+@media (max-width: 640px) {
+  th, td {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .topbar h1 {
+    font-size: 16px;
+  }
 }
