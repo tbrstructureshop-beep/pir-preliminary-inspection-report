@@ -116,6 +116,65 @@ select {
   font-weight: 600;
 }
 
+/* ACTION MENU */
+.action-cell {
+  text-align: center;
+}
+
+.menu {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.menu-btn:hover {
+  background: #f0f0f0;
+  border-radius: 6px;
+}
+
+.menu-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background: white;
+  min-width: 180px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.menu-content a,
+.menu-content button {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.menu-content a {
+  text-decoration: none;
+  color: #333;
+}
+
+.menu-content a:hover,
+.menu-content button:hover {
+  background: #f5f7fa;
+}
+
+
 /* ================= MOBILE ================= */
 
 @media (max-width: 640px) {
@@ -128,3 +187,4 @@ select {
     font-size: 16px;
   }
 }
+
