@@ -18,33 +18,53 @@ function render(rows) {
   tbody.innerHTML = "";
 
   rows.forEach((r, index) => {
-    tbody.innerHTML += `
+    const woNo = r["W/O No"] || "";
+    const acReg = r["A/C Reg"] || "";
+    const partDesc = r["Part Description"] || "";
+    const status = r["Status"] || "DRAFT";
+    const sheetUrl = r["Sheet URL"] || "#";
+    const sheetId = r["Sheet ID"] || "";
+
+    tbody.insertAdjacentHTML("beforeend", `
       <tr>
-        <td>${r["W/O No"] || ""}</td>
-        <td>${r["A/C Reg"] || ""}</td>
-        <td>${r["Part Description"] || ""}</td>
+        <td>${woNo}</td>
+        <td>${acReg}</td>
+        <td>${partDesc}</td>
 
         <td>
-          <select onchange="setStatus(${index + 2}, this.value)">
-            ${["DRAFT", "OPEN", "CLOSED"].map(s =>
-              `<option value="${s}" ${s === r["Status"] ? "selected" : ""}>${s}</option>`
-            ).join("")}
+          <select class="status-select"
+                  onchange="setStatus(${index + 2}, this.value)">
+            ${["DRAFT", "OPEN", "CLOSED"]
+              .map(s => `
+                <option value="${s}" ${s === status ? "selected" : ""}>
+                  ${s}
+                </option>
+              `)
+              .join("")}
           </select>
         </td>
 
         <td class="action-cell">
           <div class="menu">
-           <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
-          <div class="menu-content">
-          <a href="${r["Sheet URL"]}" target="_blank">📄 Open Spreadsheet</a>
-          <button onclick="editPIR('${r["Sheet ID"]}')">✏️ Edit in Web App</button>
+            <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
+
+            <div class="menu-content">
+              <a href="${sheetUrl}" target="_blank" rel="noopener">
+                📄 Open Spreadsheet
+              </a>
+
+              <button type="button"
+                      onclick="editPIR('${sheetId}')">
+                ✏️ Edit in Web App
+              </button>
+            </div>
           </div>
-         </div>
-       </td>
+        </td>
       </tr>
-    `;
+    `);
   });
 }
+
 
 /* ================= SEARCH ================= */
 
@@ -71,8 +91,30 @@ function editPIR(sheetId) {
   window.location.href = `/form/?edit=${sheetId}`;
 }
 
+/*===== ACTION BUTTON BEHAVIOR*/
+
+function toggleMenu(btn) {
+  // close all other menus
+  document.querySelectorAll(".menu-content").forEach(m => {
+    if (m !== btn.nextElementSibling) m.style.display = "none";
+  });
+
+  const menu = btn.nextElementSibling;
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// Close menu when clicking outside
+document.addEventListener("click", e => {
+  if (!e.target.closest(".menu")) {
+    document.querySelectorAll(".menu-content")
+      .forEach(m => m.style.display = "none");
+  }
+});
+
+
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
