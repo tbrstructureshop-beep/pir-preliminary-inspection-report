@@ -33,10 +33,14 @@ function render(rows) {
         </td>
 
         <td class="action-cell">
-          <a href="${r["Sheet URL"]}" target="_blank">Sheet</a>
-          |
-          <button onclick="editPIR('${r["Sheet ID"]}')">Edit</button>
-        </td>
+          <div class="menu">
+           <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
+          <div class="menu-content">
+          <a href="${r["Sheet URL"]}" target="_blank">📄 Open Spreadsheet</a>
+          <button onclick="editPIR('${r["Sheet ID"]}')">✏️ Edit in Web App</button>
+          </div>
+         </div>
+       </td>
       </tr>
     `;
   });
@@ -70,4 +74,5 @@ function editPIR(sheetId) {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
