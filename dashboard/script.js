@@ -17,9 +17,7 @@ function render(rows) {
   const tbody = document.getElementById("tableBody");
   tbody.innerHTML = "";
 
-  rows.forEach((r, i) => {
-    const sheetId = r["Sheet ID"];
-
+  rows.forEach((r, index) => {
     tbody.innerHTML += `
       <tr>
         <td>${r["W/O No"] || ""}</td>
@@ -27,19 +25,17 @@ function render(rows) {
         <td>${r["Part Description"] || ""}</td>
 
         <td>
-          <select onchange="setStatus(${i + 2}, this.value)">
-            ${["DRAFT","OPEN","CLOSED"].map(s =>
-              `<option ${s === r.Status ? "selected" : ""}>${s}</option>`
+          <select onchange="setStatus(${index + 2}, this.value)">
+            ${["DRAFT", "OPEN", "CLOSED"].map(s =>
+              `<option value="${s}" ${s === r["Status"] ? "selected" : ""}>${s}</option>`
             ).join("")}
           </select>
         </td>
 
-        <td class="actions">
-          <a href="https://docs.google.com/spreadsheets/d/${sheetId}" target="_blank">
-            Sheet
-          </a>
+        <td class="action-cell">
+          <a href="${r["Sheet URL"]}" target="_blank">Sheet</a>
           |
-          <button onclick="editPIR('${sheetId}')">Edit</button>
+          <button onclick="editPIR('${r["Sheet ID"]}')">Edit</button>
         </td>
       </tr>
     `;
@@ -74,3 +70,4 @@ function editPIR(sheetId) {
 /* ================= INIT ================= */
 
 loadDashboard();
+
