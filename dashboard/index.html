@@ -1,29 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>PIR Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-<header>
-  <h1>PIR Master Dashboard</h1>
+
+<header class="topbar">
+  <h1>PIR Dashboard</h1>
+  <span class="badge">Master Index</span>
 </header>
 
-<main>
-  <table id="pirTable">
-    <thead>
-      <tr>
-        <th>WO</th>
-        <th>AC Reg</th>
-        <th>Part</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<main class="container">
+
+  <!-- Search -->
+  <div class="toolbar">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search WO, A/C Reg, Part, Status…"
+      oninput="applySearch()"
+    />
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>W/O No</th>
+          <th>A/C Reg</th>
+          <th>Part Description</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
 </main>
 
-<script src="script.js"></script>
+<script src="./script.js"></script>
 </body>
 </html>
