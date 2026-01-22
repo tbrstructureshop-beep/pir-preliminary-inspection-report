@@ -179,49 +179,77 @@ function convertDriveUrl(url) {
 
 
 // Save PIR
+// ================= SAVE PIR (EDITOR) =================
 async function savePIR() {
-  const infoFields = [
-    "customer","acReg","woNo","partDesc","partNo","serialNo","qty",
-    "dateReceived","reason","adStatus","attachedParts","missingParts",
-    "modStatus","docId"
-  ];
-  const infoData = infoFields.map(id => document.getElementById(id).value);
-
-  const container = document.getElementById("findingList");
-  const findings = Array.from(container.children).map((div, i) => ({
-    findingNo: div.querySelector("[data-pir-no]").textContent,
-    imageUrl: div.querySelector(".preview").src || "",
-    identification: div.querySelectorAll("textarea")[0].value,
-    action: div.querySelectorAll("textarea")[1].value
-  }));
-
   showLoading(true);
 
   try {
-    const res = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        action: "updatePIR",
-        sheetId,
-        infoData: JSON.stringify(infoData),
-        findings: JSON.stringify(findings)
-      })
+    const formData = new FormData();
+
+    // -------- INFO FIELDS --------
+    [
+      "customer","acReg","woNo","partDesc","partNo","serialNo",
+      "qty","dateReceived","reason","adStatus",
+      "attachedParts","missingParts","modStatus","docId"
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      formData.append(id, el ? el.value : "");
     });
 
+    formData.append("action", "updatePIR");
+    formData.append("sheetId", sheetId);
+
+    // -------- FINDINGS --------
+    const container = document.getElementById("findingList");
+    const findings = [];
+
+    Array.from(container.children).forEach((card, index) => {
+      const findingNo = card.querySelector("[data-pir-no]").textContent;
+      const imgInput = card.querySelector('input[type="file"]');
+      const previewImg = card.querySelector(".preview");
+
+      findings.push({
+        findingNo,
+        identification: card.querySelectorAll("textarea")[0].value,
+        action: card.querySelectorAll("textarea")[1].value,
+        imageIndex: index,          // link image to file index
+        existingImage: imgInput?.dataset?.existing || ""
+      });
+
+      // NEW IMAGE → upload
+      if (imgInput && imgInput.files && imgInput.files[0]) {
+        formData.append(`image_${index}`, imgInput.files[0]);
+      }
+    });
+
+    formData.append("findings", JSON.stringify(findings));
+
+    // -------- SEND --------
+    const res = await fetch(API, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
     const result = await res.json();
-    if (result.success) {
-      alert("PIR saved successfully!");
-    } else {
-      alert("Failed to save PIR: " + result.error);
+
+    if (!result.success) {
+      alert("Save failed:\n" + result.error);
+      console.error(result.error);
+      return;
     }
+
+    alert("PIR updated successfully ✅");
+
   } catch (err) {
     console.error(err);
-    alert("Error saving PIR.");
+    alert("Error saving PIR.\nCheck console.");
   } finally {
     showLoading(false);
   }
 }
+
 
 // Cancel edit
 function cancelEdit() {
@@ -243,6 +271,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
