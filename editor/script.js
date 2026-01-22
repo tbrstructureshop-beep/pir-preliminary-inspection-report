@@ -1,10 +1,8 @@
 const API = "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec";
-
-// Correctly get 'id' from query string
 const urlParams = new URLSearchParams(window.location.search);
 const sheetId = urlParams.get("id");
 
-// Load editor data
+// Load PIR editor
 async function loadEditor() {
   if (!sheetId) {
     alert("No PIR ID provided!");
@@ -28,19 +26,13 @@ async function loadEditor() {
       if (el) el.value = data.info[i] || "";
     });
 
-    // Load FINDINGS into table
-    const tbody = document.getElementById("findingBody");
-    tbody.innerHTML = "";
-    data.findings.forEach((f, i) => {
-      tbody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${f.findingNo || i+1}</td>
-          <td>${f.imageUrl ? `<img src="${f.imageUrl}" class="thumb"/>` : `<input type="file" accept="image/*" onchange="previewImage(this)"/>`}</td>
-          <td><input type="text" value="${f.identification || ""}"/></td>
-          <td><input type="text" value="${f.action || ""}"/></td>
-          <td><button type="button" onclick="removeFinding(this)">❌</button></td>
-        </tr>
-      `);
+    // Load Findings as cards
+    const container = document.getElementById("findingList");
+    container.innerHTML = "";
+    const woNo = document.getElementById("woNo").value || "PIR";
+
+    data.findings.forEach((f, index) => {
+      addFindingCard(container, index, woNo, f);
     });
 
   } catch (err) {
@@ -51,36 +43,102 @@ async function loadEditor() {
   }
 }
 
-// Add a new empty finding row
-function addFinding() {
-  const tbody = document.getElementById("findingBody");
-  const rowIndex = tbody.rows.length + 1;
-  tbody.insertAdjacentHTML("beforeend", `
-    <tr>
-      <td>${rowIndex}</td>
-      <td><input type="file" accept="image/*" onchange="previewImage(this)"/></td>
-      <td><input type="text"/></td>
-      <td><input type="text"/></td>
-      <td><button type="button" onclick="removeFinding(this)">❌</button></td>
-    </tr>
-  `);
+// Add finding card
+function addFindingCard(container, index, woNo, data = {}) {
+  const formattedIndex = String(index + 1).padStart(2, "0");
+  const findingNo = `${woNo}${formattedIndex}`;
+
+  const div = document.createElement("div");
+  div.className = "card finding";
+
+  div.innerHTML = `
+    <h3>PIR ${formattedIndex}</h3>
+
+    <div class="form-group">
+      <label>Finding No.</label>
+      <div class="pir-no" data-pir-no>${findingNo}</div>
+    </div>
+
+    <div class="form-group">
+      <label>Picture</label>
+      <input type="file" accept="image/*" onchange="previewImage(this)">
+      <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;">
+    </div>
+
+    <div class="form-group">
+      <label>Identification</label>
+      <textarea>${data.identification || ""}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Action</label>
+      <textarea>${data.action || ""}</textarea>
+    </div>
+
+    <button class="btn ghost" type="button" onclick="removeFindingCard(this)">❌ Remove Finding</button>
+  `;
+
+  // If existing image URL, show preview
+  if (data.imageUrl) {
+    const img = div.querySelector(".preview");
+    img.src = convertDriveUrl(data.imageUrl);
+    img.style.display = "block";
+    div.querySelector("input[type=file]").style.display = "none";
+  }
+
+  container.appendChild(div);
 }
 
-// Remove finding row
-function removeFinding(btn) {
-  btn.closest("tr").remove();
+// Add new empty finding
+function addFinding() {
+  const container = document.getElementById("findingList");
+  const woNo = document.getElementById("woNo").value || "PIR";
+  const index = container.children.length;
+  addFindingCard(container, index, woNo);
+}
+
+// Remove finding card
+function removeFindingCard(btn) {
+  btn.closest(".card").remove();
   updateFindingNumbers();
 }
 
-// Keep finding numbers sequential
+// Update finding numbering after deletion
 function updateFindingNumbers() {
-  const tbody = document.getElementById("findingBody");
-  Array.from(tbody.rows).forEach((row, i) => {
-    row.cells[0].textContent = i + 1;
+  const container = document.getElementById("findingList");
+  const woNo = document.getElementById("woNo").value || "PIR";
+
+  Array.from(container.children).forEach((div, i) => {
+    const formattedIndex = String(i + 1).padStart(2, "0");
+    const findingNo = `${woNo}${formattedIndex}`;
+    div.querySelector("[data-pir-no]").textContent = findingNo;
+    div.querySelector("h3").textContent = `PIR ${formattedIndex}`;
   });
 }
 
-// Save PIR to backend
+// Preview image (works for both new upload and existing GDrive image)
+function previewImage(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = input.nextElementSibling;
+      img.src = e.target.result;
+      img.style.display = "block";
+      input.style.display = "none";
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Convert standard GDrive share link to direct viewable link
+function convertDriveUrl(url) {
+  // Example: https://drive.google.com/file/d/FILE_ID/view?usp=drivesdk
+  const match = url.match(/\/d\/(.*?)\//);
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
+
+// Save PIR
 async function savePIR() {
   const infoFields = [
     "customer","acReg","woNo","partDesc","partNo","serialNo","qty",
@@ -89,11 +147,12 @@ async function savePIR() {
   ];
   const infoData = infoFields.map(id => document.getElementById(id).value);
 
-  const findings = Array.from(document.querySelectorAll("#findingBody tr")).map((tr, i) => ({
-    findingNo: tr.cells[0].textContent || i+1,
-    imageUrl: tr.cells[1].querySelector("img")?.src || "",
-    identification: tr.cells[2].querySelector("input").value,
-    action: tr.cells[3].querySelector("input").value
+  const container = document.getElementById("findingList");
+  const findings = Array.from(container.children).map((div, i) => ({
+    findingNo: div.querySelector("[data-pir-no]").textContent,
+    imageUrl: div.querySelector(".preview").src || "",
+    identification: div.querySelectorAll("textarea")[0].value,
+    action: div.querySelectorAll("textarea")[1].value
   }));
 
   showLoading(true);
@@ -127,14 +186,13 @@ async function savePIR() {
 // Cancel edit
 function cancelEdit() {
   if (confirm("Discard changes and go back to dashboard?")) {
-    window.location.href = "/dashboard/"; // adjust if your dashboard path is different
+    window.location.href = "/dashboard/";
   }
 }
 
-// PDF generation stub
+// PDF stub
 function generatePDF() {
-  alert("PDF generation is not implemented yet.");
-  // TODO: send PIR data to Apps Script for PDF creation
+  alert("PDF generation not implemented yet.");
 }
 
 // Loading overlay
@@ -143,19 +201,5 @@ function showLoading(show) {
   if (overlay) overlay.classList.toggle("hidden", !show);
 }
 
-// Optional: preview image before upload
-function previewImage(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      img.className = "thumb";
-      input.replaceWith(img);
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-// Initialize editor on page load
+// Init
 window.addEventListener("DOMContentLoaded", loadEditor);
