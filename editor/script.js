@@ -212,23 +212,24 @@ async function savePIR() {
     const container = document.getElementById("findingList");
     const findings = [];
 
-    Array.from(container.children).forEach((card, index) => {
-      const findingNo = card.querySelector("[data-pir-no]").textContent;
+    Array.from(container.children).forEach(card => {
+      const findingNo = card.querySelector("[data-pir-no]")?.textContent || "";
+      const textareas = card.querySelectorAll("textarea");
       const imgInput = card.querySelector('input[type="file"]');
-      const previewImg = card.querySelector(".preview");
+      const img = card.querySelector(".preview");
 
       findings.push({
         findingNo,
-        identification: card.querySelectorAll("textarea")[0].value,
-        action: card.querySelectorAll("textarea")[1].value,
-        imageIndex: index,          // link image to file index
+        identification: textareas[0]?.value || "",
+        action: textareas[1]?.value || "",
+        // ✅ NEW IMAGE (base64)
+        imageBase64:
+          img && img.src && img.src.startsWith("data:")
+            ? img.src
+            : "",
+        // ✅ EXISTING IMAGE (Drive URL)
         existingImage: imgInput?.dataset?.existing || ""
       });
-
-      // NEW IMAGE → upload
-      if (imgInput && imgInput.files && imgInput.files[0]) {
-        formData.append(`image_${index}`, imgInput.files[0]);
-      }
     });
 
     formData.append("findings", JSON.stringify(findings));
@@ -260,6 +261,7 @@ async function savePIR() {
 }
 
 
+
 // Cancel edit
 function cancelEdit() {
   if (confirm("Discard changes and go back to dashboard?")) {
@@ -280,6 +282,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
