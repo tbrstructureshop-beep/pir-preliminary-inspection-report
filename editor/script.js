@@ -118,45 +118,42 @@ function updateFindingNumbers() {
 
 // Preview image (works for both new upload and existing GDrive image)
 function previewImage(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = input.nextElementSibling;
-      img.src = e.target.result;
-      img.style.display = "block";
-      input.style.display = "none";
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
+  if (!input.files || !input.files[0]) return;
+
+  const img = input.nextElementSibling;
+  const reader = new FileReader();
+
+  reader.onload = e => {
+    img.src = e.target.result;   // base64
+    img.style.display = "block";
+  };
+
+  reader.readAsDataURL(input.files[0]);
 }
+
 
 // Convert standard GDrive share link to direct viewable link
 function convertDriveUrl(url) {
   if (!url) return "";
 
-  // If already correct
-  if (url.includes("drive.google.com/uc?")) return url;
+  // Already thumbnail
+  if (url.includes("drive.google.com/thumbnail")) return url;
 
-  // drive.google.com/file/d/FILE_ID/view
-  let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  // /file/d/FILE_ID/view
+  let match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (match) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
   }
 
-  // drive.google.com/open?id=FILE_ID
+  // ?id=FILE_ID
   match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
   if (match) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
   }
 
-  // drive.usercontent.google.com/download?id=FILE_ID
-  match = url.match(/download\?id=([a-zA-Z0-9_-]+)/);
-  if (match) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-  }
-
-  return url; // fallback
+  return ""; // fallback = hide image
 }
+
 
 
 // Save PIR
@@ -224,4 +221,5 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
