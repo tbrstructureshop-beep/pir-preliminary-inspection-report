@@ -1,16 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PIR System</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+
   <style>
-    body { font-family: system-ui; padding: 40px }
-    a { display:block; margin:12px 0; font-size:18px }
+    :root {
+      --primary: #00717a;
+      --primary-dark: #005a61;
+      --bg: #f4f7f9;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    header {
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin: 0 0 8px;
+      letter-spacing: 0.3px;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+    }
+
+    .card .icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .card a {
+      align-self: flex-start;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      transition: background 0.2s ease;
+    }
+
+    .card a:hover {
+      background: var(--primary-dark);
+    }
+
+    footer {
+      margin-top: 56px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <h1>PIR System</h1>
-  <a href="/form/">➕ Create New PIR</a>
-  <a href="/dashboard/">📊 Dashboard</a>
+
+  <div class="container">
+
+    <header>
+      <h1>PIR System</h1>
+      <p>Preliminary Inspection Report management portal</p>
+    </header>
+
+    <section class="card-grid">
+
+      <div class="card">
+        <div>
+          <div class="icon">➕</div>
+          <h2>Create New PIR</h2>
+          <p>
+            Start a new Preliminary Inspection Report by submitting inspection
+            details, findings, and supporting data.
+          </p>
+        </div>
+        <a href="/form/">New PIR</a>
+      </div>
+
+      <div class="card">
+        <div>
+          <div class="icon">📊</div>
+          <h2>Dashboard</h2>
+          <p>
+            View, track, and manage all submitted PIRs with status overview,
+            filtering, and reporting tools.
+          </p>
+        </div>
+        <a href="/dashboard/">Open Dashboard</a>
+      </div>
+
+    </section>
+
+    <footer>
+      © PIR System · Internal Use Only
+    </footer>
+
+  </div>
+
 </body>
 </html>
