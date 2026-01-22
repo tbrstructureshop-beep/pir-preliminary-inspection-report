@@ -1,4 +1,4 @@
-const API = "YOUR_APPSCRIPT_DEPLOY_URL_HERE";
+const API = "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec";
 const params = new URLSearchParams(window.location.search);
 const sheetId = params.get("id");
 
@@ -111,3 +111,4 @@ function showLoading() {
 function hideLoading() {
   document.getElementById("loadingOverlay").classList.add("hidden");
 }
+
