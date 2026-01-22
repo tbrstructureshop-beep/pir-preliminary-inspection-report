@@ -1,13 +1,21 @@
+:root {
+  --primary: #00717a;
+  --danger: #c0392b;
+  --warning: #f39c12;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+}
+
 /* ================= BODY & HEADER ================= */
 body {
   font-family: 'Inter', sans-serif;
   margin: 0;
-  background-color: #f5f7fa;
+  background-color: var(--bg);
   color: #333;
 }
 
 .app-header {
-  background: linear-gradient(90deg, #00717a, #00bfae);
+  background: linear-gradient(135deg, var(--primary), #00bfae);
   color: white;
   padding: 20px 16px;
   text-align: center;
@@ -21,6 +29,7 @@ body {
 .app-header .subtitle {
   font-size: 14px;
   margin-top: 4px;
+  opacity: 0.9;
 }
 
 /* ================= CONTAINER ================= */
@@ -32,7 +41,7 @@ body {
 
 /* ================= CARD ================= */
 .card {
-  background: #fff;
+  background: var(--card);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -43,25 +52,16 @@ body {
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 18px;
-  color: #00717a;
+  color: var(--primary);
   border-bottom: 1px solid #e0f2f2;
   padding-bottom: 4px;
 }
 
-/* ================= FORM GRID ================= */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-}
-
+/* ================= FORM GROUP ================= */
 .form-group {
   display: flex;
   flex-direction: column;
-}
-
-.form-group.full {
-  grid-column: 1 / -1;
+  margin-bottom: 12px;
 }
 
 .form-group label {
@@ -82,7 +82,7 @@ body {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #00717a;
+  border-color: var(--primary);
   box-shadow: 0 0 4px rgba(0, 113, 122, 0.3);
 }
 
@@ -110,8 +110,8 @@ textarea {
   transition: 0.2s;
 }
 
-.btn.primary { background: #00717a; color: #fff; }
-.btn.warning { background: #ff9800; color: #fff; }
+.btn.primary { background: var(--primary); color: #fff; }
+.btn.warning { background: var(--warning); color: #fff; }
 .btn.secondary { background: #ccc; color: #333; }
 .btn.ghost { background: #f5f5f5; color: #333; }
 
@@ -119,58 +119,67 @@ textarea {
   opacity: 0.9;
 }
 
-/* ================= FINDINGS TABLE ================= */
-.finding-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 12px;
-}
-
-.finding-table thead {
-  background: #00717a;
-  color: #fff;
-}
-
-.finding-table th,
-.finding-table td {
-  padding: 8px 10px;
-  text-align: left;
-  font-size: 13px;
-  border: 1px solid #e0e0e0;
-}
-
-.finding-table tbody tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-.finding-table tbody tr:hover {
+/* ================= FINDING CARD ================= */
+.finding {
   background: #f1fdfd;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  position: relative;
 }
 
-.finding-table img {
-  max-width: 60px;
-  border-radius: 4px;
+.finding h3 {
+  margin-top: 0;
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.finding .form-group {
+  margin-bottom: 10px;
+}
+
+.finding .pir-no {
+  padding: 8px;
+  border-radius: 8px;
+  background: #eef6f7;
+  border: 1px solid #cfe4e6;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.finding input[type="file"] {
+  margin-top: 4px;
+}
+
+.finding .preview {
+  display: block;
+  max-width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
 /* ================= LOADING OVERLAY ================= */
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.9);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
+  align-items: center;
+  z-index: 9999;
 }
 
 .loading-overlay.hidden { display: none; }
 
 .loader {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #ccc;
-  border-top: 4px solid #00717a;
+  width: 42px;
+  height: 42px;
+  border: 4px solid #ddd;
+  border-top: 4px solid var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 12px;
@@ -180,43 +189,13 @@ textarea {
   to { transform: rotate(360deg); }
 }
 
-/* ================= FINDING CARD (FOR ADDING INLINE) ================= */
-.finding-card {
-  background: #f1fdfd;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  position: relative;
-}
-
-.finding-card textarea {
-  width: 100%;
-  margin-top: 6px;
-}
-
-.finding-card img {
-  max-width: 100%;
-  margin-top: 6px;
-  border-radius: 4px;
-}
-
 /* ================= RESPONSIVE ================= */
 @media screen and (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
   .actions {
-    justify-content: stretch;
+    flex-direction: column;
   }
 
   .btn {
     width: 100%;
-    text-align: center;
-  }
-
-  .finding-table th,
-  .finding-table td {
-    font-size: 12px;
   }
 }
