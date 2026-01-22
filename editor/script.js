@@ -44,6 +44,7 @@ async function loadEditor() {
 }
 
 // Add finding card
+// Add finding card
 function addFindingCard(container, index, woNo, data = {}) {
   const formattedIndex = String(index + 1).padStart(2, "0");
   const findingNo = `${woNo}${formattedIndex}`;
@@ -61,8 +62,8 @@ function addFindingCard(container, index, woNo, data = {}) {
 
     <div class="form-group">
       <label>Picture</label>
-      <input type="file" accept="image/*" onchange="previewImage(this)">
-      <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;">
+      <input type="file" accept="image/*">
+      <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;display:none;">
     </div>
 
     <div class="form-group">
@@ -75,19 +76,32 @@ function addFindingCard(container, index, woNo, data = {}) {
       <textarea>${data.action || ""}</textarea>
     </div>
 
-    <button class="btn ghost" type="button" onclick="removeFindingCard(this)">❌ Remove Finding</button>
+    <button class="btn ghost" type="button" onclick="removeFindingCard(this)">
+      ❌ Remove Finding
+    </button>
   `;
 
-  // If existing image URL, show preview
+  const fileInput = div.querySelector('input[type="file"]');
+  const img = div.querySelector(".preview");
+
+  // ✅ EXISTING IMAGE (from Drive)
   if (data.imageUrl) {
-    const img = div.querySelector(".preview");
     img.src = convertDriveUrl(data.imageUrl);
     img.style.display = "block";
-    div.querySelector("input[type=file]").style.display = "none";
+
+    // IMPORTANT: preserve original Drive URL
+    fileInput.dataset.existing = data.imageUrl;
   }
+
+  // ✅ PREVIEW NEW IMAGE (replace existing)
+  fileInput.addEventListener("change", function () {
+    previewImage(this);
+    delete this.dataset.existing; // mark as replaced
+  });
 
   container.appendChild(div);
 }
+
 
 // Add new empty finding
 function addFinding() {
@@ -97,7 +111,6 @@ function addFinding() {
   addFindingCard(container, index, woNo);
 }
 
-// Remove finding card
 // Remove finding card (with confirmation if data exists)
 function removeFindingCard(btn) {
   const card = btn.closest(".card");
@@ -176,9 +189,6 @@ function convertDriveUrl(url) {
   return ""; // fallback = hide image
 }
 
-
-
-// Save PIR
 // ================= SAVE PIR (EDITOR) =================
 async function savePIR() {
   showLoading(true);
@@ -271,6 +281,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
