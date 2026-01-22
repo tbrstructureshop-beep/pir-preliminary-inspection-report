@@ -87,8 +87,14 @@ function setStatus(row, status) {
 }
 
 function editPIR(sheetId) {
+  console.log("Editing sheetId:", sheetId); // <-- debug
+  if (!sheetId) {
+    alert("No sheet ID found!");
+    return;
+  }
   window.location.href = `/editor/?id=${sheetId}`;
 }
+
 
 /*===== ACTION BUTTON BEHAVIOR*/
 
@@ -114,6 +120,7 @@ document.addEventListener("click", e => {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
