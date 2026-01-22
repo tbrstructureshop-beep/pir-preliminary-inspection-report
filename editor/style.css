@@ -1,0 +1,132 @@
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+.app-header {
+  background: linear-gradient(90deg, #00717a, #00bfae);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.app-header .subtitle {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #00717a;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 50px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn.primary { background: #00717a; color: #fff; }
+.btn.warning { background: #ff9800; color: #fff; }
+.btn.secondary { background: #ccc; color: #333; }
+.btn.ghost { background: #f5f5f5; color: #333; }
+
+.btn:hover { opacity: 0.9; }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading-overlay.hidden { display: none; }
+
+.loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #00717a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.finding-card {
+  background: #f1fdfd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.finding-card textarea {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.finding-card img {
+  max-width: 100%;
+  margin-top: 6px;
+}
