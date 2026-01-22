@@ -44,7 +44,6 @@ async function loadEditor() {
 }
 
 // Add finding card
-// Add finding card
 function addFindingCard(container, index, woNo, data = {}) {
   const formattedIndex = String(index + 1).padStart(2, "0");
   const findingNo = `${woNo}${formattedIndex}`;
@@ -281,6 +280,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
