@@ -132,11 +132,32 @@ function previewImage(input) {
 
 // Convert standard GDrive share link to direct viewable link
 function convertDriveUrl(url) {
-  // Example: https://drive.google.com/file/d/FILE_ID/view?usp=drivesdk
-  const match = url.match(/\/d\/(.*?)\//);
-  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-  return url;
+  if (!url) return "";
+
+  // If already correct
+  if (url.includes("drive.google.com/uc?")) return url;
+
+  // drive.google.com/file/d/FILE_ID/view
+  let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+
+  // drive.google.com/open?id=FILE_ID
+  match = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (match) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+
+  // drive.usercontent.google.com/download?id=FILE_ID
+  match = url.match(/download\?id=([a-zA-Z0-9_-]+)/);
+  if (match) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+
+  return url; // fallback
 }
+
 
 // Save PIR
 async function savePIR() {
@@ -203,3 +224,4 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
