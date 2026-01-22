@@ -87,8 +87,7 @@ function setStatus(row, status) {
 }
 
 function editPIR(sheetId) {
-  // future: open form in edit mode
-  window.location.href = `/form/?edit=${sheetId}`;
+  window.location.href = `/editor/?id=${sheetId}`;
 }
 
 /*===== ACTION BUTTON BEHAVIOR*/
@@ -115,6 +114,7 @@ document.addEventListener("click", e => {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
