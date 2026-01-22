@@ -98,8 +98,30 @@ function addFinding() {
 }
 
 // Remove finding card
+// Remove finding card (with confirmation if data exists)
 function removeFindingCard(btn) {
-  btn.closest(".card").remove();
+  const card = btn.closest(".card");
+
+  const hasImage =
+    card.querySelector("img.preview") &&
+    card.querySelector("img.preview").src &&
+    card.querySelector("img.preview").style.display !== "none";
+
+  const hasIdentification =
+    card.querySelector("textarea") &&
+    card.querySelectorAll("textarea")[0].value.trim() !== "";
+
+  const hasAction =
+    card.querySelectorAll("textarea").length > 1 &&
+    card.querySelectorAll("textarea")[1].value.trim() !== "";
+
+  // If any data exists → confirm
+  if (hasImage || hasIdentification || hasAction) {
+    const ok = confirm("Are you sure you want to delete this finding?");
+    if (!ok) return;
+  }
+
+  card.remove();
   updateFindingNumbers();
 }
 
@@ -221,5 +243,6 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
