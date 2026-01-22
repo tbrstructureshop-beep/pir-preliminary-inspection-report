@@ -1,114 +1,69 @@
 const API = "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec";
-const params = new URLSearchParams(window.location.search);
-const sheetId = params.get("id");
+const urlParams = new URLSearchParams(window.location.search);
+const sheetId = urlParams.get("edit");
 
-let findings = [];
-
-/* ===================== INIT ===================== */
-document.addEventListener("DOMContentLoaded", loadPIR);
-
-/* ===================== LOAD PIR ===================== */
-async function loadPIR() {
-  if (!sheetId) return alert("No PIR ID provided");
-
-  showLoading();
+async function loadEditor() {
   const res = await fetch(`${API}?action=getPIR&id=${sheetId}`);
   const data = await res.json();
 
-  fillInfo(data.info);
-  findings = data.findings || [];
-  renderFindings();
-  hideLoading();
-}
-
-function fillInfo(info) {
-  const fields = [
-    "customer","acReg","woNo","partDesc","partNo","serialNo",
-    "qty","dateReceived","reason","adStatus","attachedParts","missingParts","modStatus","sheetId"
-  ];
-  fields.forEach((id, i) => {
-    document.getElementById(id).value = info[i] || "";
+  // Load INFO
+  const infoFields = ["customer","acReg","woNo","partDesc","partNo","serialNo","qty","dateReceived","reason","adStatus","attachedParts","missingParts","modStatus","docId"];
+  infoFields.forEach((id, i) => {
+    document.getElementById(id).value = data.info[i] || "";
   });
-}
 
-/* ===================== FINDINGS ===================== */
-function renderFindings() {
-  const list = document.getElementById("findingList");
-  list.innerHTML = "";
-
-  findings.forEach((f, i) => {
-    const div = document.createElement("div");
-    div.className = "finding-card";
-
-    div.innerHTML = `
-      <label>Finding No: ${f.findingNo}</label>
-      <textarea placeholder="Identification">${f.identification || ""}</textarea>
-      <textarea placeholder="Action">${f.action || ""}</textarea>
-      ${f.imageUrl ? `<img src="${f.imageUrl}" />` : ""}
-      <button onclick="removeFinding(${i})" class="btn secondary">Remove</button>
+  // Load FINDINGS
+  const tbody = document.getElementById("findingBody");
+  tbody.innerHTML = "";
+  data.findings.forEach(f => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${f.findingNo}</td>
+        <td><img src="${f.imageUrl}" class="thumb"/></td>
+        <td><input type="text" value="${f.identification}"/></td>
+        <td><input type="text" value="${f.action}"/></td>
+        <td><button onclick="removeFinding(this)">❌</button></td>
+      </tr>
     `;
-    list.appendChild(div);
   });
 }
 
 function addFinding() {
-  const nextNo = findings.length + 1;
-  findings.push({ findingNo: nextNo, identification: "", action: "", imageUrl: "" });
-  renderFindings();
+  const tbody = document.getElementById("findingBody");
+  const newRow = tbody.insertRow();
+  newRow.innerHTML = `
+    <td></td>
+    <td><input type="file" accept="image/*" onchange="previewImage(this)"/></td>
+    <td><input type="text"/></td>
+    <td><input type="text"/></td>
+    <td><button onclick="removeFinding(this)">❌</button></td>
+  `;
 }
 
-function removeFinding(index) {
-  findings.splice(index, 1);
-  renderFindings();
+function removeFinding(btn) {
+  btn.closest("tr").remove();
 }
 
-function collectFindings() {
-  const list = document.getElementById("findingList");
-  return Array.from(list.children).map((div, i) => ({
-    findingNo: findings[i].findingNo,
-    identification: div.querySelector("textarea:nth-of-type(1)").value,
-    action: div.querySelector("textarea:nth-of-type(2)").value,
-    imageUrl: findings[i].imageUrl
-  }));
-}
-
-/* ===================== SAVE ===================== */
 async function savePIR() {
-  showLoading();
+  const infoFields = ["customer","acReg","woNo","partDesc","partNo","serialNo","qty","dateReceived","reason","adStatus","attachedParts","missingParts","modStatus","docId"];
+  const infoData = infoFields.map(id => document.getElementById(id).value);
 
-  const infoFields = [
-    "customer","acReg","woNo","partDesc","partNo","serialNo",
-    "qty","dateReceived","reason","adStatus","attachedParts","missingParts","modStatus","sheetId"
-  ];
+  const findings = Array.from(document.querySelectorAll("#findingBody tr")).map((tr, i) => ({
+    findingNo: tr.cells[0].textContent || i + 1,
+    imageUrl: tr.cells[1].querySelector("img")?.src || "",
+    identification: tr.cells[2].querySelector("input").value,
+    action: tr.cells[3].querySelector("input").value
+  }));
 
-  const info = infoFields.map(id => document.getElementById(id).value);
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "updatePIR",
+      sheetId,
+      infoData,
+      findings
+    })
+  });
 
-  const formData = new FormData();
-  formData.append("sheetId", sheetId);
-  formData.append("info", JSON.stringify(info));
-  formData.append("findings", JSON.stringify(collectFindings()));
-
-  await fetch(API, { method: "POST", body: formData });
-  hideLoading();
-  alert("PIR updated successfully");
+  alert("PIR saved!");
 }
-
-/* ===================== CANCEL ===================== */
-function cancelEdit() {
-  window.history.back();
-}
-
-/* ===================== PDF BUTTON ===================== */
-function generatePDF() {
-  alert("PDF generation feature will be implemented here.");
-}
-
-/* ===================== LOADING ===================== */
-function showLoading() {
-  document.getElementById("loadingOverlay").classList.remove("hidden");
-}
-
-function hideLoading() {
-  document.getElementById("loadingOverlay").classList.add("hidden");
-}
-
