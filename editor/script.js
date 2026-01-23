@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbz8G8ZeUT_K0A0jbSVRbRxwbeR3nEtb4yO-EyjdsoPp5hbB2AAQh1PncKn36xo5USI8/exec";
+const API = "https://script.google.com/macros/s/AKfycbyQzgxE0jL-iZd79_qG2jCd8h30w1f4NNVp8HjKY2jyLlmDzyx4qm3XoTcUnGEWFFBR/exec";
 const urlParams = new URLSearchParams(window.location.search);
 const sheetId = urlParams.get("id");
 
@@ -310,6 +310,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
