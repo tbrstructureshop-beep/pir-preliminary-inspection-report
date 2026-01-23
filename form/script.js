@@ -167,7 +167,14 @@ async function submitPIR() {
     resetPIR(true);
 
     // ✅ redirect last
-    window.location.href = result.fileUrl;
+    // ✅ redirect AFTER success
+    const redirectUrl = result.copiedDocUrl || result.fileUrl; // use copiedDocUrl first
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      console.warn("No redirect URL returned from backend:", result);
+      alert("Submission succeeded, but cannot redirect. Check console for details.");
+    }
 
   } catch (err) {
     hideLoading();
@@ -188,6 +195,7 @@ function hideLoading() {
   if (overlay) overlay.classList.add("hidden");
   document.body.classList.remove("loading");
 }
+
 
 
 
