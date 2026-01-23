@@ -270,34 +270,47 @@ function cancelEdit() {
 }
 
 
-// PDF stub
 async function generatePDF() {
   showLoading(true);
+
   try {
     const res = await fetch(API, {
       method: "POST",
       body: new URLSearchParams({
         action: "generateDoc",
-        sheetId: sheetId
+        sheetId: sheetId // current PIR sheet
       })
     });
+
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
 
     const result = await res.json();
 
     if (!result.success) {
       alert("Failed to generate PDF:\n" + result.error);
+      console.error(result.error);
       return;
     }
 
-    window.open(result.docUrl, "_blank");
+    // ✅ Open the copied doc URL from backend
+    const docUrl = result.copiedDocUrl || result.fileUrl;
+    if (docUrl) {
+      window.open(docUrl, "_blank");
+    } else {
+      alert("PDF generated but URL not returned!");
+      console.warn("No URL returned from backend:", result);
+    }
 
   } catch (err) {
     console.error(err);
-    alert("Error generating PDF");
+    alert("Error generating PDF:\nCheck console for details");
   } finally {
     showLoading(false);
   }
 }
+
 
 
 
@@ -309,6 +322,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
