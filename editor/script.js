@@ -270,9 +270,37 @@ function cancelEdit() {
 }
 
 // PDF stub
-function generatePDF() {
-  alert("PDF generation not implemented yet.");
+async function generatePDF() {
+  showLoading(true);
+
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      body: new URLSearchParams({
+        action: "generateDoc",
+        sheetId: sheetId
+      })
+    });
+
+    const result = await res.json();
+
+    if (!result.success) {
+      alert("Failed to generate document");
+      console.error(result);
+      return;
+    }
+
+    // 🔥 open generated inspection document
+    window.open(result.docUrl, "_blank");
+
+  } catch (err) {
+    console.error(err);
+    alert("Error generating PDF");
+  } finally {
+    showLoading(false);
+  }
 }
+
 
 // Loading overlay
 function showLoading(show) {
@@ -282,6 +310,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
