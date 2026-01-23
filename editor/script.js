@@ -282,36 +282,31 @@ async function generatePDF() {
       })
     });
 
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const result = await res.json();
 
     if (!result.success) {
-      alert("Failed to generate PDF:\n" + result.error);
+      alert("Failed to generate PDF:\n" + (result.error || "Unknown error"));
       console.error(result.error);
       return;
     }
 
-    // ✅ Open the copied doc URL from backend
-    const docUrl = result.copiedDocUrl || result.fileUrl;
+    // ✅ Use copiedDocUrl from backend
+    const docUrl = result.copiedDocUrl;
     if (docUrl) {
       window.open(docUrl, "_blank");
     } else {
-      alert("PDF generated but URL not returned!");
-      console.warn("No URL returned from backend:", result);
+      console.warn("Backend did not return copiedDocUrl:", result);
     }
 
   } catch (err) {
     console.error(err);
-    alert("Error generating PDF:\nCheck console for details");
+    alert("Error generating PDF. Check console for details.");
   } finally {
     showLoading(false);
   }
 }
-
-
 
 
 // Loading overlay
@@ -322,6 +317,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
