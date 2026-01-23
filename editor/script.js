@@ -269,47 +269,35 @@ function cancelEdit() {
   }
 }
 
+
 // PDF stub
 async function generatePDF() {
   showLoading(true);
-
   try {
-    const formData = new FormData();
-    formData.append("action", "generateDoc");
-    formData.append("sheetId", sheetId); // must be set
-
     const res = await fetch(API, {
       method: "POST",
-      body: formData
+      body: new URLSearchParams({
+        action: "generateDoc",
+        sheetId: sheetId
+      })
     });
-
-    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const result = await res.json();
 
-    if (!result || !result.copiedDocUrl) {
-      console.error("GenerateDoc response:", result);
-      alert(
-        "Document was created, but tags or findings may be incomplete.\n" +
-        "Please check the document manually."
-      );
+    if (!result.success) {
+      alert("Failed to generate PDF:\n" + result.error);
       return;
     }
 
-    window.open(result.copiedDocUrl, "_blank");
+    window.open(result.docUrl, "_blank");
 
   } catch (err) {
-    console.error("Generate PDF error:", err);
-    alert(
-      "Document generation encountered an internal issue.\n" +
-      "The file may still have been created."
-    );
+    console.error(err);
+    alert("Error generating PDF");
   } finally {
     showLoading(false);
   }
 }
-
-
 
 
 
@@ -321,6 +309,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
