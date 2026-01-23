@@ -270,6 +270,7 @@ function cancelEdit() {
 }
 
 // PDF stub
+// PDF generation
 async function generatePDF() {
   showLoading(true);
 
@@ -291,8 +292,8 @@ async function generatePDF() {
     const result = await res.json();
 
     // 🔴 Backend-safe handling
-    // Even if doc is created, backend may return success:false
-    if (!result || !result.docUrl) {
+    // Check for the correct returned property: copiedDocUrl
+    if (!result || !result.copiedDocUrl) {
       console.error("GenerateDoc response:", result);
       alert(
         "Document was created, but tags or findings may be incomplete.\n" +
@@ -302,7 +303,7 @@ async function generatePDF() {
     }
 
     // ✅ SUCCESS PATH
-    window.open(result.docUrl, "_blank");
+    window.open(result.copiedDocUrl, "_blank");
 
   } catch (err) {
     console.error("Generate PDF error:", err);
@@ -317,6 +318,7 @@ async function generatePDF() {
 
 
 
+
 // Loading overlay
 function showLoading(show) {
   const overlay = document.getElementById("loadingOverlay");
@@ -325,6 +327,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
