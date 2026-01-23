@@ -270,29 +270,23 @@ function cancelEdit() {
 }
 
 // PDF stub
-// PDF generation
 async function generatePDF() {
   showLoading(true);
 
   try {
-    // 🔹 Backend expects POST with action=generateDoc
-    const formData = new URLSearchParams();
+    const formData = new FormData();
     formData.append("action", "generateDoc");
-    formData.append("sheetId", sheetId);
+    formData.append("sheetId", sheetId); // must be set
 
     const res = await fetch(API, {
       method: "POST",
       body: formData
     });
 
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const result = await res.json();
 
-    // 🔴 Backend-safe handling
-    // Check for the correct returned property: copiedDocUrl
     if (!result || !result.copiedDocUrl) {
       console.error("GenerateDoc response:", result);
       alert(
@@ -302,7 +296,6 @@ async function generatePDF() {
       return;
     }
 
-    // ✅ SUCCESS PATH
     window.open(result.copiedDocUrl, "_blank");
 
   } catch (err) {
@@ -319,6 +312,7 @@ async function generatePDF() {
 
 
 
+
 // Loading overlay
 function showLoading(show) {
   const overlay = document.getElementById("loadingOverlay");
@@ -327,6 +321,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
