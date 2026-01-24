@@ -64,44 +64,41 @@ body {
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 
-  /* ✅ new for scrollable table body */
-  display: block;
-  max-height: 400px; /* adjust as needed */
-  overflow-y: auto;
+  display: block;                /* needed for scrollable tbody */
+  max-height: 500px;             /* fixed max height of table */
+  overflow-y: auto;              /* vertical scroll inside table wrapper */
+  overflow-x: auto;              /* horizontal scroll if needed */
+  padding-right: 8px;            /* optional for scrollbar */
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
-  display: table;
-  table-layout: fixed;  /* important for column widths */
+  table-layout: fixed;           /* fixed column widths */
 }
 
-thead {
-  background: #f0f4f6;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: table;       /* keep header layout intact */
+thead, tbody tr {
+  display: table;
   width: 100%;
   table-layout: fixed;
 }
 
-th, td {
-  padding: 12px 14px;
-  text-align: center; /* center-aligned headers and body */
-  font-size: 13px;
-  border-bottom: 1px solid var(--border);
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #f0f4f6;
 }
 
-th {
-  font-weight: 600;
+th, td {
+  padding: 12px;
+  text-align: center;           /* center aligned headers and cells */
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
 }
 
 tbody {
-  display: block;       /* scrollable body */
-  width: 100%;
+  display: block;               /* allows vertical scroll */
 }
 
 tbody tr {
@@ -110,11 +107,16 @@ tbody tr {
   table-layout: fixed;
 }
 
-select {
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+tbody tr:hover {
+  background: #f9fbfc;
 }
+
+/* ensure action menu is above scroll */
+.menu-content {
+  position: absolute;           /* keep menu outside table layout */
+  z-index: 10;
+}
+
 
 /* ================= ACTION MENU ================= */
 
@@ -293,6 +295,7 @@ select {
     font-size: 16px;
   }
 }
+
 
 
 
