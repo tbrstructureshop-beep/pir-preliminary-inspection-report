@@ -35,13 +35,16 @@ function render(rows) {
   const tbody = document.getElementById("tableBody");
   tbody.innerHTML = "";
 
-  rows.forEach((r, index) => {
+  rows.forEach((r, idx) => {
     const woNo = r["W/O No"] || "";
     const acReg = r["A/C Reg"] || "";
     const partDesc = r["Part Description"] || "";
     const status = r["Status"] || "DRAFT";
     const sheetUrl = r["Sheet URL"] || "#";
     const sheetId = r["Sheet ID"] || "";
+
+    // Find the index in MASTER_ROWS to use for delete
+    const masterIndex = MASTER_ROWS.findIndex(item => item["Sheet ID"] === sheetId);
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
@@ -51,7 +54,7 @@ function render(rows) {
 
         <td>
           <select class="status-select"
-                  onchange="setStatus(${index + 2}, this.value)">
+                  onchange="setStatus(${masterIndex + 2}, this.value)">
             ${["DRAFT", "OPEN", "CLOSED"]
               .map(s => `
                 <option value="${s}" ${s === status ? "selected" : ""}>
@@ -75,6 +78,12 @@ function render(rows) {
                       onclick="editPIR('${sheetId}')">
                 ✏️ Edit in Web App
               </button>
+
+              <button type="button"
+                      onclick="deletePIR('${sheetId}', ${masterIndex})"
+                      style="color: red;">
+                🗑️ Delete
+              </button>
             </div>
           </div>
         </td>
@@ -82,6 +91,7 @@ function render(rows) {
     `);
   });
 }
+
 
 
 /* ================= SEARCH ================= */
@@ -177,6 +187,7 @@ function goToPage(page) {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
