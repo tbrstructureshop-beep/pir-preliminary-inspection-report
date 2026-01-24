@@ -219,6 +219,54 @@ select {
   100% { transform: rotate(360deg);}
 }
 
+/* ================= TOPBAR USER MENU ================= */
+
+.user-menu {
+  margin-left: auto;
+  position: relative;
+}
+
+.user-menu-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.user-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 32px;
+  background: white;
+  min-width: 140px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.user-menu-content a {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.user-menu-content a:hover {
+  background: #f5f7fa;
+}
+
+
 /* ================= MOBILE ================= */
 
 @media (max-width: 640px) {
@@ -231,3 +279,4 @@ select {
     font-size: 16px;
   }
 }
+
