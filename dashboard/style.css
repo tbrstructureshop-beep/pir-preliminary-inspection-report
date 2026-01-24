@@ -117,6 +117,11 @@ tbody tr:hover {
   z-index: 10;
 }
 
+select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
 
 /* ================= ACTION MENU ================= */
 
@@ -295,6 +300,7 @@ tbody tr:hover {
     font-size: 16px;
   }
 }
+
 
 
 
