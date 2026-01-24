@@ -193,20 +193,19 @@ button {
 
 /* ================= TOGGLE MENU ===================== */
 
-/* User Menu Button */
+/* User Menu */
+.user-menu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
 .user-menu-btn {
   font-size: 30px;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: white; /* Make the button text (the three lines) white */
-}
-
-/* Toggle Menu Icon (three horizontal lines) */
-.user-menu-btn::before {
-  content: '\2630'; /* Unicode character for the three horizontal lines */
-  font-size: 30px;
-  color: white; /* Make the lines white */
 }
 
 /* Hide menu content initially */
@@ -293,5 +292,3 @@ button {
     transform: rotate(360deg);
   }
 }
-
-
