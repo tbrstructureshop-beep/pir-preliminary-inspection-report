@@ -66,33 +66,55 @@ function render(rows) {
         </td>
 
         <td class="action-cell">
-          <div class="menu">
-            <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
-
-            <div class="menu-content">
-              <a href="${sheetUrl}" target="_blank" rel="noopener">
-                📄 Open Spreadsheet
-              </a>
-
-              <button type="button"
-                      onclick="editPIR('${sheetId}')">
-                ✏️ Edit in Web App
-              </button>
-
-              <button type="button"
-                      onclick="deletePIR('${sheetId}', ${masterIndex})"
-                      style="color: red;">
-                🗑️ Delete
-              </button>
-            </div>
-          </div>
+          <!-- Only the menu button triggers floating menu -->
+          <button class="menu-btn"
+                  onclick="toggleMenu(this, '${sheetId}', '${sheetUrl}', ${masterIndex})">
+            ⋮
+          </button>
         </td>
       </tr>
     `);
   });
 }
 
+/* ====== ACTION BUTTON FLOATING =========== */
 
+let activeMenu = null;
+
+function toggleMenu(btn, sheetId, sheetUrl, index) {
+  // Close existing menu if open
+  if (activeMenu) activeMenu.remove();
+
+  // Get button position
+  const rect = btn.getBoundingClientRect();
+
+  // Create menu container
+  const menu = document.createElement("div");
+  menu.className = "menu-content-floating";
+  menu.style.position = "absolute";
+  menu.style.top = `${rect.bottom + window.scrollY}px`;
+  menu.style.left = `${rect.left + window.scrollX}px`;
+  menu.style.zIndex = 1000;
+
+  // Fill menu content
+  menu.innerHTML = `
+    <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
+    <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
+    <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
+  `;
+
+  document.body.appendChild(menu);
+  activeMenu = menu;
+
+  // Close menu on click outside
+  document.addEventListener("click", function closeMenu(e) {
+    if (!menu.contains(e.target) && e.target !== btn) {
+      menu.remove();
+      activeMenu = null;
+      document.removeEventListener("click", closeMenu);
+    }
+  });
+}
 
 /* ================= SEARCH ================= */
 
