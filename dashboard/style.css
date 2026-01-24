@@ -9,16 +9,14 @@
   box-sizing: border-box;
 }
 
+html,
 body {
+  height: 100%;
   margin: 0;
+  overflow: hidden; /* 🔒 PAGE NEVER SCROLLS */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: #333;
-}
-
-html, body {
-  max-width: 100%;
-  overflow-x: hidden;
 }
 
 /* ================= HEADER ================= */
@@ -44,14 +42,21 @@ html, body {
   font-size: 12px;
 }
 
-/* ================= TOOLBAR ================= */
+/* ================= MAIN CONTAINER ================= */
 
 .container {
+  height: calc(100% - 64px); /* header height */
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
+
+/* ================= TOOLBAR ================= */
 
 .toolbar {
   margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .toolbar input {
@@ -65,63 +70,50 @@ html, body {
 /* ================= TABLE ================= */
 
 .table-wrapper {
+  flex: 1 1 auto;
   background: var(--card);
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-
-  max-height: 500px;
-  overflow-y: auto;
-
-  /* 🔥 FIX */
-  overflow-x: hidden;   /* prevent layout push */
-  position: relative;   /* anchor floating menu */
+  overflow: hidden; /* 🔥 prevents page scroll */
+  display: flex;
+  flex-direction: column;
 }
+
+.table-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden; /* 🚫 NO horizontal scroll */
+}
+
+/* ================= TABLE CORE ================= */
 
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;           /* fixed column widths */
-}
-
-thead, tbody tr {
-  display: table;
-  width: 100%;
   table-layout: fixed;
 }
 
-thead {
+thead th {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 10;
   background: #f0f4f6;
+  border-bottom: 1px solid var(--border);
 }
 
-th, td {
+th,
+td {
   padding: 12px;
-  text-align: center;           /* center aligned headers and cells */
+  text-align: center;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
-}
-
-tbody {
-  display: block;               /* allows vertical scroll */
-}
-
-tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
 }
 
 tbody tr:hover {
   background: #f9fbfc;
 }
 
-/* ensure action menu is above scroll */
-.menu-content {
-  position: absolute;           /* keep menu outside table layout */
-  z-index: 10;
-}
+/* ================= SELECT ================= */
 
 select {
   padding: 6px 8px;
@@ -140,7 +132,7 @@ select {
   border: none;
   font-size: 18px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px;
   border-radius: 6px;
 }
 
@@ -154,20 +146,18 @@ select {
   background: #e8e8e8;
 }
 
-
 /* ================= FLOATING MENU ================= */
+/* 🔥 FIXED → NEVER BREAKS LAYOUT */
 
 .menu-content-floating {
+  position: fixed; /* 🔥 NOT absolute */
+  right: 16px;
   background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
-  width: 190px;        /* 🔥 fixed width instead of min-width */
-  max-width: 90vw;     /* 🔥 never exceed viewport */
-
-  position: fixed;     /* 🔥 OUT of table flow */
-  z-index: 1000;
-
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  min-width: 190px;
+  overflow: hidden;
+  z-index: 9999;
   user-select: none;
 }
 
@@ -178,56 +168,41 @@ select {
   display: flex;
   align-items: center;
   gap: 8px;
-
   width: 100%;
   padding: 10px 14px;
-
   background: none;
   border: none;
   cursor: pointer;
-
   font-size: 14px;
   font-family: inherit;
   color: #333;
   text-align: left;
-
-  text-decoration: none; /* 🔥 removes underline from <a> */
+  text-decoration: none;
 }
-
-
-/* ================= HOVER STATE ================= */
 
 .menu-content-floating a:hover,
 .menu-content-floating button:hover {
   background: #f5f7fa;
 }
 
-
-/* ================= DIVIDERS ================= */
-
 .menu-content-floating a:not(:last-child),
 .menu-content-floating button:not(:last-child) {
   border-bottom: 1px solid #eeeeee;
 }
-
-
-/* ================= DANGER ACTION (DELETE) ================= */
 
 .menu-content-floating button:last-child:hover {
   background: #fff1f1;
   color: #c0392b;
 }
 
-
-
 /* ================= PAGINATION ================= */
 
 .pagination {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 12px;
-  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -259,7 +234,7 @@ select {
   position: fixed;
   inset: 0;
   background: rgba(255,255,255,0.7);
-  z-index: 100;
+  z-index: 10000;
   justify-content: center;
   align-items: center;
 }
@@ -274,8 +249,7 @@ select {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+  to { transform: rotate(360deg); }
 }
 
 /* ================= TOPBAR USER MENU ================= */
@@ -296,25 +270,24 @@ select {
 }
 
 .user-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.2);
 }
 
 .user-menu-content {
   display: none;
   position: absolute;
   right: 0;
-  top: 32px;
+  top: 36px;
   background: white;
   min-width: 140px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.2);
   border-radius: 8px;
   overflow: hidden;
-  z-index: 20;
+  z-index: 50;
 }
 
 .user-menu-content a {
   display: block;
-  width: 100%;
   padding: 10px 14px;
   text-decoration: none;
   color: #333;
@@ -325,29 +298,16 @@ select {
   background: #f5f7fa;
 }
 
-
 /* ================= MOBILE ================= */
 
 @media (max-width: 640px) {
-  .table-wrapper {
-    overflow-x: hidden;
+  th,
+  td {
+    font-size: 12px;
+    padding: 10px;
   }
 
-  table {
-    width: 100%;
-  }
-
-  th, td {
-    word-break: break-word;
-    overflow-wrap: break-word;
+  .topbar h1 {
+    font-size: 16px;
   }
 }
-
-
-
-
-
-
-
-
-
