@@ -181,18 +181,16 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
-    // Password toggle function
     function togglePassword() {
       const pwd = document.getElementById("password");
       pwd.type = pwd.type === "password" ? "text" : "password";
     }
 
-    // Login function
     async function login(e) {
-      e.preventDefault();  // Prevent default form submission
+      e.preventDefault();
 
-      const userId = document.getElementById("employeeId").value.trim();
-      const password = document.getElementById("password").value;
+      const userId = employeeId.value.trim();
+      const password = passwordInput = document.getElementById("password").value;
 
       try {
         const res = await fetch(API_URL, {
@@ -211,14 +209,14 @@
           return;
         }
 
-        // Store session
+        // ✅ store session
         sessionStorage.setItem("userId", result.userId);
 
-        // Show loading
+        // ✅ show loading
         document.querySelector(".login-card").style.display = "none";
         document.getElementById("loadingOverlay").style.display = "flex";
 
-        // Redirect after delay
+        // ✅ redirect
         setTimeout(() => {
           window.location.replace("home/index.html");
         }, 600);
