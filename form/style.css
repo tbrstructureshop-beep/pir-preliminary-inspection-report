@@ -32,22 +32,82 @@ body {
   color: white;
   padding: 20px 30px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;  /* Stack title and subtitle vertically */
+  justify-content: flex-start;  /* Align items to the top */
+  align-items: flex-start;  /* Align items to the left */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   transition: all 0.3s ease;
+  position: relative; /* Allow absolute positioning for the menu */
 }
 
 .app-header h1 {
   font-size: 28px;
   margin: 0;
+  text-align: left; /* Left-align the title */
 }
 
 .subtitle {
   font-size: 14px;
   opacity: 0.85;
   margin-top: 5px;
+  text-align: left; /* Left-align the subtitle */
+}
+
+/* ================= TOGGLE MENU ===================== */
+.user-menu-wrapper {
+  position: absolute; /* Position inside the header */
+  top: 20px; /* Adjust top as needed */
+  right: 20px; /* Align to the top-right of the header */
+  cursor: pointer;
+}
+
+.user-menu-btn {
+  font-size: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.user-menu-btn:hover {
+  color: var(--highlight);
+}
+
+.user-menu-content {
+  display: none;
+  background-color: white;
+  color: var(--luxury-dark);
+  position: absolute;
+  top: 60px;
+  right: 0;
+  min-width: 180px;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 101;
+}
+
+.user-menu-wrapper:hover .user-menu-content {
+  display: block; /* Show the menu on hover of the wrapper */
+}
+
+.user-menu-content a {
+  color: var(--luxury-dark);
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+  padding: 8px;
+  transition: background-color 0.3s;
+}
+
+.user-menu-content a:hover {
+  background-color: #575757;
+}
+
+.user-menu-content.active {
+  display: block;
 }
 
 /* ================= LAYOUT ================= */
@@ -196,56 +256,6 @@ textarea {
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
-}
-
-/* ================= TOGGLE MENU ===================== */
-.user-menu-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.user-menu-btn {
-  font-size: 30px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: white;
-}
-
-.user-menu-btn:hover {
-  color: var(--highlight);
-}
-
-.user-menu-content {
-  display: none;
-  background-color: white;
-  color: var(--luxury-dark);
-  position: absolute;
-  top: 60px;
-  right: 0;
-  min-width: 180px;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
-  z-index: 101;
-}
-
-.user-menu-content a {
-  color: var(--luxury-dark);
-  text-decoration: none;
-  font-size: 16px;
-  display: block;
-  padding: 8px;
-  transition: background-color 0.3s;
-}
-
-.user-menu-content a:hover {
-  background-color: #575757;
-}
-
-.user-menu-content.active {
-  display: block;
 }
 
 /* ================= MOBILE ADJUSTMENTS ===================== */
