@@ -28,17 +28,21 @@ body {
 }
 
 /* ================= HEADER ================= */
-
+/* ================= HEADER ================= */
 .app-header {
-  background: linear-gradient(135deg, var(--primary), var(--highlight));
+  background: linear-gradient(135deg, #176366, #268a8e); 
   color: white;
-  padding: 20px;
+  padding: 20px 30px; /* Added more horizontal padding */
   text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  
+  /* Changed to row to push menu to the right */
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  transition: all 0.3s ease;
 }
 
 .app-header h1 {
@@ -343,3 +347,4 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
