@@ -48,12 +48,15 @@ function render(rows) {
     const dateCreated = r["Date Created"] || ""; // Date Created
     const docUrl = r["DocUrl"] || "#";         // Doc URL (for the action button)
 
+    // Format the date to "dd MMM yyyy (HH:mm)"
+    const formattedDate = formatDate(dateCreated);
+
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
         <td>${woNo}</td>
         <td>${partDesc}</td>
         <td>${acReg}</td>
-        <td>${dateCreated}</td>
+        <td>${formattedDate}</td>
         <td class="action-cell">
           <button class="menu-btn"
                   onclick="toggleActionMenu(this, '${woNo}', '${docUrl}', ${idx})">
@@ -63,6 +66,22 @@ function render(rows) {
       </tr>
     `);
   });
+}
+
+// Helper function to format the date
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  // Check if the date is valid
+  if (isNaN(date)) return dateString;
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = date.toLocaleString('default', { month: 'short' }); // Get abbreviated month
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${day} ${month} ${year} (${hours}:${minutes})`;
 }
 
 
@@ -193,4 +212,5 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
 
