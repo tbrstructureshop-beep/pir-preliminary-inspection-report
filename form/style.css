@@ -58,7 +58,7 @@ body {
 .user-menu-btn {
   width: 44px;
   height: 44px;
-  border-radius: 12px; /* rounded square */
+  border-radius: 12px;              /* rounded square */
   background: white;
   color: var(--luxury-dark);
   border: none;
@@ -76,41 +76,48 @@ body {
   transform: scale(0.96);
 }
 
-/* MENU PANEL */
+/* DROPDOWN MENU */
 .user-menu-content {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: calc(100% + 10px);  /* below button */
   right: 0;
-  height: 100vh;
-  width: min(280px, 85vw);
+  min-width: 200px;
   background: white;
-  padding: 80px 20px 20px;
-  box-shadow: -8px 0 20px rgba(0,0,0,0.18);
+  padding: 8px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  z-index: 300;
 
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
+  /* animation */
+  opacity: 0;
+  transform: translateX(16px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* ACTIVE STATE (slide in) */
+/* ACTIVE STATE */
 .user-menu-content.active {
+  opacity: 1;
   transform: translateX(0);
+  pointer-events: auto;
 }
 
-/* MENU LINKS */
+/* MENU ITEMS */
 .user-menu-content a {
   display: block;
-  padding: 14px 16px;
-  margin-bottom: 8px;
+  padding: 12px 14px;
   border-radius: 10px;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--luxury-dark);
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .user-menu-content a:hover {
   background: var(--luxury-light);
 }
+
 
 /* ================= LAYOUT ================= */
 .container {
@@ -242,3 +249,4 @@ textarea {
   .app-header h1 { font-size: 24px; }
   .subtitle { font-size: 12px; }
 }
+
