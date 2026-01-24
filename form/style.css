@@ -193,34 +193,36 @@ button {
 
 /* ================= TOGGLE MENU ===================== */
 
-/* Toggle Menu */
-.toggle-menu {
-  position: fixed;
+/* User Menu */
+.user-menu {
+  position: absolute;
   top: 20px;
-  left: 20px;
+  right: 20px;
   z-index: 100;
 }
 
-#toggleMenuBtn {
+.user-menu-btn {
   font-size: 30px;
   background: transparent;
   border: none;
   cursor: pointer;
 }
 
-.side-menu {
+/* Hide menu content initially */
+.user-menu-content {
   display: none;
   background-color: #333;
   color: white;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 200px;
-  height: 100%;
-  padding: 20px;
+  top: 48px; /* Position below the button */
+  right: 0;
+  min-width: 160px; /* Adjust width if needed */
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.side-menu a {
+.user-menu-content a {
   color: white;
   text-decoration: none;
   font-size: 18px;
@@ -228,57 +230,28 @@ button {
   margin: 10px 0;
 }
 
-.side-menu a:hover {
+.user-menu-content a:hover {
   background-color: #575757;
 }
 
-.hidden {
-  display: none;
+/* Show the menu when active */
+.user-menu-content.active {
+  display: block;
 }
 
-/* Header and general styling */
-.app-header {
-  background-color: #0f5361;
-  padding: 20px;
-  color: white;
-}
+/* Toggle button for mobile view */
+@media (max-width: 640px) {
+  .user-menu-btn {
+    font-size: 25px;
+    padding: 6px 12px;
+  }
 
-.app-header h1 {
-  margin: 0;
-}
-
-.app-header .subtitle {
-  font-size: 16px;
-  margin: 5px 0 0;
-}
-
-/* Button styling */
-.btn {
-  padding: 10px 20px;
-  margin: 5px;
-  border: none;
-  cursor: pointer;
-}
-
-.secondary {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.danger {
-  background-color: #f44336;
-  color: white;
-}
-
-.warning {
-  background-color: #ff9800;
-  color: white;
-}
-
-.ghost {
-  background-color: transparent;
-  color: #0f5361;
-  border: 2px solid #0f5361;
+  /* Adjust the position of the menu content */
+  .user-menu-content {
+    min-width: 100%;
+    right: 0;
+    top: 48px;
+  }
 }
 
 /* ================= MOBILE ================= */
@@ -319,3 +292,4 @@ button {
     transform: rotate(360deg);
   }
 }
+
