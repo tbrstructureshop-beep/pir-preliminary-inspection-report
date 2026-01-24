@@ -1,5 +1,5 @@
 :root {
-  --primary: #1b6f7a; /* Updated primary color */
+  --primary: #1b6f7a;
   --danger: #c0392b;
   --warning: #f39c12;
   --bg: #f4f6f8;
@@ -11,7 +11,6 @@
 }
 
 /* ================= GLOBAL ================= */
-
 *,
 *::before,
 *::after {
@@ -28,20 +27,15 @@ body {
 }
 
 /* ================= HEADER ================= */
-/* ================= HEADER ================= */
 .app-header {
-  background: linear-gradient(135deg, #176366, #268a8e); 
+  background: linear-gradient(135deg, #176366, #268a8e);
   color: white;
-  padding: 20px 30px; /* Added more horizontal padding */
-  text-align: left;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
-  
-  /* Changed to row to push menu to the right */
-  display: flex;
-  flex-direction: row; 
-  justify-content: space-between; 
-  align-items: center; 
   transition: all 0.3s ease;
 }
 
@@ -57,13 +51,11 @@ body {
 }
 
 /* ================= LAYOUT ================= */
-
 .container {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .card {
@@ -72,7 +64,6 @@ body {
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
 }
 
 .card h2 {
@@ -88,7 +79,6 @@ body {
 }
 
 /* ================= FORM ================= */
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -110,7 +100,6 @@ textarea {
   background: white;
   transition: border-color 0.3s ease;
   width: 100%;
-  box-sizing: border-box;
 }
 
 input:focus,
@@ -134,7 +123,6 @@ textarea {
 }
 
 /* ================= BUTTONS ================= */
-
 .btn {
   padding: 14px;
   border-radius: 14px;
@@ -145,7 +133,6 @@ textarea {
   transition: transform 0.2s ease, background-color 0.3s ease;
   margin-top: 12px;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .btn:active {
@@ -172,14 +159,12 @@ textarea {
 }
 
 /* ================= ACTIONS ================= */
-
 .actions {
   display: grid;
   gap: 12px;
 }
 
 /* ================= IMAGE PREVIEW ================= */
-
 .preview {
   display: none;
   max-width: 100%;
@@ -189,13 +174,11 @@ textarea {
 }
 
 /* ================= LOADING OVERLAY ===================== */
-
 .loading-overlay {
   position: fixed;
   inset: 0;
   background: rgba(255, 255, 255, 0.8);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 9999;
@@ -216,16 +199,11 @@ textarea {
 }
 
 /* ================= TOGGLE MENU ===================== */
-
-/* User Menu */
-.user-menu {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
+.user-menu-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
-/* Toggle Button */
 .user-menu-btn {
   font-size: 30px;
   background: transparent;
@@ -238,19 +216,18 @@ textarea {
   color: var(--highlight);
 }
 
-/* Menu Content */
 .user-menu-content {
-  display: none; /* Default state: Hidden */
+  display: none;
   background-color: white;
   color: var(--luxury-dark);
-  position: fixed; /* Fix the position */
-  top: 60px; /* Adjusted from 48px to ensure it’s below the button */
-  right: 20px; /* Align it with the button */
+  position: absolute;
+  top: 60px;
+  right: 0;
   min-width: 180px;
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  white-space: nowrap; /* Prevent text wrapping */
+  white-space: nowrap;
   z-index: 101;
 }
 
@@ -267,14 +244,11 @@ textarea {
   background-color: #575757;
 }
 
-/* Show the menu when active */
 .user-menu-content.active {
-  display: block; /* Display the menu when active */
+  display: block;
 }
 
-
 /* ================= MOBILE ADJUSTMENTS ===================== */
-
 @media (max-width: 640px) {
   .user-menu-btn {
     font-size: 28px;
@@ -297,20 +271,7 @@ textarea {
 }
 
 /* ================= RESPONSIVE DESIGN ===================== */
-
 @media (max-width: 640px) {
-  .user-menu-btn {
-    font-size: 28px;
-    padding: 8px 14px;
-  }
-
-  .user-menu-content {
-    min-width: 100%;
-    right: 0;
-    top: 48px;
-    padding: 14px;
-  }
-
   .container {
     padding: 12px;
     max-width: 100%;
@@ -324,10 +285,6 @@ textarea {
   td {
     font-size: 14px;
     padding: 12px;
-  }
-
-  .topbar h1 {
-    font-size: 18px;
   }
 }
 
@@ -347,4 +304,3 @@ textarea {
     transform: rotate(360deg);
   }
 }
-
