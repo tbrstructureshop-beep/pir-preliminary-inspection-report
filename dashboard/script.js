@@ -197,7 +197,7 @@ function deletePIR(sheetId, index) {
   const confirmed = confirm("Are you sure you want to delete this PIR?");
   if (!confirmed) return;
 
-  // Show loading spinner while deleting
+  // ✅ Show spinner while deleting
   showLoading(true);
 
   fetch(`${API}?action=deletePIR&sheetId=${sheetId}`, { method: "POST" })
@@ -205,24 +205,32 @@ function deletePIR(sheetId, index) {
     .then(data => {
       if (data.success) {
         alert("PIR deleted successfully.");
-        // Remove from MASTER_ROWS and refresh current page
+
+        // Remove from local MASTER_ROWS
         MASTER_ROWS.splice(index, 1);
+
+        // Refresh table with pagination
         paginateData();
       } else {
-        alert("Failed to delete PIR.");
+        alert("Failed to delete PIR: " + (data.error || ""));
       }
     })
     .catch(err => {
       console.error(err);
       alert("Error deleting PIR.");
     })
-    .finally(() => showLoading(false));
+    .finally(() => {
+      // ✅ Hide spinner after operation completes
+      showLoading(false);
+    });
 }
+
 
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
