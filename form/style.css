@@ -12,7 +12,9 @@
 
 /* ================= GLOBAL ================= */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -22,6 +24,7 @@ body {
   background: var(--bg);
   font-size: 16px;
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 /* ================= HEADER ================= */
@@ -32,6 +35,7 @@ body {
   padding: 20px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 }
 
 .subtitle {
@@ -45,6 +49,8 @@ body {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card {
@@ -53,16 +59,17 @@ body {
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
 }
 
 .card h2 {
-  font-size: 18px;
+  font-size: 20px;
   margin-bottom: 12px;
   color: var(--primary);
 }
 
 .card h3 {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 12px;
   color: var(--luxury-dark);
 }
@@ -85,10 +92,12 @@ input,
 textarea {
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   font-size: 16px;
   background: white;
   transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus,
@@ -114,7 +123,6 @@ textarea {
 /* ================= BUTTONS ================= */
 
 .btn {
-  width: 100%;
   padding: 14px;
   border-radius: 14px;
   border: none;
@@ -123,6 +131,8 @@ textarea {
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.3s ease;
   margin-top: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .btn:active {
@@ -166,6 +176,7 @@ textarea {
 }
 
 /* ================= LOADING OVERLAY ===================== */
+
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -206,15 +217,15 @@ textarea {
   background: transparent;
   border: none;
   cursor: pointer;
+  color: white;
 }
 
-/* Hide menu content initially */
 .user-menu-content {
   display: none;
   background-color: var(--luxury-dark);
   color: white;
   position: absolute;
-  top: 48px; /* Position below the button */
+  top: 48px;
   right: 0;
   min-width: 160px;
   padding: 12px;
@@ -234,19 +245,18 @@ textarea {
   background-color: #575757;
 }
 
-/* Show the menu when active */
 .user-menu-content.active {
   display: block;
 }
 
-/* Toggle button for mobile view */
+/* ================= RESPONSIVE DESIGN ===================== */
+
 @media (max-width: 640px) {
   .user-menu-btn {
     font-size: 28px;
     padding: 8px 14px;
   }
 
-  /* Adjust the position of the menu content */
   .user-menu-content {
     min-width: 100%;
     right: 0;
@@ -254,20 +264,21 @@ textarea {
     padding: 14px;
   }
 
-  /* Adjust layout for mobile */
   .container {
     padding: 12px;
     max-width: 100%;
   }
 
-  /* Adjust table for mobile */
+  .card {
+    padding: 16px;
+  }
+
   th,
   td {
     font-size: 14px;
     padding: 12px;
   }
 
-  /* Adjust headers for mobile */
   .topbar h1 {
     font-size: 18px;
   }
@@ -277,6 +288,10 @@ textarea {
   .container {
     padding: 20px;
     max-width: 85%;
+  }
+
+  .card {
+    padding: 20px;
   }
 }
 
