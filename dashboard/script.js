@@ -1,15 +1,33 @@
-const API =
-  "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
+const API = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
 let MASTER_ROWS = [];
+
+let currentPage = 1;
+let rowsPerPage = 10;
+
+/* ========== LOADING SPINNER =========== */
+
+function showLoading(show = true) {
+  document.getElementById("loadingOverlay").style.display = show ? "flex" : "none";
+}
 
 /* ================= LOAD ================= */
 
 async function loadDashboard() {
-  const res = await fetch(`${API}?action=getMaster`);
-  MASTER_ROWS = await res.json();
-  render(MASTER_ROWS);
+  showLoading(true);
+  try {
+    const res = await fetch(`${API}?action=getMaster`);
+    MASTER_ROWS = await res.json();
+    currentPage = 1;
+    paginateData(); // <-- call pagination instead of raw render
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load dashboard");
+  } finally {
+    showLoading(false);
+  }
 }
+
 
 /* ================= RENDER ================= */
 
@@ -116,10 +134,50 @@ document.addEventListener("click", e => {
   }
 });
 
+function paginateData() {
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageData = MASTER_ROWS.slice(start, end);
+  render(pageData);
+
+  const totalPages = Math.ceil(MASTER_ROWS.length / rowsPerPage) || 1;
+  document.getElementById("totalPages").textContent = totalPages;
+  document.getElementById("currentPage").max = totalPages;
+}
+
+function changeRowsPerPage() {
+  rowsPerPage = parseInt(document.getElementById("rowsPerPage").value, 10);
+  currentPage = 1;
+  paginateData();
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    paginateData();
+  }
+}
+
+function nextPage() {
+  const totalPages = Math.ceil(MASTER_ROWS.length / rowsPerPage) || 1;
+  if (currentPage < totalPages) {
+    currentPage++;
+    paginateData();
+  }
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(MASTER_ROWS.length / rowsPerPage) || 1;
+  page = Math.max(1, Math.min(totalPages, parseInt(page, 10)));
+  currentPage = page;
+  paginateData();
+}
+
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
