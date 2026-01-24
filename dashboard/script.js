@@ -225,11 +225,25 @@ function deletePIR(sheetId, index) {
     });
 }
 
+/* ======= TOGLE BUTTON ======== */
 
+function toggleUserMenu() {
+  const menu = document.querySelector(".user-menu-content");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// Close the user menu if clicking outside
+document.addEventListener("click", e => {
+  if (!e.target.closest(".user-menu") && !e.target.closest(".user-menu-btn")) {
+    document.querySelectorAll(".user-menu-content")
+      .forEach(m => m.style.display = "none");
+  }
+});
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
