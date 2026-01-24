@@ -9,12 +9,13 @@
 </head>
 
 <body>
-  
-  <!-- Toggle Button for Menu -->
-  <div class="toggle-menu">
-    <button id="toggleMenuBtn" onclick="toggleMenu()">☰</button>
-    <div id="sideMenu" class="user-menu-content hidden">
-      <a href="/" class="home-link">Go to Home</a>
+
+  <!-- Top-right user menu -->
+  <div class="user-menu">
+    <button class="user-menu-btn" onclick="toggleUserMenu()">☰</button>
+    <div class="user-menu-content hidden">
+      <a href="#" onclick="goHome()">🏠 Home</a>
+      <a href="#" onclick="logout()">🚪 Log Out</a>
     </div>
   </div>
 
@@ -130,7 +131,6 @@
   </div>
 
   <script src="/form/script.js"></script>
-
 </body>
 
 </html>
