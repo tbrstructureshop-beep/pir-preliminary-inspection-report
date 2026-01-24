@@ -237,8 +237,8 @@ textarea {
 /* Menu Content */
 .user-menu-content {
   display: none;
-  background-color: var(--luxury-dark);
-  color: white;
+  background-color: white; /* White background */
+  color: var(--luxury-dark); /* Dark text color for readability */
   position: absolute;
   top: 48px;
   right: 0;
@@ -246,20 +246,24 @@ textarea {
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .user-menu-content a {
-  color: white;
+  color: var(--luxury-dark); /* Adjust text color for readability */
   text-decoration: none;
   font-size: 16px;
   display: block;
   padding: 8px;
   transition: background-color 0.3s;
+  white-space: nowrap; /* Prevent link text from wrapping */
 }
 
 .user-menu-content a:hover {
-  background-color: #575757;
+  background-color: #f0f0f0; /* Slightly darker shade for hover effect */
 }
+
 
 /* Show the menu */
 .user-menu-content.active {
@@ -341,3 +345,4 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
