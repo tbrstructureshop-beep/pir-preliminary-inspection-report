@@ -236,12 +236,12 @@ textarea {
 
 /* Menu Content */
 .user-menu-content {
-  display: none;
+  display: none; /* Default state: Hidden */
   background-color: white;
   color: var(--luxury-dark);
-  position: absolute;
-  top: 48px;
-  right: 0;
+  position: fixed; /* Fix the position */
+  top: 60px; /* Adjusted from 48px to ensure it’s below the button */
+  right: 20px; /* Align it with the button */
   min-width: 180px;
   padding: 12px;
   border-radius: 8px;
@@ -263,10 +263,11 @@ textarea {
   background-color: #575757;
 }
 
-/* Show the menu */
+/* Show the menu when active */
 .user-menu-content.active {
-  display: block;
+  display: block; /* Display the menu when active */
 }
+
 
 /* ================= MOBILE ADJUSTMENTS ===================== */
 
@@ -342,3 +343,4 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
