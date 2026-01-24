@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PIR System</title>
 
+  <script>
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) {
+      window.location.replace("../index.html");
+    }
+  </script>
   <style>
     :root {
       --primary: #00717a;
