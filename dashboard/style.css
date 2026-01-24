@@ -39,7 +39,7 @@ body {
   font-size: 12px;
 }
 
-/* ================= LAYOUT ================= */
+/* ================= TOOLBAR ================= */
 
 .container {
   padding: 16px;
@@ -64,6 +64,8 @@ body {
   background: var(--card);
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 table {
@@ -74,25 +76,25 @@ table {
 
 thead {
   background: #f0f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 th, td {
   padding: 12px 14px;
-  text-align: left;
+  text-align: center; /* center-aligned headers and body */
   font-size: 13px;
   border-bottom: 1px solid var(--border);
 }
 
 th {
   font-weight: 600;
-  white-space: nowrap;
 }
 
 tbody tr:hover {
   background: #f9fbfc;
 }
-
-/* ================= STATUS ================= */
 
 select {
   padding: 6px 8px;
@@ -100,23 +102,8 @@ select {
   border: 1px solid var(--border);
 }
 
-/* ================= ACTIONS ================= */
+/* ================= ACTION MENU ================= */
 
-.actions a {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.actions button {
-  background: none;
-  border: none;
-  color: var(--primary);
-  cursor: pointer;
-  font-weight: 600;
-}
-
-/* ACTION MENU */
 .action-cell {
   text-align: center;
 }
@@ -174,6 +161,63 @@ select {
   background: #f5f7fa;
 }
 
+/* ================= PAGINATION ================= */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.page-size select {
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.page-controls button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.page-controls input {
+  width: 50px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* ================= LOADING OVERLAY ================= */
+
+#loadingOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid var(--primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
 
 /* ================= MOBILE ================= */
 
@@ -187,4 +231,3 @@ select {
     font-size: 16px;
   }
 }
-
