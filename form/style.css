@@ -32,82 +32,91 @@ body {
   color: white;
   padding: 20px 30px;
   display: flex;
-  flex-direction: column;  /* Stack title and subtitle vertically */
-  justify-content: flex-start;  /* Align items to the top */
-  align-items: flex-start;  /* Align items to the left */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   transition: all 0.3s ease;
-  position: relative; /* Allow absolute positioning for the menu */
+  position: relative;
 }
 
 .app-header h1 {
   font-size: 28px;
   margin: 0;
-  text-align: left; /* Left-align the title */
 }
 
 .subtitle {
   font-size: 14px;
   opacity: 0.85;
   margin-top: 5px;
-  text-align: left; /* Left-align the subtitle */
 }
 
-/* ================= TOGGLE MENU ===================== */
+/* ================= TOGGLE MENU ================= */
 .user-menu-wrapper {
-  position: absolute; /* Position inside the header */
-  top: 20px; /* Adjust top as needed */
-  right: 20px; /* Align to the top-right of the header */
-  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
 }
 
+/* Embedded square button */
 .user-menu-btn {
-  font-size: 30px;
-  background: transparent;
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  border-radius: 10px;
   border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #176366;
   cursor: pointer;
-  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  transition: all 0.25s ease;
 }
 
 .user-menu-btn:hover {
-  color: var(--highlight);
+  background: #f1f6f7;
+  transform: translateY(-1px);
 }
 
+/* ================= DROPDOWN MENU ================= */
 .user-menu-content {
   display: none;
-  background-color: white;
-  color: var(--luxury-dark);
   position: absolute;
-  top: 60px;
+  top: 56px;
   right: 0;
-  min-width: 180px;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  min-width: 200px;
+  background: white;
+  color: var(--luxury-dark);
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
   z-index: 101;
 }
 
-.user-menu-wrapper:hover .user-menu-content {
-  display: block; /* Show the menu on hover of the wrapper */
+/* Hover + JS toggle support */
+.user-menu-wrapper:hover .user-menu-content,
+.user-menu-content.active {
+  display: block;
 }
 
 .user-menu-content a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 15px;
   color: var(--luxury-dark);
   text-decoration: none;
-  font-size: 16px;
-  display: block;
-  padding: 8px;
-  transition: background-color 0.3s;
+  border-radius: 8px;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .user-menu-content a:hover {
-  background-color: #575757;
-}
-
-.user-menu-content.active {
-  display: block;
+  background: var(--primary);
+  color: white;
 }
 
 /* ================= LAYOUT ================= */
@@ -233,7 +242,7 @@ textarea {
   border: 1px solid #ddd;
 }
 
-/* ================= LOADING OVERLAY ===================== */
+/* ================= LOADING OVERLAY ================= */
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -258,19 +267,8 @@ textarea {
   margin-bottom: 16px;
 }
 
-/* ================= MOBILE ADJUSTMENTS ===================== */
+/* ================= MOBILE ================= */
 @media (max-width: 640px) {
-  .user-menu-btn {
-    font-size: 28px;
-  }
-
-  .user-menu-content {
-    min-width: 100%;
-    right: 0;
-    top: 48px;
-    padding: 14px;
-  }
-
   .app-header h1 {
     font-size: 24px;
   }
@@ -278,10 +276,17 @@ textarea {
   .subtitle {
     font-size: 12px;
   }
-}
 
-/* ================= RESPONSIVE DESIGN ===================== */
-@media (max-width: 640px) {
+  .user-menu-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .user-menu-content {
+    min-width: 180px;
+  }
+
   .container {
     padding: 12px;
     max-width: 100%;
@@ -290,25 +295,15 @@ textarea {
   .card {
     padding: 16px;
   }
-
-  th,
-  td {
-    font-size: 14px;
-    padding: 12px;
-  }
 }
 
 @media (max-width: 1024px) {
   .container {
-    padding: 20px;
     max-width: 85%;
-  }
-
-  .card {
-    padding: 20px;
   }
 }
 
+/* ================= ANIMATION ================= */
 @keyframes spin {
   to {
     transform: rotate(360deg);
