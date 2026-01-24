@@ -124,6 +124,7 @@ select {
 }
 
 /* ================= ACTION MENU BUTTON ================= */
+
 .action-cell {
   text-align: center;
 }
@@ -134,41 +135,81 @@ select {
   font-size: 18px;
   cursor: pointer;
   padding: 4px 8px;
+  border-radius: 6px;
 }
 
 .menu-btn:hover {
   background: #f0f0f0;
-  border-radius: 6px;
 }
 
-/* ================= FLOATING MENU ================= */
-.menu-content-floating {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  min-width: 180px;
-  overflow: hidden;
-  position: absolute;  /* handled in JS for top/left */
-  z-index: 1000;
+.menu-btn:focus,
+.menu-btn:active {
+  outline: none;
+  background: #e8e8e8;
 }
+
+
+/* ================= FLOATING MENU ================= */
+
+.menu-content-floating {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  min-width: 190px;
+  overflow: hidden;
+  position: absolute; /* top/left controlled by JS */
+  z-index: 1000;
+  user-select: none;
+}
+
+
+/* ================= MENU ITEMS ================= */
 
 .menu-content-floating a,
 .menu-content-floating button {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
   width: 100%;
   padding: 10px 14px;
-  text-align: left;
-  border: none;
+
   background: none;
+  border: none;
   cursor: pointer;
+
   font-size: 14px;
+  font-family: inherit;
   color: #333;
+  text-align: left;
+
+  text-decoration: none; /* 🔥 removes underline from <a> */
 }
+
+
+/* ================= HOVER STATE ================= */
 
 .menu-content-floating a:hover,
 .menu-content-floating button:hover {
   background: #f5f7fa;
 }
+
+
+/* ================= DIVIDERS ================= */
+
+.menu-content-floating a:not(:last-child),
+.menu-content-floating button:not(:last-child) {
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+/* ================= DANGER ACTION (DELETE) ================= */
+
+.menu-content-floating button:last-child:hover {
+  background: #fff1f1;
+  color: #c0392b;
+}
+
 
 
 /* ================= PAGINATION ================= */
@@ -289,6 +330,7 @@ select {
     font-size: 16px;
   }
 }
+
 
 
 
