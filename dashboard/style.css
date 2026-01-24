@@ -60,14 +60,13 @@ body {
 /* ================= TABLE ================= */
 
 .table-wrapper {
-  overflow-x: auto;
   background: var(--card);
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 
-  /* NEW: make table scrollable vertically with sticky header */
+  /* ✅ new for scrollable table body */
   display: block;
-  max-height: calc(100vh - 250px); /* 100% viewport minus topbar + toolbar */
+  max-height: 400px; /* adjust as needed */
   overflow-y: auto;
 }
 
@@ -115,9 +114,8 @@ select {
   padding: 6px 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background-color: #a5d6cd; /* ✅ new background color */
-  color: #000; /* optional: set text color for readability */
 }
+
 /* ================= ACTION MENU ================= */
 
 .action-cell {
@@ -295,5 +293,6 @@ select {
     font-size: 16px;
   }
 }
+
 
 
