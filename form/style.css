@@ -1,311 +1,631 @@
 :root {
+
   --primary: #1b6f7a;
+
   --danger: #c0392b;
+
   --warning: #f39c12;
+
   --bg: #f4f6f8;
+
   --card: #ffffff;
+
   --border: #e0e0e0;
+
   --luxury-dark: #2c3e50;
+
   --luxury-light: #ecf0f1;
+
   --highlight: #8e44ad;
+
 }
+
+
 
 /* ================= GLOBAL ================= */
+
 *,
+
 *::before,
+
 *::after {
+
   box-sizing: border-box;
+
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
 }
+
+
 
 body {
+
   margin: 0;
+
   background: var(--bg);
+
   font-size: 16px;
+
   line-height: 1.5;
+
   overflow-x: hidden;
+
 }
+
+
 
 /* ================= HEADER ================= */
+
 .app-header {
+
   background: linear-gradient(135deg, #176366, #268a8e);
+
   color: white;
+
   padding: 20px 30px;
+
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+
+  flex-direction: column;  /* Stack title and subtitle vertically */
+
+  justify-content: flex-start;  /* Align items to the top */
+
+  align-items: flex-start;  /* Align items to the left */
+
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
   margin-bottom: 30px;
+
   transition: all 0.3s ease;
-  position: relative;
+
+  position: relative; /* Allow absolute positioning for the menu */
+
 }
+
+
 
 .app-header h1 {
+
   font-size: 28px;
+
   margin: 0;
+
+  text-align: left; /* Left-align the title */
+
 }
+
+
 
 .subtitle {
+
   font-size: 14px;
+
   opacity: 0.85;
+
   margin-top: 5px;
+
+  text-align: left; /* Left-align the subtitle */
+
 }
 
-/* ================= TOGGLE MENU ================= */
+
+
+/* ================= TOGGLE MENU ===================== */
+
 .user-menu-wrapper {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 100;
+
+  position: absolute; /* Position inside the header */
+
+  top: 20px; /* Adjust top as needed */
+
+  right: 20px; /* Align to the top-right of the header */
+
+  cursor: pointer;
+
 }
 
-/* Embedded square button */
+
+
 .user-menu-btn {
-  width: 44px;
-  height: 44px;
-  background: #ffffff;
-  border-radius: 10px;
+
+  font-size: 30px;
+
+  background: transparent;
+
   border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  color: #176366;
+
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-  transition: all 0.25s ease;
+
+  color: white;
+
 }
+
+
 
 .user-menu-btn:hover {
-  background: #f1f6f7;
-  transform: translateY(-1px);
+
+  color: var(--highlight);
+
 }
 
-/* ================= DROPDOWN MENU ================= */
+
+
 .user-menu-content {
+
   display: none;
-  position: absolute;
-  top: 56px;
-  right: 0;
-  min-width: 200px;
-  background: white;
+
+  background-color: white;
+
   color: var(--luxury-dark);
-  padding: 10px;
-  border-radius: 12px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+
+  position: absolute;
+
+  top: 60px;
+
+  right: 0;
+
+  min-width: 180px;
+
+  padding: 12px;
+
+  border-radius: 8px;
+
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
   white-space: nowrap;
+
   z-index: 101;
+
 }
 
-/* Hover + JS toggle support */
-.user-menu-wrapper:hover .user-menu-content,
-.user-menu-content.active {
-  display: block;
+
+
+.user-menu-wrapper:hover .user-menu-content {
+
+  display: block; /* Show the menu on hover of the wrapper */
+
 }
+
+
 
 .user-menu-content a {
-  display: block;
-  padding: 10px 14px;
-  font-size: 15px;
+
   color: var(--luxury-dark);
+
   text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.25s ease, color 0.25s ease;
+
+  font-size: 16px;
+
+  display: block;
+
+  padding: 8px;
+
+  transition: background-color 0.3s;
+
 }
+
+
 
 .user-menu-content a:hover {
-  background: var(--primary);
-  color: white;
+
+  background-color: #575757;
+
 }
+
+
+
+.user-menu-content.active {
+
+  display: block;
+
+}
+
+
 
 /* ================= LAYOUT ================= */
+
 .container {
+
   padding: 20px;
+
   max-width: 1200px;
+
   margin: auto;
+
   width: 100%;
+
 }
+
+
 
 .card {
+
   background: var(--card);
+
   border-radius: 14px;
+
   padding: 20px;
+
   margin-bottom: 20px;
+
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+
 }
+
+
 
 .card h2 {
+
   font-size: 20px;
+
   margin-bottom: 12px;
+
   color: var(--primary);
+
 }
+
+
 
 .card h3 {
+
   font-size: 18px;
+
   margin-bottom: 12px;
+
   color: var(--luxury-dark);
+
 }
+
+
 
 /* ================= FORM ================= */
+
 .form-group {
+
   display: flex;
+
   flex-direction: column;
+
   margin-bottom: 16px;
+
 }
+
+
 
 label {
+
   font-size: 14px;
+
   margin-bottom: 6px;
+
   color: var(--luxury-dark);
+
 }
+
+
 
 input,
+
 textarea {
+
   padding: 12px;
+
   border-radius: 10px;
+
   border: 1px solid var(--border);
+
   font-size: 16px;
+
   background: white;
+
   transition: border-color 0.3s ease;
+
   width: 100%;
+
 }
+
+
 
 input:focus,
+
 textarea:focus {
+
   outline: none;
+
   border-color: var(--primary);
+
 }
+
+
 
 textarea {
+
   min-height: 80px;
+
   resize: vertical;
+
 }
+
+
 
 .pir-no {
+
   padding: 12px;
+
   border-radius: 10px;
+
   background: #eef6f7;
+
   border: 1px solid #cfe4e6;
+
   font-weight: 600;
+
   color: var(--primary);
+
 }
+
+
 
 /* ================= BUTTONS ================= */
+
 .btn {
+
   padding: 14px;
+
   border-radius: 14px;
+
   border: none;
+
   font-size: 16px;
+
   font-weight: 600;
+
   cursor: pointer;
+
   transition: transform 0.2s ease, background-color 0.3s ease;
+
   margin-top: 12px;
+
   width: 100%;
+
 }
+
+
 
 .btn:active {
+
   transform: scale(0.98);
+
 }
+
+
 
 .secondary {
+
   background: var(--luxury-light);
+
 }
+
+
 
 .warning {
+
   background: var(--warning);
+
   color: white;
+
 }
+
+
 
 .danger {
+
   background: var(--danger);
+
   color: white;
+
 }
+
+
 
 .ghost {
+
   background: transparent;
+
   border: 1px dashed #aaa;
+
 }
+
+
 
 /* ================= ACTIONS ================= */
+
 .actions {
+
   display: grid;
+
   gap: 12px;
+
 }
+
+
 
 /* ================= IMAGE PREVIEW ================= */
+
 .preview {
+
   display: none;
+
   max-width: 100%;
+
   margin-top: 10px;
+
   border-radius: 8px;
+
   border: 1px solid #ddd;
+
 }
 
-/* ================= LOADING OVERLAY ================= */
+
+
+/* ================= LOADING OVERLAY ===================== */
+
 .loading-overlay {
+
   position: fixed;
+
   inset: 0;
+
   background: rgba(255, 255, 255, 0.8);
+
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   z-index: 9999;
+
 }
+
+
 
 .loading-overlay.hidden {
+
   display: none;
+
 }
+
+
 
 .loader {
+
   width: 50px;
+
   height: 50px;
+
   border: 4px solid #ddd;
+
   border-top: 4px solid var(--primary);
+
   border-radius: 50%;
+
   animation: spin 1s linear infinite;
+
   margin-bottom: 16px;
+
 }
 
-/* ================= MOBILE ================= */
-@media (max-width: 640px) {
-  .app-header h1 {
-    font-size: 24px;
-  }
 
-  .subtitle {
-    font-size: 12px;
-  }
+
+/* ================= MOBILE ADJUSTMENTS ===================== */
+
+@media (max-width: 640px) {
 
   .user-menu-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+
+    font-size: 28px;
+
   }
+
+
 
   .user-menu-content {
-    min-width: 180px;
+
+    min-width: 100%;
+
+    right: 0;
+
+    top: 48px;
+
+    padding: 14px;
+
   }
 
-  .container {
-    padding: 12px;
-    max-width: 100%;
+
+
+  .app-header h1 {
+
+    font-size: 24px;
+
   }
+
+
+
+  .subtitle {
+
+    font-size: 12px;
+
+  }
+
+}
+
+
+
+/* ================= RESPONSIVE DESIGN ===================== */
+
+@media (max-width: 640px) {
+
+  .container {
+
+    padding: 12px;
+
+    max-width: 100%;
+
+  }
+
+
 
   .card {
+
     padding: 16px;
+
   }
+
+
+
+  th,
+
+  td {
+
+    font-size: 14px;
+
+    padding: 12px;
+
+  }
+
 }
+
+
 
 @media (max-width: 1024px) {
+
   .container {
+
+    padding: 20px;
+
     max-width: 85%;
+
   }
+
+
+
+  .card {
+
+    padding: 20px;
+
+  }
+
 }
 
-/* ================= ANIMATION ================= */
+
+
 @keyframes spin {
+
   to {
+
     transform: rotate(360deg);
+
   }
-}
+
+  }
