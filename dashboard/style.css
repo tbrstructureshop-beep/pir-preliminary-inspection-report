@@ -64,7 +64,10 @@ body {
   background: var(--card);
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-  max-height: 600px;
+
+  /* NEW: make table scrollable vertically with sticky header */
+  display: block;
+  max-height: calc(100vh - 250px); /* 100% viewport minus topbar + toolbar */
   overflow-y: auto;
 }
 
@@ -72,6 +75,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
+  display: table;
+  table-layout: fixed;  /* important for column widths */
 }
 
 thead {
@@ -79,6 +84,9 @@ thead {
   position: sticky;
   top: 0;
   z-index: 5;
+  display: table;       /* keep header layout intact */
+  width: 100%;
+  table-layout: fixed;
 }
 
 th, td {
@@ -92,16 +100,24 @@ th {
   font-weight: 600;
 }
 
-tbody tr:hover {
-  background: #f9fbfc;
+tbody {
+  display: block;       /* scrollable body */
+  width: 100%;
+}
+
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 select {
   padding: 6px 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
+  background-color: #a5d6cd; /* ✅ new background color */
+  color: #000; /* optional: set text color for readability */
 }
-
 /* ================= ACTION MENU ================= */
 
 .action-cell {
@@ -279,4 +295,5 @@ select {
     font-size: 16px;
   }
 }
+
 
