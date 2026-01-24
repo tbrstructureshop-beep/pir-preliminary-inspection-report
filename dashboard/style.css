@@ -16,6 +16,11 @@ body {
   color: #333;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* ================= HEADER ================= */
 
 .topbar {
@@ -64,11 +69,12 @@ body {
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 
-  display: block;                /* needed for scrollable tbody */
-  max-height: 500px;             /* fixed max height of table */
-  overflow-y: auto;              /* vertical scroll inside table wrapper */
-  overflow-x: auto;              /* horizontal scroll if needed */
-  padding-right: 8px;            /* optional for scrollbar */
+  max-height: 500px;
+  overflow-y: auto;
+
+  /* 🔥 FIX */
+  overflow-x: hidden;   /* prevent layout push */
+  position: relative;   /* anchor floating menu */
 }
 
 table {
@@ -155,13 +161,15 @@ select {
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  min-width: 190px;
-  overflow: hidden;
-  position: absolute; /* top/left controlled by JS */
+
+  width: 190px;        /* 🔥 fixed width instead of min-width */
+  max-width: 90vw;     /* 🔥 never exceed viewport */
+
+  position: fixed;     /* 🔥 OUT of table flow */
   z-index: 1000;
+
   user-select: none;
 }
-
 
 /* ================= MENU ITEMS ================= */
 
@@ -321,15 +329,21 @@ select {
 /* ================= MOBILE ================= */
 
 @media (max-width: 640px) {
-  th, td {
-    font-size: 12px;
-    padding: 10px;
+  .table-wrapper {
+    overflow-x: hidden;
   }
 
-  .topbar h1 {
-    font-size: 16px;
+  table {
+    width: 100%;
+  }
+
+  th, td {
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 }
+
+
 
 
 
