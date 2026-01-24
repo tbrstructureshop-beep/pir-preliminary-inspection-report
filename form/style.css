@@ -50,6 +50,7 @@ a:hover {
   justify-content: center;
   border-radius: 12px;
   transition: all 0.3s ease;
+  position: relative; /* Added for menu button positioning */
 }
 
 .app-header h1 {
@@ -226,7 +227,8 @@ textarea {
   position: absolute;
   top: 20px;
   right: 20px;
-  display: inline-block;
+  display: flex; /* Changed to flex to align button and wrapper */
+  align-items: center; /* Ensures vertical alignment */
 }
 
 .user-menu-btn {
@@ -337,6 +339,3 @@ textarea {
 
 @keyframes spin {
   to {
-    transform: rotate(360deg);
-  }
-}
