@@ -43,14 +43,14 @@ body {
 }
 
 .app-header h1 {
-  font-size: 32px; /* Increased title font size */
+  font-size: 32px;
   margin: 0;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 .subtitle {
-  font-size: 16px; /* Enhanced subtitle size */
+  font-size: 16px;
   opacity: 0.85;
   margin-top: 5px;
   font-style: italic;
@@ -68,7 +68,7 @@ body {
 .card {
   background: var(--card);
   border-radius: 16px;
-  padding: 24px; /* Increased padding for a more spacious feel */
+  padding: 24px;
   margin-bottom: 24px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
   overflow: hidden;
@@ -76,14 +76,14 @@ body {
 }
 
 .card h2 {
-  font-size: 22px; /* Larger heading for better readability */
+  font-size: 22px;
   margin-bottom: 16px;
   color: var(--primary);
   font-weight: 500;
 }
 
 .card h3 {
-  font-size: 20px; /* Enhanced subheading */
+  font-size: 20px;
   margin-bottom: 12px;
   color: var(--luxury-dark);
 }
@@ -92,7 +92,7 @@ body {
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px; /* Increased space between form fields */
+  margin-bottom: 20px;
 }
 
 label {
@@ -120,7 +120,7 @@ textarea:focus {
 }
 
 textarea {
-  min-height: 100px; /* Increased height for better user experience */
+  min-height: 100px;
   resize: vertical;
 }
 
@@ -138,7 +138,7 @@ textarea {
   padding: 16px;
   border-radius: 14px;
   border: none;
-  font-size: 18px; /* Larger button font size */
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.3s ease;
@@ -216,23 +216,41 @@ textarea {
 
 /* User Menu Wrapper (Container for positioning) */
 .user-menu-wrapper {
-  position: relative; /* This acts as the anchor for the menu */
+  position: absolute;
+  top: 20px;
+  right: 20px;
   display: inline-block; 
+}
+
+/* Smile Rounded Square Button */
+.user-menu-btn {
+  width: 50px;
+  height: 50px;
+  background-color: #ffeb3b; /* Yellow background */
+  border-radius: 50%; /* Make it a round button */
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  line-height: 50px; /* Center the smiley vertically */
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-menu-btn:hover {
+  background-color: #fdd835; /* Slightly darker yellow on hover */
+  transform: scale(1.1); /* Scale up for a more interactive feel */
 }
 
 /* Modified Menu Content */
 .user-menu-content {
-  display: none; /* Default state: Hidden */
+  display: none;
   background-color: white;
   color: var(--luxury-dark);
-  
-  /* Changed from 'fixed' to 'absolute' */
   position: absolute;
-  
-  /* This now positions it 60px below the top of the WRAPPER, not the screen */
   top: 60px;
-  right: 0; /* Aligns to the right edge of the wrapper */
-  
+  right: 0;
   min-width: 180px;
   padding: 12px;
   border-radius: 8px;
@@ -241,18 +259,17 @@ textarea {
   z-index: 101;
 }
 
-/* Toggle Button */
-.user-menu-btn {
-  font-size: 30px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: color 0.3s ease;
+.user-menu-content a {
+  color: var(--luxury-dark);
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+  padding: 8px;
+  transition: background-color 0.3s ease;
 }
 
-.user-menu-btn:hover {
-  color: var(--highlight);
+.user-menu-content a:hover {
+  background-color: #575757;
 }
 
 /* Show the menu when active */
@@ -264,6 +281,9 @@ textarea {
 @media (max-width: 640px) {
   .user-menu-btn {
     font-size: 28px;
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
   }
 
   .user-menu-content {
