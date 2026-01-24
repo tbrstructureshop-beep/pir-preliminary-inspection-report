@@ -123,15 +123,9 @@ select {
   border: 1px solid var(--border);
 }
 
-/* ================= ACTION MENU ================= */
-
+/* ================= ACTION MENU BUTTON ================= */
 .action-cell {
   text-align: center;
-}
-
-.menu {
-  position: relative;
-  display: inline-block;
 }
 
 .menu-btn {
@@ -147,21 +141,19 @@ select {
   border-radius: 6px;
 }
 
-.menu-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 24px;
+/* ================= FLOATING MENU ================= */
+.menu-content-floating {
   background: white;
-  min-width: 180px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   border-radius: 8px;
-  z-index: 10;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  min-width: 180px;
   overflow: hidden;
+  position: absolute;  /* handled in JS for top/left */
+  z-index: 1000;
 }
 
-.menu-content a,
-.menu-content button {
+.menu-content-floating a,
+.menu-content-floating button {
   display: block;
   width: 100%;
   padding: 10px 14px;
@@ -170,17 +162,14 @@ select {
   background: none;
   cursor: pointer;
   font-size: 14px;
-}
-
-.menu-content a {
-  text-decoration: none;
   color: #333;
 }
 
-.menu-content a:hover,
-.menu-content button:hover {
+.menu-content-floating a:hover,
+.menu-content-floating button:hover {
   background: #f5f7fa;
 }
+
 
 /* ================= PAGINATION ================= */
 
@@ -300,6 +289,7 @@ select {
     font-size: 16px;
   }
 }
+
 
 
 
