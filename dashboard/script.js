@@ -124,7 +124,7 @@ function editPIR(sheetId) {
 }
 
 
-/*===== ACTION BUTTON BEHAVIOR*/
+/*===== ACTION BUTTON BEHAVIOR =====*/
 
 function toggleMenu(btn) {
   // close all other menus
@@ -143,6 +143,8 @@ document.addEventListener("click", e => {
       .forEach(m => m.style.display = "none");
   }
 });
+
+/*==== PAGNATION ======*/
 
 function paginateData() {
   const start = (currentPage - 1) * rowsPerPage;
@@ -184,9 +186,44 @@ function goToPage(page) {
 }
 
 
+/* ============= DELETING PIR ============= */
+
+function deletePIR(sheetId, index) {
+  if (!sheetId) {
+    alert("No sheet ID found!");
+    return;
+  }
+
+  const confirmed = confirm("Are you sure you want to delete this PIR?");
+  if (!confirmed) return;
+
+  // Show loading spinner while deleting
+  showLoading(true);
+
+  fetch(`${API}?action=deletePIR&sheetId=${sheetId}`, { method: "POST" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("PIR deleted successfully.");
+        // Remove from MASTER_ROWS and refresh current page
+        MASTER_ROWS.splice(index, 1);
+        paginateData();
+      } else {
+        alert("Failed to delete PIR.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error deleting PIR.");
+    })
+    .finally(() => showLoading(false));
+}
+
+
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
