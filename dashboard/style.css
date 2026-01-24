@@ -146,19 +146,23 @@ select {
   background: #e8e8e8;
 }
 
-/* ================= FLOATING MENU ================= */
-/* 🔥 FIXED → NEVER BREAKS LAYOUT */
+/* ================= FLOATING MENU (MOBILE SAFE) ================= */
 
 .menu-content-floating {
-  position: fixed; /* 🔥 NOT absolute */
-  right: 16px;
+  position: fixed;          /* 🔥 key fix */
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   min-width: 190px;
+  max-width: calc(100vw - 24px); /* 🔥 never exceed screen */
   overflow: hidden;
   z-index: 9999;
   user-select: none;
+}
+
+/* prevent page scroll no matter what */
+html, body {
+  overflow-x: hidden;
 }
 
 /* ================= MENU ITEMS ================= */
@@ -311,3 +315,4 @@ select {
     font-size: 16px;
   }
 }
+
