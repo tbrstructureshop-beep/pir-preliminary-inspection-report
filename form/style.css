@@ -33,14 +33,23 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--highlight));
   color: white;
   padding: 20px;
-  text-align: center;
+  text-align: left; /* Align header text to the left */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column; /* To keep the title and subtitle in one column */
+  justify-content: center; /* Vertically center the content */
+}
+
+.app-header h1 {
+  font-size: 28px; /* Adjust title font size */
+  margin: 0;
 }
 
 .subtitle {
   font-size: 14px;
   opacity: 0.85;
+  margin-top: 5px;
 }
 
 /* ================= LAYOUT ================= */
@@ -270,6 +279,14 @@ textarea {
     top: 48px;
     padding: 14px;
   }
+
+  .app-header h1 {
+    font-size: 24px; /* Adjust title size on mobile */
+  }
+
+  .subtitle {
+    font-size: 12px; /* Adjust subtitle size on mobile */
+  }
 }
 
 
@@ -324,5 +341,3 @@ textarea {
     transform: rotate(360deg);
   }
 }
-
-
