@@ -203,15 +203,19 @@ function toggleUserMenu() {
   userMenuContent.classList.toggle('active');
 }
 
-// Functions for "Home" and "Log Out" (You can customize these as per your requirement)
+// Function for redirecting to Home
 function goHome() {
-  window.location.href = "/"; // Redirect to Home
+  window.location.href = "/home/index.html"; // Redirect to /home/index.html
 }
 
+// Function for Log Out (with placeholder functionality)
 function logout() {
   alert("Logging out..."); // Placeholder for logout functionality
-  // You can add more logic here, like clearing sessionStorage or redirecting to a login page.
+  // Add logout logic here, like clearing sessionStorage or redirecting to a login page
+  sessionStorage.clear();  // Example: Clear sessionStorage on logout
+  window.location.href = "/login.html";  // Redirect to a login page after logout
 }
+
 
 
 
