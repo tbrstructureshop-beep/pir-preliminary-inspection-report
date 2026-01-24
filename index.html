@@ -157,9 +157,51 @@
   </div>
 
 <script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
+
   function togglePassword() {
     const pwd = document.getElementById("password");
     pwd.type = pwd.type === "password" ? "text" : "password";
+  }
+
+  async function login(e) {
+    e.preventDefault();
+
+    const userId = document.getElementById("employeeId").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!userId || !password) {
+      alert("Please enter Employee ID and Password");
+      return;
+    }
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "login",
+          userId,
+          password
+        })
+      });
+
+      const result = await res.json();
+
+      if (!result.success) {
+        alert(result.message || "Login failed");
+        return;
+      }
+
+      // Optional: store session
+      sessionStorage.setItem("userId", result.userId);
+
+      // Redirect to home
+      window.location.href = "home/index.html";
+
+    } catch (err) {
+      alert("Connection error");
+      console.error(err);
+    }
   }
 </script>
 
