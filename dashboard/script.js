@@ -79,22 +79,19 @@ function render(rows) {
 
 /* ====== ACTION BUTTON FLOATING =========== */
 
-/* ====== ACTION BUTTON FLOATING =========== */
-
 let activeMenu = null;
 
 function toggleActionMenu(btn, sheetId, sheetUrl, index) {
-  // Close existing menu if open
-  if (activeMenu) activeMenu.remove();
+  // Close existing menu
+  if (activeMenu) {
+    activeMenu.remove();
+    activeMenu = null;
+  }
 
   const rect = btn.getBoundingClientRect();
 
   const menu = document.createElement("div");
   menu.className = "menu-content-floating";
-  menu.style.position = "absolute";
-  menu.style.top = `${rect.bottom + window.scrollY}px`;
-  menu.style.left = `${rect.left + window.scrollX}px`;
-  menu.style.zIndex = 1000;
 
   menu.innerHTML = `
     <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
@@ -103,8 +100,43 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   `;
 
   document.body.appendChild(menu);
+
+  // ---- POSITIONING LOGIC (VIEWPORT SAFE) ----
+  const MENU_WIDTH = menu.offsetWidth;
+  const MENU_HEIGHT = menu.offsetHeight;
+  const MARGIN = 8;
+
+  let top = rect.bottom + MARGIN;
+  let left = rect.right - MENU_WIDTH;
+
+  // ⬅️ prevent overflow right
+  if (left + MENU_WIDTH > window.innerWidth - MARGIN) {
+    left = window.innerWidth - MENU_WIDTH - MARGIN;
+  }
+
+  // ➡️ prevent overflow left
+  if (left < MARGIN) {
+    left = MARGIN;
+  }
+
+  // 🔼 open upward if near bottom
+  if (top + MENU_HEIGHT > window.innerHeight - MARGIN) {
+    top = rect.top - MENU_HEIGHT - MARGIN;
+  }
+
+  // 🔒 final vertical clamp
+  if (top < MARGIN) {
+    top = MARGIN;
+  }
+
+  menu.style.position = "fixed";
+  menu.style.top = `${top}px`;
+  menu.style.left = `${left}px`;
+  menu.style.zIndex = 9999;
+
   activeMenu = menu;
 
+  // ---- CLICK OUTSIDE TO CLOSE ----
   document.addEventListener("click", function closeMenu(e) {
     if (!menu.contains(e.target) && e.target !== btn) {
       menu.remove();
@@ -264,6 +296,7 @@ document.addEventListener("click", e => {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
