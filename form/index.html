@@ -1,136 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Preliminary Inspection Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/form/style.css" />
 </head>
+
 <body>
   
   <!-- Toggle Button for Menu -->
   <div class="toggle-menu">
     <button id="toggleMenuBtn" onclick="toggleMenu()">☰</button>
-    <div id="sideMenu" class="side-menu hidden">
+    <div id="sideMenu" class="user-menu-content hidden">
       <a href="/" class="home-link">Go to Home</a>
     </div>
   </div>
 
-<header class="app-header">
-  <h1>Preliminary Inspection Report</h1>
-  <p class="subtitle">PIR Form</p>
-</header>
+  <header class="app-header">
+    <h1>Preliminary Inspection Report</h1>
+    <p class="subtitle">PIR Form</p>
+  </header>
 
-<main class="container">
+  <main class="container">
 
-  <!-- =====================
-       SINGLE DATA SECTION
-  ====================== -->
-  <section class="card">
-    <h2>General Information</h2>
+    <!-- =====================
+         SINGLE DATA SECTION
+    ====================== -->
+    <section class="card">
+      <h2>General Information</h2>
 
-    <div class="form-group">
-      <label>Customer</label>
-      <input type="text" id="customer">
-    </div>
+      <div class="form-group">
+        <label>Customer</label>
+        <input type="text" id="customer">
+      </div>
 
-    <div class="form-group">
-      <label>A/C Reg.</label>
-      <input type="text" id="acReg">
-    </div>
+      <div class="form-group">
+        <label>A/C Reg.</label>
+        <input type="text" id="acReg">
+      </div>
 
-    <div class="form-group">
-      <label>W/O No.</label>
-      <input type="text" id="woNo">
-    </div>
+      <div class="form-group">
+        <label>W/O No.</label>
+        <input type="text" id="woNo">
+      </div>
 
-    <div class="form-group">
-      <label>Part Description</label>
-      <input type="text" id="partDesc">
-    </div>
+      <div class="form-group">
+        <label>Part Description</label>
+        <input type="text" id="partDesc">
+      </div>
 
-    <div class="form-group">
-      <label>Part Number</label>
-      <input type="text" id="partNo">
-    </div>
+      <div class="form-group">
+        <label>Part Number</label>
+        <input type="text" id="partNo">
+      </div>
 
-    <div class="form-group">
-      <label>Serial Number</label>
-      <input type="text" id="serialNo">
-    </div>
+      <div class="form-group">
+        <label>Serial Number</label>
+        <input type="text" id="serialNo">
+      </div>
 
-    <div class="form-group">
-      <label>Quantity</label>
-      <input type="number" id="qty">
-    </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" id="qty">
+      </div>
 
-    <div class="form-group">
-      <label>Date Received</label>
-      <input type="date" id="dateReceived">
-    </div>
+      <div class="form-group">
+        <label>Date Received</label>
+        <input type="date" id="dateReceived">
+      </div>
 
-    <div class="form-group">
-      <label>Reason for Shop Visit</label>
-      <textarea id="reason"></textarea>
-    </div>
+      <div class="form-group">
+        <label>Reason for Shop Visit</label>
+        <textarea id="reason"></textarea>
+      </div>
 
-    <div class="form-group">
-      <label>Applicable AD’s Status</label>
-      <textarea id="adStatus"></textarea>
-    </div>
+      <div class="form-group">
+        <label>Applicable AD’s Status</label>
+        <textarea id="adStatus"></textarea>
+      </div>
 
-    <div class="form-group">
-      <label>Attached Parts</label>
-      <textarea id="attachedParts"></textarea>
-    </div>
+      <div class="form-group">
+        <label>Attached Parts</label>
+        <textarea id="attachedParts"></textarea>
+      </div>
 
-    <div class="form-group">
-      <label>Missing Parts</label>
-      <textarea id="missingParts"></textarea>
-    </div>
+      <div class="form-group">
+        <label>Missing Parts</label>
+        <textarea id="missingParts"></textarea>
+      </div>
 
-    <div class="form-group">
-      <label>Mod Status</label>
-      <textarea id="modStatus"></textarea>
-    </div>
+      <div class="form-group">
+        <label>Mod Status</label>
+        <textarea id="modStatus"></textarea>
+      </div>
 
-    <!-- Doc ID (hidden) -->
-    <input type="hidden" id="docId">
+      <!-- Doc ID (hidden) -->
+      <input type="hidden" id="docId">
 
-  </section>
+    </section>
 
-  <!-- =====================
-       FINDING SECTION
-  ====================== -->
-  <section class="card">
-    <h2>Findings</h2>
+    <!-- =====================
+         FINDING SECTION
+    ====================== -->
+    <section class="card">
+      <h2>Findings</h2>
 
-    <div id="findingList"></div>
+      <div id="findingList"></div>
 
-    <button class="btn secondary" onclick="addFinding()">+ Add Finding</button>
-  </section>
+      <button class="btn secondary" onclick="addFinding()">+ Add Finding</button>
+    </section>
 
-  <!-- =====================
-       ACTION BUTTONS
-  ====================== -->
-  <section class="actions">
-    <button class="btn danger" onclick="cancelFinding()">Cancel Finding</button>
-    <button class="btn warning" onclick="submitPIR()">Submit PIR</button>
-    <button class="btn ghost" onclick="resetPIR()">Reset PIR</button>
-  </section>
+    <!-- =====================
+         ACTION BUTTONS
+    ====================== -->
+    <section class="actions">
+      <button class="btn danger" onclick="cancelFinding()">Cancel Finding</button>
+      <button class="btn warning" onclick="submitPIR()">Submit PIR</button>
+      <button class="btn ghost" onclick="resetPIR()">Reset PIR</button>
+    </section>
 
-</main>
+  </main>
 
-<!-- Loading Overlay -->
-<div id="loadingOverlay" class="loading-overlay hidden">
-  <div class="loader"></div>
-  <p>Creating PIR…</p>
-</div>
-<script src="/form/script.js"></script>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loader"></div>
+    <p>Creating PIR…</p>
+  </div>
+
+  <script src="/form/script.js"></script>
+
 </body>
+
 </html>
-
-
-
-
-
