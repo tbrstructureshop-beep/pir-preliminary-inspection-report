@@ -1,209 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TC PRELIMINARY INSPECTION DASHBOARD</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>TC PRELIMINARY INSPECTION DASHBOARD</title>
 
-<style>
-  :root {
-    --primary: #0f5361;
-    --bg: #f4f7f8;
-    --text: #1f2d3d;
-  }
-
-  * {
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f5361, #0a3f49);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-
-  .login-card {
-    width: 100%;
-    max-width: 380px;
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 28px 24px 32px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.18);
-  }
-
-  .login-header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-
-  .login-header h1 {
-    margin: 0;
-    font-size: 22px;
-    color: var(--primary);
-    letter-spacing: 0.5px;
-  }
-
-  .login-header p {
-    margin-top: 6px;
-    font-size: 13px;
-    color: #6b7b86;
-  }
-
-  .form-group {
-    margin-bottom: 18px;
-  }
-
-  label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 6px;
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #dce4e8;
-    font-size: 14px;
-    outline: none;
-    transition: border 0.2s, box-shadow 0.2s;
-  }
-
-  input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(15,83,97,0.15);
-  }
-
-  .password-wrapper {
-    position: relative;
-  }
-
-  .toggle-password {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 16px;
-    color: #7a8b94;
-    user-select: none;
-  }
-
-  .toggle-password:hover {
-    color: var(--primary);
-  }
-
-  .login-btn {
-    width: 100%;
-    padding: 13px;
-    border-radius: 12px;
-    border: none;
-    background: var(--primary);
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.25s, transform 0.1s;
-    margin-top: 8px;
-  }
-
-  .login-btn:hover {
-    background: #0c4652;
-  }
-
-  .login-btn:active {
-    transform: scale(0.98);
-  }
-
-  @media (max-width: 480px) {
-    .login-card {
-      padding: 24px 20px 28px;
-    }
-  }
-</style>
-</head>
-
-<body>
-
-  <div class="login-card">
-    <div class="login-header">
-      <h1>Employee Sign In</h1>
-      <p>Please enter your credentials</p>
-    </div>
-
-    <form>
-      <div class="form-group">
-        <label for="employeeId">Employee ID No</label>
-        <input type="text" id="employeeId" placeholder="e.g. EMP-00123" required />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="password" placeholder="Enter your password" required />
-          <span class="toggle-password" onclick="togglePassword()">👁️</span>
-        </div>
-      </div>
-
-      <button type="submit" class="login-btn">Sign In</button>
-    </form>
-  </div>
-
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
-
-  function togglePassword() {
-    const pwd = document.getElementById("password");
-    pwd.type = pwd.type === "password" ? "text" : "password";
-  }
-
-  async function login(e) {
-    e.preventDefault();
-
-    const userId = document.getElementById("employeeId").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!userId || !password) {
-      alert("Please enter Employee ID and Password");
-      return;
-    }
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: new URLSearchParams({
-          action: "login",
-          userId,
-          password
-        })
-      });
-
-      const result = await res.json();
-
-      if (!result.success) {
-        alert(result.message || "Login failed");
-        return;
+    <style>
+      :root {
+        --primary: #0f5361;
+        --bg: #f4f7f8;
+        --text: #1f2d3d;
       }
 
-      // Optional: store session
-      sessionStorage.setItem("userId", result.userId);
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, sans-serif;
+      }
 
-      // Redirect to home
-      window.location.href = "home/index.html";
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0f5361, #0a3f49);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
 
-    } catch (err) {
-      alert("Connection error");
-      console.error(err);
-    }
-  }
-</script>
+      .login-card {
+        width: 100%;
+        max-width: 380px;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 28px 24px 32px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+      }
 
-</body>
+      .login-header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .login-header h1 {
+        margin: 0;
+        font-size: 22px;
+        color: var(--primary);
+        letter-spacing: 0.5px;
+      }
+
+      .login-header p {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #6b7b86;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #dce4e8;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(15, 83, 97, 0.15);
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 16px;
+        color: #7a8b94;
+        user-select: none;
+      }
+
+      .toggle-password:hover {
+        color: var(--primary);
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 13px;
+        border-radius: 12px;
+        border: none;
+        background: var(--primary);
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.25s, transform 0.1s;
+        margin-top: 8px;
+      }
+
+      .login-btn:hover {
+        background: #0c4652;
+      }
+
+      .login-btn:active {
+        transform: scale(0.98);
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 24px 20px 28px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Employee Sign In</h1>
+        <p>Please enter your credentials</p>
+      </div>
+
+      <form onsubmit="login(event)">
+        <div class="form-group">
+          <label for="employeeId">Employee ID No</label>
+          <input
+            type="text"
+            id="employeeId"
+            placeholder="e.g. EMP-00123"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+            <span
+              class="toggle-password"
+              onclick="togglePassword()"
+              >👁️</span
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+          Sign In
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
+
+      function togglePassword() {
+        const pwd = document.getElementById("password");
+        pwd.type = pwd.type === "password" ? "text" : "password";
+      }
+
+      async function login(e) {
+        e.preventDefault();
+
+        const userId = document
+          .getElementById("employeeId")
+          .value.trim();
+        const password =
+          document.getElementById("password").value;
+
+        if (!userId || !password) {
+          alert("Please enter Employee ID and Password");
+          return;
+        }
+
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            body: new URLSearchParams({
+              action: "login",
+              userId,
+              password,
+            }),
+          });
+
+          const result = await res.json();
+
+          if (!result.success) {
+            alert(result.message || "Login failed");
+            return;
+          }
+
+          sessionStorage.setItem("userId", result.userId);
+          window.location.href = "home/index.html";
+        } catch (err) {
+          alert("Connection error");
+          console.error(err);
+        }
+      }
+    </script>
+  </body>
 </html>
