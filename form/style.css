@@ -192,55 +192,12 @@ button {
   margin-bottom: 12px;
 }
 
-/* ================== USER MENU ================== */
-
-.user-menu {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
-}
-
-.user-menu-btn {
-  font-size: 30px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.user-menu-content {
-  display: none;
-  position: absolute;
-  top: 40px; /* Position below the button */
-  right: 0;
-  background-color: #333;
-  color: white;
-  width: 150px;
-  padding: 10px;
-}
-
-.user-menu-content a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  display: block;
-  padding: 10px;
-}
-
-.user-menu-content a:hover {
-  background-color: #575757;
-}
-
-.hidden {
-  display: none;
-}
-
-/* =================== TOGGLE MENU ================== */
-
+/*==== TOOGLE MENU ===== */
+/* Toggle Menu */
 .toggle-menu {
   position: fixed;
   top: 20px;
-  right: 20px;  /* Change from left to right */
+  left: 20px;
   z-index: 100;
 }
 
@@ -257,7 +214,7 @@ button {
   color: white;
   position: absolute;
   top: 0;
-  right: 0;  /* Position menu on the right */
+  left: 0;
   width: 200px;
   height: 100%;
   padding: 20px;
@@ -275,8 +232,11 @@ button {
   background-color: #575757;
 }
 
-/* ================== HEADER ================== */
+.hidden {
+  display: none;
+}
 
+/* Header and general styling */
 .app-header {
   background-color: #0f5361;
   padding: 20px;
@@ -292,8 +252,7 @@ button {
   margin: 5px 0 0;
 }
 
-/* ================== BUTTONS ================== */
-
+/* Button styling */
 .btn {
   padding: 10px 20px;
   margin: 5px;
@@ -322,68 +281,7 @@ button {
   border: 2px solid #0f5361;
 }
 
-/* ================= MOBILE STYLES ================= */
 
-@media screen and (max-width: 768px) {
-  /* Make the side menu full-width on mobile */
-  .side-menu {
-    width: 100%; /* Full width on mobile */
-    padding: 10px; /* Adjust padding */
-    top: 0;
-  }
-
-  /* Adjust user menu button size */
-  .user-menu-btn {
-    font-size: 25px;
-  }
-
-  /* Adjust header */
-  .app-header h1 {
-    font-size: 22px; /* Make header title smaller on mobile */
-  }
-
-  .app-header .subtitle {
-    font-size: 12px; /* Make subtitle smaller */
-  }
-
-  /* Make buttons more compact on smaller screens */
-  .btn {
-    font-size: 13px; /* Smaller text size */
-    padding: 10px;
-  }
-
-  /* Mobile-friendly form layout */
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  /* Adjust the layout of the card on smaller screens */
-  .card {
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-
-  /* Adjust input and textarea padding for mobile */
-  input,
-  textarea {
-    padding: 12px;
-  }
-
-  /* Ensure the side menu links are stacked vertically */
-  .side-menu a {
-    font-size: 16px;
-    padding: 12px;
-  }
-
-  /* Adjust action button layout */
-  .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-/* ==================== SPINNING LOADER ==================== */
 @keyframes spin {
   to {
     transform: rotate(360deg);
