@@ -210,7 +210,6 @@ textarea {
   top: 20px;
   right: 20px;
   z-index: 100;
-  transition: all 0.3s ease;
 }
 
 /* Toggle Button */
@@ -220,14 +219,13 @@ textarea {
   border: none;
   cursor: pointer;
   color: white;
-  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .user-menu-btn:hover {
-  color: var(--highlight); /* Highlight color when hovered */
-  transform: scale(1.1);
+  color: var(--highlight); /* Subtle hover effect */
 }
 
+/* Menu Content */
 .user-menu-content {
   display: none;
   background-color: var(--luxury-dark);
@@ -236,39 +234,27 @@ textarea {
   top: 48px;
   right: 0;
   min-width: 180px;
-  padding: 16px;
+  padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  pointer-events: none; /* Prevent interaction when hidden */
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .user-menu-content a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   display: block;
-  margin: 12px 0;
   padding: 8px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .user-menu-content a:hover {
   background-color: #575757;
-  border-radius: 4px;
 }
 
+/* Show the menu */
 .user-menu-content.active {
   display: block;
-  opacity: 1;
-  pointer-events: all; /* Enable interaction when active */
-  transform: translateY(0);
-}
-
-.user-menu-content a:first-child {
-  margin-top: 0;
 }
 
 /* ================= MOBILE ADJUSTMENTS ===================== */
@@ -285,6 +271,7 @@ textarea {
     padding: 14px;
   }
 }
+
 
 /* ================= RESPONSIVE DESIGN ===================== */
 
@@ -337,4 +324,5 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
 
