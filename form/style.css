@@ -192,8 +192,99 @@ button {
   margin-bottom: 12px;
 }
 
+/*==== TOOGLE MENU ===== */
+/* Toggle Menu */
+.toggle-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+#toggleMenuBtn {
+  font-size: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.side-menu {
+  display: none;
+  background-color: #333;
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100%;
+  padding: 20px;
+}
+
+.side-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  display: block;
+  margin: 10px 0;
+}
+
+.side-menu a:hover {
+  background-color: #575757;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Header and general styling */
+.app-header {
+  background-color: #0f5361;
+  padding: 20px;
+  color: white;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.app-header .subtitle {
+  font-size: 16px;
+  margin: 5px 0 0;
+}
+
+/* Button styling */
+.btn {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.secondary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.ghost {
+  background-color: transparent;
+  color: #0f5361;
+  border: 2px solid #0f5361;
+}
+
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+
