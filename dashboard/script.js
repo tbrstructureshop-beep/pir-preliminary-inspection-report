@@ -293,9 +293,26 @@ document.addEventListener("click", e => {
   }
 });
 
+/* GO HOME AND SIGN OUT */
+
+function goHome() {
+  // always go to home dashboard
+  window.location.href = "../home/index.html";
+}
+
+function logout() {
+  // clear session
+  sessionStorage.clear();
+
+  // force reload + redirect to login page
+  window.location.replace("../index.html");
+}
+
+
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
