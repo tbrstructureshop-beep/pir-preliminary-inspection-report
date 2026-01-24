@@ -1,0 +1,94 @@
+:root {
+  --primary: #00717a;
+  --bg: #f6f8fa;
+  --card: #ffffff;
+  --border: #e0e0e0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: #333;
+}
+
+/* HEADER */
+.topbar {
+  background: linear-gradient(135deg, #00717a, #0099a1);
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topbar h1 { font-size: 18px; margin: 0; }
+.badge { background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 999px; font-size: 12px; }
+
+/* MAIN CONTAINER */
+.container { height: calc(100% - 64px); padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOOLBAR */
+.toolbar { margin-bottom: 12px; flex-shrink: 0; }
+.toolbar input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; }
+
+/* TABLE */
+.table-wrapper { flex: 1 1 auto; background: var(--card); border-radius: 14px; box-shadow: 0 6px 16px rgba(0,0,0,0.06); overflow: hidden; display: flex; flex-direction: column; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+thead th { position: sticky; top: 0; z-index: 10; background: #f0f4f6; border-bottom: 1px solid var(--border); }
+th, td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:hover { background: #f9fbfc; }
+
+/* SELECT */
+select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); }
+
+/* ACTION MENU BUTTON */
+.action-cell { text-align: center; }
+.menu-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 6px; border-radius: 6px; }
+.menu-btn:hover { background: #f0f0f0; }
+.menu-btn:focus, .menu-btn:active { outline: none; background: #e8e8e8; }
+
+/* FLOATING MENU */
+.menu-content-floating {
+  position: fixed;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  min-width: 190px;
+  max-width: calc(100vw - 24px);
+  overflow: hidden;
+  z-index: 9999;
+}
+.menu-content-floating a, .menu-content-floating button {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; background: none; border: none; cursor: pointer; font-size: 14px; font-family: inherit; color: #333; text-align: left; text-decoration: none;
+}
+.menu-content-floating a:hover, .menu-content-floating button:hover { background: #f5f7fa; }
+.menu-content-floating a:not(:last-child), .menu-content-floating button:not(:last-child) { border-bottom: 1px solid #eeeeee; }
+
+/* PAGINATION */
+.pagination { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-top: 12px; gap: 10px; }
+.page-size select { padding: 4px 6px; border-radius: 6px; }
+.page-controls button { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font-weight: 600; }
+.page-controls input { width: 50px; text-align: center; border-radius: 6px; border: 1px solid var(--border); }
+
+/* LOADING */
+#loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7); z-index: 10000; justify-content: center; align-items: center; }
+.spinner { border: 6px solid #f3f3f3; border-top: 6px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* USER MENU */
+.user-menu { margin-left: auto; position: relative; }
+.user-menu-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+.user-menu-btn:hover { background: rgba(255,255,255,0.2); }
+.user-menu-content { display: none; position: absolute; right: 0; top: 36px; background: white; min-width: 140px; box-shadow: 0 6px 16px rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; z-index: 50; }
+.user-menu-content a { display: block; padding: 10px 14px; text-decoration: none; color: #333; font-size: 14px; }
+.user-menu-content a:hover { background: #f5f7fa; }
+
+/* MOBILE */
+@media (max-width: 640px) {
+  th, td { font-size: 12px; padding: 10px; }
+  .topbar h1 { font-size: 16px; }
+}

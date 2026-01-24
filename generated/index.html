@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generated Documents</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Generated Docs</h1>
+  <span class="badge">MADE FOR TC 2026</span>
+
+  <div class="user-menu">
+    <button class="user-menu-btn" onclick="toggleUserMenu()">☰</button>
+    <div class="user-menu-content">
+      <a href="../home/index.html">🏠 Home</a>
+      <a href="#" onclick="logout()">🚪 Log Out</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Search -->
+  <div class="toolbar">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search PIR ID, W/O, Part…"
+      oninput="applySearch()"
+    />
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table id="pirTable">
+      <thead>
+        <tr>
+          <th>PIR ID</th>
+          <th>W/O No</th>
+          <th>Part Description</th>
+          <th>A/C Reg</th>
+          <th>Date Created</th>
+          <th>DocId</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <div class="page-size">
+      Show
+      <select id="rowsPerPage" onchange="changeRowsPerPage()">
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      entries
+    </div>
+    <div class="page-controls">
+      <button onclick="prevPage()">Prev</button>
+      <span>Page <input type="number" id="currentPage" min="1" value="1" onchange="goToPage(this.value)" /> of <span id="totalPages">1</span></span>
+      <button onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Loading Spinner -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<script src="./script.js"></script>
+</body>
+</html>
