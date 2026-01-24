@@ -196,6 +196,14 @@ function hideLoading() {
   document.body.classList.remove("loading");
 }
 
+// Toggle menu visibility
+function toggleMenu() {
+  const sideMenu = document.getElementById('sideMenu');
+  sideMenu.classList.toggle('hidden');
+}
+
+
+
 
 
 
