@@ -33,16 +33,16 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--highlight));
   color: white;
   padding: 20px;
-  text-align: left; /* Align header text to the left */
+  text-align: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   display: flex;
-  flex-direction: column; /* To keep the title and subtitle in one column */
-  justify-content: center; /* Vertically center the content */
+  flex-direction: column;
+  justify-content: center;
 }
 
 .app-header h1 {
-  font-size: 28px; /* Adjust title font size */
+  font-size: 28px;
   margin: 0;
 }
 
@@ -231,14 +231,14 @@ textarea {
 }
 
 .user-menu-btn:hover {
-  color: var(--highlight); /* Subtle hover effect */
+  color: var(--highlight);
 }
 
 /* Menu Content */
 .user-menu-content {
   display: none;
-  background-color: var(--luxury-dark);
-  color: white;
+  background-color: white;
+  color: var(--luxury-dark);
   position: absolute;
   top: 48px;
   right: 0;
@@ -246,10 +246,12 @@ textarea {
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  white-space: nowrap; /* Prevent text wrapping */
+  z-index: 101;
 }
 
 .user-menu-content a {
-  color: white;
+  color: var(--luxury-dark);
   text-decoration: none;
   font-size: 16px;
   display: block;
@@ -281,11 +283,11 @@ textarea {
   }
 
   .app-header h1 {
-    font-size: 24px; /* Adjust title size on mobile */
+    font-size: 24px;
   }
 
   .subtitle {
-    font-size: 12px; /* Adjust subtitle size on mobile */
+    font-size: 12px;
   }
 }
 
