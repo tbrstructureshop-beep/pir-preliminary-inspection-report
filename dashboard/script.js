@@ -68,7 +68,7 @@ function render(rows) {
         <td class="action-cell">
           <!-- Only the menu button triggers floating menu -->
           <button class="menu-btn"
-                  onclick="toggleMenu(this, '${sheetId}', '${sheetUrl}', ${masterIndex})">
+                  onclick="toggleActionMenu(this, '${sheetId}', '${sheetUrl}', ${masterIndex})">
             ⋮
           </button>
         </td>
@@ -79,16 +79,16 @@ function render(rows) {
 
 /* ====== ACTION BUTTON FLOATING =========== */
 
+/* ====== ACTION BUTTON FLOATING =========== */
+
 let activeMenu = null;
 
-function toggleMenu(btn, sheetId, sheetUrl, index) {
+function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   // Close existing menu if open
   if (activeMenu) activeMenu.remove();
 
-  // Get button position
   const rect = btn.getBoundingClientRect();
 
-  // Create menu container
   const menu = document.createElement("div");
   menu.className = "menu-content-floating";
   menu.style.position = "absolute";
@@ -96,7 +96,6 @@ function toggleMenu(btn, sheetId, sheetUrl, index) {
   menu.style.left = `${rect.left + window.scrollX}px`;
   menu.style.zIndex = 1000;
 
-  // Fill menu content
   menu.innerHTML = `
     <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
@@ -106,7 +105,6 @@ function toggleMenu(btn, sheetId, sheetUrl, index) {
   document.body.appendChild(menu);
   activeMenu = menu;
 
-  // Close menu on click outside
   document.addEventListener("click", function closeMenu(e) {
     if (!menu.contains(e.target) && e.target !== btn) {
       menu.remove();
@@ -115,6 +113,7 @@ function toggleMenu(btn, sheetId, sheetUrl, index) {
     }
   });
 }
+
 
 /* ================= SEARCH ================= */
 
@@ -265,6 +264,7 @@ document.addEventListener("click", e => {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
