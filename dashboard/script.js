@@ -1,9 +1,20 @@
 const API = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
+protectPage(); // 👈 MUST BE FIRST
+
 let MASTER_ROWS = [];
 
 let currentPage = 1;
 let rowsPerPage = 10;
+
+/* ==== DASHBOARD PAGE PROTECTION === */
+
+function protectPage() {
+  const userId = sessionStorage.getItem("userId");
+  if (!userId) {
+    window.location.replace("../index.html");
+  }
+}
 
 /* ========== LOADING SPINNER =========== */
 
@@ -312,6 +323,7 @@ function logout() {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
