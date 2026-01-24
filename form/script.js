@@ -196,11 +196,11 @@ function hideLoading() {
   document.body.classList.remove("loading");
 }
 
-// Toggle menu visibility
-// Function to toggle the user menu visibility
+
+// Toggle the user menu visibility
 function toggleUserMenu() {
   const userMenuContent = document.querySelector('.user-menu-content');
-  userMenuContent.classList.toggle('hidden');
+  userMenuContent.classList.toggle('active');
 }
 
 // Functions for "Home" and "Log Out" (You can customize these as per your requirement)
@@ -212,6 +212,7 @@ function logout() {
   alert("Logging out..."); // Placeholder for logout functionality
   // You can add more logic here, like clearing sessionStorage or redirecting to a login page.
 }
+
 
 
 
