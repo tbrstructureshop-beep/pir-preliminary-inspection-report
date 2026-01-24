@@ -30,7 +30,7 @@ body {
 /* ================= HEADER ================= */
 
 .app-header {
-  background: linear-gradient(135deg, var(--primary), var(--highlight));
+  background: linear-gradient(135deg, var(--primary), var(--highlight)); /* Gradient header */
   color: white;
   padding: 20px;
   text-align: left;
@@ -42,7 +42,7 @@ body {
 }
 
 .app-header h1 {
-  font-size: 28px;
+  font-size: 28px; /* Title font size */
   margin: 0;
 }
 
@@ -268,7 +268,6 @@ textarea {
   display: block; /* Display the menu when active */
 }
 
-
 /* ================= MOBILE ADJUSTMENTS ===================== */
 
 @media (max-width: 640px) {
@@ -343,4 +342,3 @@ textarea {
     transform: rotate(360deg);
   }
 }
-
