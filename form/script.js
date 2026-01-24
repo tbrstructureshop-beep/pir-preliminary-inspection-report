@@ -197,10 +197,23 @@ function hideLoading() {
 }
 
 // Toggle menu visibility
-function toggleMenu() {
-  const sideMenu = document.getElementById('sideMenu');
-  sideMenu.classList.toggle('hidden');
+// Function to toggle the user menu visibility
+function toggleUserMenu() {
+  const userMenuContent = document.querySelector('.user-menu-content');
+  userMenuContent.classList.toggle('hidden');
 }
+
+// Functions for "Home" and "Log Out" (You can customize these as per your requirement)
+function goHome() {
+  window.location.href = "/"; // Redirect to Home
+}
+
+function logout() {
+  alert("Logging out..."); // Placeholder for logout functionality
+  // You can add more logic here, like clearing sessionStorage or redirecting to a login page.
+}
+
+
 
 
 
