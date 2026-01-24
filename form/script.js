@@ -210,11 +210,13 @@ function goHome() {
 
 // Function for Log Out (with placeholder functionality)
 function logout() {
-  alert("Logging out..."); // Placeholder for logout functionality
-  // Add logout logic here, like clearing sessionStorage or redirecting to a login page
-  sessionStorage.clear();  // Example: Clear sessionStorage on logout
-  window.location.href = "/login.html";  // Redirect to a login page after logout
+  // clear session
+  sessionStorage.clear();
+
+  // force reload + redirect to login page
+  window.location.replace("../index.html");
 }
+
 
 
 
