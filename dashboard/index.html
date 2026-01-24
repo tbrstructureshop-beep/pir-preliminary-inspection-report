@@ -27,7 +27,7 @@
 
   <!-- Table -->
   <div class="table-wrapper">
-    <table>
+    <table id="pirTable">
       <thead>
         <tr>
           <th>W/O No</th>
@@ -41,7 +41,30 @@
     </table>
   </div>
 
+  <!-- Pagination -->
+  <div class="pagination">
+    <div class="page-size">
+      Show
+      <select id="rowsPerPage" onchange="changeRowsPerPage()">
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      entries
+    </div>
+    <div class="page-controls">
+      <button onclick="prevPage()">Prev</button>
+      <span>Page <input type="number" id="currentPage" min="1" value="1" onchange="goToPage(this.value)" /> of <span id="totalPages">1</span></span>
+      <button onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
 </main>
+
+<!-- Loading Spinner -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
 
 <script src="./script.js"></script>
 </body>
