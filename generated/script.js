@@ -39,28 +39,24 @@ async function loadGeneratedDocs() {
 /* RENDER TABLE */
 function render(rows) {
   const tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
+  tbody.innerHTML = ""; // Clear previous rows
 
   rows.forEach((r, idx) => {
-    const pirId = r["PIR ID"] || "";
-    const woNo = r["W/O No"] || "";
-    const partDesc = r["Part Description"] || "";
-    const acReg = r["A/C Reg"] || "";
-    const dateCreated = r["Date Created"] || "";
-    const docId = r["DocId"] || "";
-    const docUrl = r["DocUrl"] || "#";
+    const woNo = r["W/O No"] || "";            // W/O No
+    const partDesc = r["Part Description"] || ""; // Part Description
+    const acReg = r["A/C Reg"] || "";          // A/C Reg
+    const dateCreated = r["Date Created"] || ""; // Date Created
+    const docUrl = r["DocUrl"] || "#";         // Doc URL (for the action button)
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
-        <td>${pirId}</td>
         <td>${woNo}</td>
         <td>${partDesc}</td>
         <td>${acReg}</td>
         <td>${dateCreated}</td>
-        <td>${docId}</td>
         <td class="action-cell">
           <button class="menu-btn"
-                  onclick="toggleActionMenu(this, '${pirId}', '${docUrl}', ${idx})">
+                  onclick="toggleActionMenu(this, '${woNo}', '${docUrl}', ${idx})">
             ⋮
           </button>
         </td>
@@ -68,6 +64,7 @@ function render(rows) {
     `);
   });
 }
+
 
 /* FLOATING MENU */
 let activeMenu = null;
@@ -196,3 +193,4 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
