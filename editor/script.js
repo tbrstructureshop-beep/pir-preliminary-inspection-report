@@ -28,10 +28,18 @@ async function loadEditor() {
 
       let value = data.info[i] || "";
 
-      // ✅ Fix <input type="date">
+      // ✅ LOCAL-SAFE date handling (NO timezone shift)
       if (el.type === "date" && value) {
         const d = new Date(value);
-        value = !isNaN(d) ? d.toISOString().slice(0, 10) : "";
+
+        if (!isNaN(d)) {
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          value = `${year}-${month}-${day}`; // yyyy-mm-dd
+        } else {
+          value = "";
+        }
       }
 
       el.value = value;
@@ -54,6 +62,7 @@ async function loadEditor() {
     showLoading(false);
   }
 }
+
 
 
 // Add finding card
@@ -330,6 +339,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
