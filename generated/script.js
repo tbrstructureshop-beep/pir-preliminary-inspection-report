@@ -191,6 +191,7 @@ function deleteGenerated(pirId) {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
+        closeActiveMenu(); // ✅ CLOSE MENU FIRST
         MASTER_ROWS = MASTER_ROWS.filter(r => String(r["PIR ID"]) !== String(pirId));
         applySearch();
         alert("Document deleted successfully.");
@@ -218,11 +219,20 @@ document.addEventListener("click", e => {
   }
 });
 
+function closeActiveMenu() {
+  if (activeMenu) {
+    activeMenu.remove();
+    activeMenu = null;
+  }
+}
+
+
 /* SIGN OUT */
 function logout() { sessionStorage.clear(); window.location.replace("../index.html"); }
 
 /* INIT */
 loadGeneratedDocs();
+
 
 
 
