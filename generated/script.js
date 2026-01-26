@@ -173,33 +173,36 @@ function goToPage(page) {
 }
 
 /* DELETE GENERATED DOC */
-function deleteGeneratedByPirId_(pirId) {
-  if (!pirId) return { success: false, error: "Missing PIR ID" };
-
-  pirId = String(pirId).trim();
-
-  const ss = SpreadsheetApp.openById(MASTER_ID);
-  const sh = ss.getSheetByName("Generated");
-  if (!sh) return { success: false, error: "Generated sheet not found" };
-
-  const data = sh.getRange(2, 1, sh.getLastRow() - 1, 7).getValues();
-
-  for (let i = 0; i < data.length; i++) {
-    const rowPirId = String(data[i][0]).trim();
-    const docId    = data[i][5];
-
-    if (rowPirId === pirId) {
-
-      if (docId) {
-        try { DriveApp.getFileById(docId).setTrashed(true); } catch (e) {}
-      }
-
-      sh.deleteRow(i + 2);
-      return { success: true };
-    }
+function deleteGenerated(pirId) {
+  if (!pirId) {
+    alert("No PIR ID found!");
+    return;
   }
 
-  return { success: false, error: "PIR ID not found" };
+  if (!confirm("Are you sure you want to delete this document?")) return;
+
+  console.log("Deleting PIR ID:", pirId);
+
+  showLoading(true);
+
+  fetch(`${API}?action=deleteGenerated&pirId=${encodeURIComponent(pirId)}`, {
+    method: "POST"
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        MASTER_ROWS = MASTER_ROWS.filter(r => String(r["PIR ID"]) !== String(pirId));
+        applySearch();
+        alert("Document deleted successfully.");
+      } else {
+        alert("Failed to delete document: " + (data.error || ""));
+      }
+    })
+    .catch(err => {
+      console.error("Delete error:", err);
+      alert("Error deleting document.");
+    })
+    .finally(() => showLoading(false));
 }
 
 
@@ -220,6 +223,7 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
 
 
 
