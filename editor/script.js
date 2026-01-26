@@ -15,20 +15,32 @@ async function loadEditor() {
     const res = await fetch(`${API}?action=getPIR&id=${sheetId}`);
     const data = await res.json();
 
-    // Load INFO
+    /* ========= LOAD INFO ========= */
     const infoFields = [
-      "customer","acReg","woNo","partDesc","partNo","serialNo","qty",
-      "dateReceived","reason","adStatus","attachedParts","missingParts",
-      "modStatus","docId"
+      "customer", "acReg", "woNo", "partDesc", "partNo", "serialNo", "qty",
+      "dateReceived", "reason", "adStatus", "attachedParts", "missingParts",
+      "modStatus", "docId"
     ];
+
     infoFields.forEach((id, i) => {
       const el = document.getElementById(id);
-      if (el) el.value = data.info[i] || "";
+      if (!el) return;
+
+      let value = data.info[i] || "";
+
+      // ✅ Fix <input type="date">
+      if (el.type === "date" && value) {
+        const d = new Date(value);
+        value = !isNaN(d) ? d.toISOString().slice(0, 10) : "";
+      }
+
+      el.value = value;
     });
 
-    // Load Findings as cards
+    /* ========= LOAD FINDINGS ========= */
     const container = document.getElementById("findingList");
     container.innerHTML = "";
+
     const woNo = document.getElementById("woNo").value || "PIR";
 
     data.findings.forEach((f, index) => {
@@ -42,6 +54,7 @@ async function loadEditor() {
     showLoading(false);
   }
 }
+
 
 // Add finding card
 function addFindingCard(container, index, woNo, data = {}) {
@@ -317,6 +330,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
