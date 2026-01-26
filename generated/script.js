@@ -42,6 +42,7 @@ function render(rows) {
   tbody.innerHTML = ""; // Clear previous rows
 
   rows.forEach((r, idx) => {
+    const pirId = r["PIR ID"] || "";
     const woNo = r["W/O No"] || "";            // W/O No
     const partDesc = r["Part Description"] || ""; // Part Description
     const acReg = r["A/C Reg"] || "";          // A/C Reg
@@ -59,7 +60,7 @@ function render(rows) {
         <td>${formattedDate}</td>
         <td class="action-cell">
           <button class="menu-btn"
-                  onclick="toggleActionMenu(this, '${woNo}', '${docUrl}', ${idx})">
+                  onclick="toggleActionMenu(this, '${pirId}', '${docUrl}', ${idx})">
             ⋮
           </button>
         </td>
@@ -221,5 +222,6 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
 
 
