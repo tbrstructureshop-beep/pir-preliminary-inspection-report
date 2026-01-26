@@ -42,13 +42,13 @@ function render(rows) {
   tbody.innerHTML = ""; // Clear previous rows
 
   rows.forEach((r, idx) => {
-    const pirId = r["PIR ID"] || "";
-    const woNo = r["W/O No"] || "";
-    const partDesc = r["Part Description"] || "";
-    const acReg = r["A/C Reg"] || "";
-    const dateCreated = r["Date Created"] || "";
-    const docUrl = r["DocUrl"] || "#";
+    const woNo = r["W/O No"] || "";            // W/O No
+    const partDesc = r["Part Description"] || ""; // Part Description
+    const acReg = r["A/C Reg"] || "";          // A/C Reg
+    const dateCreated = r["Date Created"] || ""; // Date Created
+    const docUrl = r["DocUrl"] || "#";         // Doc URL (for the action button)
 
+    // Format the date to "dd MMM yyyy (HH:mm)"
     const formattedDate = formatDate(dateCreated);
 
     tbody.insertAdjacentHTML("beforeend", `
@@ -59,7 +59,7 @@ function render(rows) {
         <td>${formattedDate}</td>
         <td class="action-cell">
           <button class="menu-btn"
-                  onclick="toggleActionMenu(this, '${pirId}', '${docUrl}', ${idx})">
+                  onclick="toggleActionMenu(this, '${woNo}', '${docUrl}', ${idx})">
             ⋮
           </button>
         </td>
@@ -67,7 +67,6 @@ function render(rows) {
     `);
   });
 }
-
 
 // Helper function to format the date
 function formatDate(dateString) {
@@ -222,8 +221,5 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
-
-
-
 
 
