@@ -172,17 +172,25 @@ function goToPage(page) {
 }
 
 /* DELETE GENERATED DOC */
-function deleteGenerated(pirId, index) {
+function deleteGenerated(pirId) {
   if (!pirId) return alert("No PIR ID found!");
 
   if (!confirm("Are you sure you want to delete this document?")) return;
 
+  console.log("Deleting PIR ID:", pirId); // ✅ log BEFORE fetch
+
   showLoading(true);
-  fetch(`${API}?action=deleteGenerated&pirId=${pirId}`, { method: "POST" })
+
+  fetch(`${API}?action=deleteGenerated&pirId=${pirId}`, {
+    method: "POST"
+  })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        MASTER_ROWS.splice(MASTER_ROWS.findIndex(r => r["PIR ID"] === pirId), 1);
+        const idx = MASTER_ROWS.findIndex(r => r["PIR ID"] === pirId);
+        if (idx > -1) {
+          MASTER_ROWS.splice(idx, 1);
+        }
         applySearch();
         alert("Document deleted successfully.");
       } else {
@@ -190,11 +198,12 @@ function deleteGenerated(pirId, index) {
       }
     })
     .catch(err => {
-      console.error(err);
+      console.error("Delete error:", err);
       alert("Error deleting document.");
     })
     .finally(() => showLoading(false));
 }
+
 
 /* USER MENU */
 function toggleUserMenu() {
@@ -212,5 +221,6 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
 
 
