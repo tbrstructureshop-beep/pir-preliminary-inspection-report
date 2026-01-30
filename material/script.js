@@ -1,5 +1,11 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQG9-FrBkQidkbUzWgVUUHxK7mFVYyru5RO7EKyfOzomliEn8KBCF_bkagjNw_CK8r/exec";
+// 1. Get the sheetId from the browser's URL (?sheetId=XXXXX)
+const urlParams = new URLSearchParams(window.location.search);
+const SPREADSHEET_ID = urlParams.get('sheetId'); 
 
+// 2. Use the current script's URL (removes need for hardcoded macro link)
+const SCRIPT_URL = window.location.href.split('?')[0]; 
+
+console.log("Working on Spreadsheet ID:", SPREADSHEET_ID);
 let isEditMode = false;
 let materialsByFinding = {};
   
@@ -39,7 +45,7 @@ function isMobile() {
 async function loadData() {
   const loader = document.getElementById('initial-loader');
   try {
-    const res = await fetch(SCRIPT_URL);
+    const res = await fetch(`${SCRIPT_URL}?action=getMaterialData&sheetId=${SPREADSHEET_ID}`);
     const data = await res.json();
 
     woNo.value = data.generalData.woNo;
@@ -425,6 +431,7 @@ async function resetTable() {
       method: "POST",
       body: JSON.stringify({
         action: "delete",
+        sheetId: SPREADSHEET_ID, // <--- ADD THIS
         findingName: findingName
       })
     });
@@ -563,6 +570,7 @@ async function saveData() {
 
     const payload = {
       action: "save", // Action trigger for Google Apps Script
+      sheetId: SPREADSHEET_ID,
       findingName: findingName,
       materials: materials
     };
@@ -669,6 +677,7 @@ async function deleteSpecificRow(btn, cardIdx = null) {
       method: "POST",
       body: JSON.stringify({
         action: "delete_row",
+        sheetId: SPREADSHEET_ID, // <--- ADD THIS
         findingName: findingName,
         rowIndex: rowIndex
       })
