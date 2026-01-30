@@ -321,13 +321,18 @@ function logout() {
 }
 
 /* ======== MRM =========== */
-function openMRM() {
-  alert("📦 Material Listing (MRM)\n\nComing soon 🚧");
+function openMRM(sheetId) {
+  // Replace the alert with a window open command
+  const scriptUrl = "YOUR_DEPLOYED_WEBAPP_URL";
+  const mrmUrl = scriptUrl + "?page=mrm&sheetId=" + sheetId;
+  
+  window.open(mrmUrl, '_blank');
 }
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
