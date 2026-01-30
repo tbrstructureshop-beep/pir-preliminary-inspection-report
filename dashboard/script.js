@@ -321,17 +321,24 @@ function logout() {
 }
 
 /* ======== MRM =========== */
+// Ensure this matches your actual constant name
 function openMRM(sheetId) {
-  // Replace the alert with a window open command
-  const scriptUrl = "YOUR_DEPLOYED_WEBAPP_URL";
-  const mrmUrl = scriptUrl + "?page=mrm&sheetId=" + sheetId;
+  if (!sheetId) {
+    alert("Error: No Sheet ID found for this PIR.");
+    return;
+  }
+
+  // Construct the URL: API URL + page parameter + sheetId parameter
+  const mrmUrl = `${API}?page=mrm&sheetId=${sheetId}`;
   
+  // Open in a new tab
   window.open(mrmUrl, '_blank');
 }
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
