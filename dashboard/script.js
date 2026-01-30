@@ -327,17 +327,14 @@ function openMRM(sheetId) {
     alert("Error: No Sheet ID found for this PIR.");
     return;
   }
-
-  // Construct the URL: API URL + page parameter + sheetId parameter
-  const mrmUrl = `${API}?page=mrm&sheetId=${sheetId}`;
-  
-  // Open in a new tab
-  window.open(mrmUrl, '_blank');
+  // This sends ?id=...
+  window.location.href = `../material/index.html?id=${sheetId}`;
 }
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
