@@ -1,11 +1,13 @@
 // 1. Get the sheetId from the browser's URL (?sheetId=XXXXX)
 const urlParams = new URLSearchParams(window.location.search);
-const SPREADSHEET_ID = urlParams.get('sheetId'); 
+const SPREADSHEET_ID = urlParams.get('id'); 
 
 // 2. Use the current script's URL (removes need for hardcoded macro link)
-const SCRIPT_URL = window.location.href.split('?')[0]; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
 console.log("Working on Spreadsheet ID:", SPREADSHEET_ID);
+
+
 let isEditMode = false;
 let materialsByFinding = {};
   
@@ -44,6 +46,11 @@ function isMobile() {
 // ---- Fetch Google Sheet Data ----
 async function loadData() {
   const loader = document.getElementById('initial-loader');
+  
+  if (!SPREADSHEET_ID) {
+      alert("No Spreadsheet ID found in URL!");
+      return;
+  }
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getMaterialData&sheetId=${SPREADSHEET_ID}`);
     const data = await res.json();
