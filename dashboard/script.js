@@ -107,7 +107,7 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   menu.innerHTML = `
     <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
-    <button type="button" onclick="openMRM()">📦 Material Listing (MRM)</button>
+    <button type="button" onclick="openMRM('${sheetId}')">📦 Material Listing (MRM)</button>
     <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
   `;
 
@@ -338,6 +338,7 @@ function openMRM(sheetId) {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
