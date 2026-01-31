@@ -222,6 +222,8 @@ textarea {
   inset: 0;
   background: rgba(255,255,255,0.85);
   display: flex;
+  flex-direction: column; /* Stacks items vertically (Top and Bottom) */
+  gap: 15px;
   align-items: center;
   justify-content: center;
   z-index: 9999;
@@ -249,4 +251,5 @@ textarea {
   .app-header h1 { font-size: 24px; }
   .subtitle { font-size: 12px; }
 }
+
 
