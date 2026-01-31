@@ -125,8 +125,6 @@ async function submitPIR() {
   showLoading();
 
   const formData = new FormData();
-
-  // INFO fields
   [
     "customer","acReg","woNo","partDesc","partNo","serialNo",
     "qty","dateReceived","reason","adStatus",
@@ -136,61 +134,55 @@ async function submitPIR() {
     formData.append(id, el ? el.value : "");
   });
 
-  // FINDINGS
   const findings = collectFindings();
   formData.append("findings", JSON.stringify(findings));
 
   try {
     const res = await fetch(
       "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec",
-      {
-        method: "POST",
-        body: formData
-      }
+      { method: "POST", body: formData }
     );
 
-    if (!res.ok) {
-      throw new Error("HTTP Error " + res.status);
-    }
-
     const result = await res.json();
-
     hideLoading();
 
     if (!result.success) {
-      alert("Backend error:\n" + result.error);
+      Swal.fire("Error", result.error, "error");
       return;
     }
 
-    // ✅ 1. Reset the form locally
+    // Success logic starts here
     resetPIR(true);
-
-    // ✅ 2. Get the generated file URL
     const fileUrl = result.copiedDocUrl || result.fileUrl;
 
-    // ✅ 3. Ask user: OK = View Spreadsheet, Cancel = Go to Dashboard
-    const viewFile = confirm(
-      "PIR Submitted Successfully!\n\n" +
-      "Click 'OK' to view the Spreadsheet.\n" +
-      "Click 'Cancel' to return to Dashboard."
-    );
-
-    if (viewFile) {
-      // Open the spreadsheet in a new tab
-      if (fileUrl) {
-        window.open(fileUrl, '_blank');
+    // 🚀 SWEETALERT CHOICE BOX
+    Swal.fire({
+      title: 'PIR Submitted!',
+      text: "Data has been saved. What would you like to do?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6', // Blue
+      cancelButtonColor: '#28a745', // Green
+      confirmButtonText: '🏠 Go to Dashboard',
+      cancelButtonText: '📄 View Spreadsheet',
+      allowOutsideClick: false
+    }).then((choice) => {
+      if (choice.isConfirmed) {
+        // User clicked Dashboard
+        window.location.href = "/dashboard/index.html"; 
+      } else if (choice.dismiss === Swal.DismissReason.cancel) {
+        // User clicked View Spreadsheet
+        if (fileUrl) {
+          window.open(fileUrl, '_blank'); // Open sheet in new tab
+        }
+        window.location.href = "/dashboard/index.html"; // Refresh dashboard in current tab
       }
-      // Redirect current tab to dashboard (this refreshes the data)
-      window.location.href = "dashboard/index.html";
-    } else {
-      // Just redirect to dashboard
-      window.location.href = "dashboard/index.html";
-    }
+    });
 
   } catch (err) {
     hideLoading();
     console.error(err);
-    alert("Connection / backend error.\nCheck console.");
+    Swal.fire("Error", "Connection / backend error.", "error");
   }
 }
 
@@ -227,6 +219,7 @@ function logout() {
   // force reload + redirect to login page
   window.location.replace("../index.html");
 }
+
 
 
 
