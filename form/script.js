@@ -159,21 +159,32 @@ async function submitPIR() {
 
     if (!result.success) {
       alert("Backend error:\n" + result.error);
-      console.error("Backend error:", result.error);
       return;
     }
 
-    // ✅ reset AFTER success only
+    // ✅ 1. Reset the form locally
     resetPIR(true);
 
-    // ✅ redirect last
-    // ✅ redirect AFTER success
-    const redirectUrl = result.copiedDocUrl || result.fileUrl; // use copiedDocUrl first
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
+    // ✅ 2. Get the generated file URL
+    const fileUrl = result.copiedDocUrl || result.fileUrl;
+
+    // ✅ 3. Ask user: OK = View Spreadsheet, Cancel = Go to Dashboard
+    const viewFile = confirm(
+      "PIR Submitted Successfully!\n\n" +
+      "Click 'OK' to view the Spreadsheet.\n" +
+      "Click 'Cancel' to return to Dashboard."
+    );
+
+    if (viewFile) {
+      // Open the spreadsheet in a new tab
+      if (fileUrl) {
+        window.open(fileUrl, '_blank');
+      }
+      // Redirect current tab to dashboard (this refreshes the data)
+      window.location.href = "dashboard/index.html";
     } else {
-      console.warn("No redirect URL returned from backend:", result);
-      alert("Submission succeeded, but cannot redirect. Check console for details.");
+      // Just redirect to dashboard
+      window.location.href = "dashboard/index.html";
     }
 
   } catch (err) {
@@ -216,6 +227,7 @@ function logout() {
   // force reload + redirect to login page
   window.location.replace("../index.html");
 }
+
 
 
 
