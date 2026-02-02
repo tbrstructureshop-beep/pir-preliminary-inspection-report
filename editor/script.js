@@ -75,6 +75,11 @@ function addFindingCard(container, index, woNo, data = {}) {
   const div = document.createElement("div");
   div.className = "card finding"; 
 
+  // ✅ IMPORTANT: Mark the card so we know if it exists in GAS or not
+  if (isNew) {
+    div.setAttribute("data-is-new", "true");
+  }
+
   div.innerHTML = `
     <!-- HEADER BAR (Visible when collapsed) -->
     <div class="card-header" onclick="toggleFinding(this)">
@@ -153,7 +158,11 @@ function addFinding() {
   const woNo = document.getElementById("woNo").value || "PIR";
   const index = container.children.length;
   
+  // Create the card
   addFindingCard(container, index, woNo);
+
+  // ✅ ADD THIS LINE: Mark the last added card as NEW
+  container.lastElementChild.setAttribute("data-is-new", "true");
   
   // NEW: Automatically open the newly added finding
   container.lastElementChild.classList.add("is-open");
@@ -163,6 +172,18 @@ function addFinding() {
 async function removeFindingCard(btn) {
   const card = btn.closest(".card");
   const findingNo = card.querySelector("[data-pir-no]").textContent;
+
+  // ✅ Check if this card was just added and never saved
+  const isNew = card.getAttribute("data-is-new") === "true";
+
+  if (isNew) {
+    // Just remove from UI, no server call needed
+    if (confirm("Remove this unsaved finding?")) {
+      card.remove();
+      updateFindingNumbers(); // Renumber remaining cards (PIR01, PIR02...)
+    }
+    return;
+  }  
 
   // VERIFY: Open your browser console (F12) to see if these are correct
   console.log("Deleting Finding:", findingNo);
@@ -383,3 +404,4 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
