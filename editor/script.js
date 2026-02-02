@@ -152,7 +152,11 @@ function addFinding() {
   const container = document.getElementById("findingList");
   const woNo = document.getElementById("woNo").value || "PIR";
   const index = container.children.length;
+  
   addFindingCard(container, index, woNo);
+  
+  // NEW: Automatically open the newly added finding
+  container.lastElementChild.classList.add("is-open");
 }
 
 // Remove finding card (with confirmation if data exists)
@@ -202,12 +206,13 @@ function updateFindingNumbers() {
     const formattedIndex = String(i + 1).padStart(2, "0");
     const findingNo = `${woNo}${formattedIndex}`;
     
-    // Update the hidden field
-    div.querySelector("[data-pir-no]").textContent = findingNo;
-    
-    // NEW: Update the header PIR No
-    const headerNo = div.querySelector(".header-pir-no");
-    if(headerNo) headerNo.textContent = findingNo;
+    // Update the hidden/internal PIR No
+    const pirNoEl = div.querySelector("[data-pir-no]");
+    if (pirNoEl) pirNoEl.textContent = findingNo;
+
+    // Update the Header PIR No
+    const headerNoEl = div.querySelector(".header-pir-no");
+    if (headerNoEl) headerNoEl.textContent = findingNo;
   });
 }
 
@@ -378,6 +383,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
