@@ -65,23 +65,23 @@ async function loadEditor() {
 
 
 // Add finding card
-function addFindingCard(container, index, woNo, data = {}) {
+// ✅ Corrected arguments: added 'isNew = false' at the end
+function addFindingCard(container, index, woNo, data = {}, isNew = false) {
   const formattedIndex = String(index + 1).padStart(2, "0");
   const findingNo = `${woNo}${formattedIndex}`;
   
-  // Use existing identification or a placeholder for the header summary
   const summaryText = data.identification || "New Finding (Click to edit)";
 
   const div = document.createElement("div");
   div.className = "card finding"; 
 
-  // ✅ IMPORTANT: Mark the card so we know if it exists in GAS or not
+  // ✅ This now works because isNew is defined in the arguments above
   if (isNew) {
     div.setAttribute("data-is-new", "true");
   }
 
   div.innerHTML = `
-    <!-- HEADER BAR (Visible when collapsed) -->
+    <!-- ... (rest of your HTML remains the same) ... -->
     <div class="card-header" onclick="toggleFinding(this)">
       <div class="header-info">
         <span class="header-pir-no">${findingNo}</span>
@@ -90,7 +90,6 @@ function addFindingCard(container, index, woNo, data = {}) {
       <span class="toggle-icon">▼</span>
     </div>
 
-    <!-- EXPANDABLE CONTENT (Hidden until clicked) -->
     <div class="card-content">
       <div class="form-group">
         <label>Finding No.</label>
@@ -121,19 +120,19 @@ function addFindingCard(container, index, woNo, data = {}) {
     </div>
   `;
 
-  // --- Image Handling Logic (Your existing logic) ---
+  // --- Image Handling Logic ---
   const fileInput = div.querySelector('input[type="file"]');
   const img = div.querySelector(".preview");
 
   if (data.imageUrl) {
     img.src = convertDriveUrl(data.imageUrl);
     img.style.display = "block";
-    fileInput.dataset.existing = data.imageUrl; // preserve original Drive URL
+    fileInput.dataset.existing = data.imageUrl;
   }
 
   fileInput.addEventListener("change", function () {
     previewImage(this);
-    delete this.dataset.existing; // mark as replaced if a new file is chosen
+    delete this.dataset.existing;
   });
 
   container.appendChild(div);
@@ -158,13 +157,10 @@ function addFinding() {
   const woNo = document.getElementById("woNo").value || "PIR";
   const index = container.children.length;
   
-  // Create the card
-  addFindingCard(container, index, woNo);
-
-  // ✅ ADD THIS LINE: Mark the last added card as NEW
-  container.lastElementChild.setAttribute("data-is-new", "true");
+  // ✅ Pass 'true' as the last argument to mark it as NEW
+  addFindingCard(container, index, woNo, {}, true);
   
-  // NEW: Automatically open the newly added finding
+  // Automatically open the newly added finding
   container.lastElementChild.classList.add("is-open");
 }
 
@@ -404,4 +400,5 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
