@@ -64,65 +64,88 @@ async function loadEditor() {
 }
 
 
-
 // Add finding card
 function addFindingCard(container, index, woNo, data = {}) {
   const formattedIndex = String(index + 1).padStart(2, "0");
   const findingNo = `${woNo}${formattedIndex}`;
+  
+  // Use existing identification or a placeholder for the header summary
+  const summaryText = data.identification || "New Finding (Click to edit)";
 
   const div = document.createElement("div");
-  div.className = "card finding";
+  div.className = "card finding"; 
 
   div.innerHTML = `
-    <h3>PIR ${formattedIndex}</h3>
-
-    <div class="form-group">
-      <label>Finding No.</label>
-      <div class="pir-no" data-pir-no>${findingNo}</div>
+    <!-- HEADER BAR (Visible when collapsed) -->
+    <div class="card-header" onclick="toggleFinding(this)">
+      <div class="header-info">
+        <span class="header-pir-no">${findingNo}</span>
+        <span class="header-summary">${summaryText}</span>
+      </div>
+      <span class="toggle-icon">▼</span>
     </div>
 
-    <div class="form-group">
-      <label>Picture</label>
-      <input type="file" accept="image/*">
-      <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;display:none;">
-    </div>
+    <!-- EXPANDABLE CONTENT (Hidden until clicked) -->
+    <div class="card-content">
+      <div class="form-group">
+        <label>Finding No.</label>
+        <div class="pir-no" data-pir-no>${findingNo}</div>
+      </div>
 
-    <div class="form-group">
-      <label>Identification</label>
-      <textarea>${data.identification || ""}</textarea>
-    </div>
+      <div class="form-group">
+        <label>Picture</label>
+        <input type="file" accept="image/*">
+        <img class="preview" style="max-width:100%;margin-top:8px;border-radius:8px;display:none;">
+      </div>
 
-    <div class="form-group">
-      <label>Action</label>
-      <textarea>${data.action || ""}</textarea>
-    </div>
+      <div class="form-group">
+        <label>Identification</label>
+        <textarea class="ident-input" oninput="updateSummary(this)">${data.identification || ""}</textarea>
+      </div>
 
-    <button class="btn ghost" type="button" onclick="removeFindingCard(this)">
-      ❌ Remove Finding
-    </button>
+      <div class="form-group">
+        <label>Action</label>
+        <textarea>${data.action || ""}</textarea>
+      </div>
+
+      <div style="text-align: right; margin-top: 10px;">
+        <button class="btn ghost" type="button" onclick="removeFindingCard(this)" style="color:var(--danger); border-color:var(--danger);">
+          ❌ Remove Finding
+        </button>
+      </div>
+    </div>
   `;
 
+  // --- Image Handling Logic (Your existing logic) ---
   const fileInput = div.querySelector('input[type="file"]');
   const img = div.querySelector(".preview");
 
-  // ✅ EXISTING IMAGE (from Drive)
   if (data.imageUrl) {
     img.src = convertDriveUrl(data.imageUrl);
     img.style.display = "block";
-
-    // IMPORTANT: preserve original Drive URL
-    fileInput.dataset.existing = data.imageUrl;
+    fileInput.dataset.existing = data.imageUrl; // preserve original Drive URL
   }
 
-  // ✅ PREVIEW NEW IMAGE (replace existing)
   fileInput.addEventListener("change", function () {
     previewImage(this);
-    delete this.dataset.existing; // mark as replaced
+    delete this.dataset.existing; // mark as replaced if a new file is chosen
   });
 
   container.appendChild(div);
 }
 
+// Function to expand/collapse
+function toggleFinding(header) {
+  const card = header.closest(".card");
+  card.classList.toggle("is-open");
+}
+
+// Function to update the header summary in real-time
+function updateSummary(textarea) {
+  const card = textarea.closest(".card");
+  const summarySpan = card.querySelector(".header-summary");
+  summarySpan.textContent = textarea.value || "New Finding (Click to edit)";
+}
 
 // Add new empty finding
 function addFinding() {
@@ -178,8 +201,13 @@ function updateFindingNumbers() {
   Array.from(container.children).forEach((div, i) => {
     const formattedIndex = String(i + 1).padStart(2, "0");
     const findingNo = `${woNo}${formattedIndex}`;
+    
+    // Update the hidden field
     div.querySelector("[data-pir-no]").textContent = findingNo;
-    div.querySelector("h3").textContent = `PIR ${formattedIndex}`;
+    
+    // NEW: Update the header PIR No
+    const headerNo = div.querySelector(".header-pir-no");
+    if(headerNo) headerNo.textContent = findingNo;
   });
 }
 
@@ -350,6 +378,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
