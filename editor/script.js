@@ -133,30 +133,45 @@ function addFinding() {
 }
 
 // Remove finding card (with confirmation if data exists)
-function removeFindingCard(btn) {
+async function removeFindingCard(btn) {
   const card = btn.closest(".card");
+  const findingNo = card.querySelector("[data-pir-no]").textContent;
 
-  const hasImage =
-    card.querySelector("img.preview") &&
-    card.querySelector("img.preview").src &&
-    card.querySelector("img.preview").style.display !== "none";
+  // 1. Enhanced Confirmation Message
+  const message = `Are you sure delete finding No: ${findingNo}?\n\n⚠️ WARNING: Material Listed for this finding will be deleted too!`;
+  
+  if (!confirm(message)) return;
 
-  const hasIdentification =
-    card.querySelector("textarea") &&
-    card.querySelectorAll("textarea")[0].value.trim() !== "";
+  // 2. Start Loading Spinner
+  showLoading(true);
 
-  const hasAction =
-    card.querySelectorAll("textarea").length > 1 &&
-    card.querySelectorAll("textarea")[1].value.trim() !== "";
+  try {
+    const formData = new FormData();
+    formData.append("action", "deleteFinding");
+    formData.append("sheetId", sheetId);
+    formData.append("findingNo", findingNo);
 
-  // If any data exists → confirm
-  if (hasImage || hasIdentification || hasAction) {
-    const ok = confirm("Are you sure you want to delete this finding?");
-    if (!ok) return;
+    const res = await fetch(API, {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      // 3. Refresh UI completely
+      await loadEditor(); 
+      alert(`Finding ${findingNo} and its materials have been removed. Numbering reset.`);
+    } else {
+      alert("Delete failed: " + result.error);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to server.");
+  } finally {
+    // 4. Stop Loading Spinner
+    showLoading(false);
   }
-
-  card.remove();
-  updateFindingNumbers();
 }
 
 // Update finding numbering after deletion
@@ -339,6 +354,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
