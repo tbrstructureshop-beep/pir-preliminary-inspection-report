@@ -137,39 +137,35 @@ async function removeFindingCard(btn) {
   const card = btn.closest(".card");
   const findingNo = card.querySelector("[data-pir-no]").textContent;
 
-  // 1. Enhanced Confirmation Message
-  const message = `Are you sure delete finding No: ${findingNo}?\n\n⚠️ WARNING: Material Listed for this finding will be deleted too!`;
-  
+  // VERIFY: Open your browser console (F12) to see if these are correct
+  console.log("Deleting Finding:", findingNo);
+  console.log("From Sheet ID:", sheetId);
+
+  const message = `Are you sure delete finding No: ${findingNo}?\n\n⚠️ Material Listed for this finding will be deleted too!`;
   if (!confirm(message)) return;
 
-  // 2. Start Loading Spinner
   showLoading(true);
 
   try {
     const formData = new FormData();
     formData.append("action", "deleteFinding");
-    formData.append("sheetId", sheetId);
+    formData.append("sheetId", sheetId); // Ensure this variable is the one from the URL
     formData.append("findingNo", findingNo);
 
-    const res = await fetch(API, {
-      method: "POST",
-      body: formData
-    });
-
+    const res = await fetch(API, { method: "POST", body: formData });
     const result = await res.json();
 
     if (result.success) {
-      // 3. Refresh UI completely
-      await loadEditor(); 
-      alert(`Finding ${findingNo} and its materials have been removed. Numbering reset.`);
+      alert(`Finding ${findingNo} deleted.`);
+      await loadEditor(); // This re-fetches data to show new numbering
     } else {
-      alert("Delete failed: " + result.error);
+      // THIS WILL NOW TELL YOU THE EXACT ERROR FROM GAS
+      alert("Error: " + result.error);
     }
   } catch (err) {
+    alert("Connection Error. See console.");
     console.error(err);
-    alert("Error connecting to server.");
   } finally {
-    // 4. Stop Loading Spinner
     showLoading(false);
   }
 }
@@ -354,6 +350,7 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
 
