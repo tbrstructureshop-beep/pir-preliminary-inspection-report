@@ -120,45 +120,92 @@ textarea {
 }
 
 /* ================= FINDING CARD ================= */
-.finding {
-  background: #f1fdfd;
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  position: relative;
+/* ================= FINDING CARD (COLLAPSIBLE) ================= */
+.card.finding {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 0; /* Important: remove padding so header touches edges */
+  margin-bottom: 16px;
+  overflow: hidden; /* Keeps corners rounded */
+  border: 1px solid #e0e6ed;
+  transition: box-shadow 0.3s ease;
 }
 
-.finding h3 {
-  margin-top: 0;
-  font-size: 15px;
-  margin-bottom: 12px;
+.card.finding:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* The Clickable Bar */
+.card-header {
+  background: #f1fdfd; /* Matches your original finding color */
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  overflow: hidden; /* Prevents text overflow */
+  flex: 1;
+}
+
+.header-pir-no {
+  font-weight: 700;
   color: var(--primary);
+  white-space: nowrap;
+  font-size: 15px;
 }
 
-.finding .form-group {
-  margin-bottom: 10px;
+.header-summary {
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds "..." if description is long */
 }
 
+.toggle-icon {
+  color: var(--primary);
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  margin-left: 10px;
+}
+
+/* The Expandable Body */
+.card-content {
+  padding: 20px;
+  display: none; /* Hidden by default */
+  border-top: 1px solid #e0f2f2;
+}
+
+/* State when Open */
+.card.finding.is-open .card-content {
+  display: block;
+}
+
+.card.finding.is-open .card-header {
+  background: #eef6f7;
+  border-bottom: 1px solid #cfe4e6;
+}
+
+.card.finding.is-open .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* Style for the PIR No. inside the content */
 .finding .pir-no {
   padding: 8px;
   border-radius: 8px;
-  background: #eef6f7;
-  border: 1px solid #cfe4e6;
-  font-weight: 600;
-  color: var(--primary);
-}
-
-.finding input[type="file"] {
-  margin-top: 4px;
-}
-
-.finding .preview {
-  display: block;
-  max-width: 100%;
-  margin-top: 8px;
-  border-radius: 8px;
+  background: #f8f9fa;
   border: 1px solid #ddd;
+  font-weight: 600;
+  color: #555;
 }
 
 /* ================= LOADING OVERLAY ================= */
@@ -199,3 +246,4 @@ textarea {
     width: 100%;
   }
 }
+
