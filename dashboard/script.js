@@ -334,25 +334,3 @@ function openMRM(sheetId) {
 /* ================= INIT ================= */
 
 loadDashboard();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
