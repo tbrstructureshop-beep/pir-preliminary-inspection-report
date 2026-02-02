@@ -108,6 +108,7 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
     <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
     <button type="button" onclick="openMRM('${sheetId}')">📦 Material Listing (MRM)</button>
+    <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour <small>(Coming soon)</small>
     <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
   `;
 
@@ -331,6 +332,21 @@ function openMRM(sheetId) {
   window.location.href = `../material/index.html?id=${sheetId}`;
 }
 
+/* ======== MANHOUR (Coming Soon) =========== */
+function openManhour(sheetId) {
+  if (!sheetId) {
+    alert("Error: No Sheet ID found for this PIR.");
+    return;
+  }
+
+  // Notify user that it is under design
+  alert("Feature Under Design: You are being redirected to the Manhour preview, but data processing is still under development (Coming Soon).");
+
+  // Redirect with Sheet ID as a parameter
+  window.location.href = `../manhour/index.html?id=${sheetId}`;
+}
+
 /* ================= INIT ================= */
 
 loadDashboard();
+
