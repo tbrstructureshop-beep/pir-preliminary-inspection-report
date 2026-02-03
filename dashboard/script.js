@@ -335,20 +335,20 @@ function openMRM(sheetId) {
 /* ======== MANHOUR (Coming Soon) =========== */
 function openManhour(sheetId) {
   if (!sheetId) {
-    alert("Error: No Sheet ID found for this PIR.");
+    console.error("Redirect failed: Missing sheetId");
+    alert("Error: No Sheet ID found for this Work Order.");
     return;
   }
 
-  // Notify user that it is under design
-  alert("Feature Under Design: You are being redirected to the Manhour preview, but data processing is still under development (Coming Soon).");
-
-  // Redirect with Sheet ID as a parameter
+  // Directly redirect to the Manhour module
+  // Using 'id' as the parameter to match your updated material/script.js logic
   window.location.href = `../manhour/index.html?id=${sheetId}`;
 }
 
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
