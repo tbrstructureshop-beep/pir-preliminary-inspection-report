@@ -1,5 +1,5 @@
 
-const API = "https://script.google.com/macros/s/AKfycbyneQ_EO9rlekZQrinWWuy9jsEcdkjStvBBPsjr4WzMfDmQVsPpdobmt8Ctgcnr3QJusg/exec";
+const API = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 const urlParams = new URLSearchParams(window.location.search);
 // Update: Look for 'id' (from Dashboard) first, then 'sheetId' (legacy), then fallback
 const SHEET_ID = urlParams.get('id') || urlParams.get('sheetId');
