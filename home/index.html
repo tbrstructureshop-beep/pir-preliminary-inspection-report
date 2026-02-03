@@ -118,8 +118,45 @@
       color: var(--muted);
       text-align: center;
     }
+/* The Mascot Container */
+    .mascot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      pointer-events: none; /* Allows clicking "through" the GIF if needed */
+    }
+
+    .mascot-container img {
+      width: 150px; /* Adjust size here */
+      height: auto;
+      /* Optional: subtle float animation */
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Smaller size for mobile phones */
+    @media (max-width: 600px) {
+      .mascot-container img {
+        width: 100px;
+      }
+      .mascot-container {
+        bottom: 10px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
+
+<div class="mascot-container">
+    <img src="assets/gmfGirl.gif" alt="Greeting Mascot">
+  </div>
+  
 <body>
 
   <div class="container">
