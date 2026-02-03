@@ -368,26 +368,50 @@ async function generatePDF() {
     if (!res.ok) throw new Error("HTTP " + res.status);
 
     const result = await res.json();
+    
+    // Hide loading as soon as we get a response
+    showLoading(false);
 
     if (!result.success) {
-      alert("Failed to generate PDF:\n" + (result.error || "Unknown error"));
-      console.error(result.error);
+      Swal.fire({
+        title: "Error",
+        text: result.error || "Failed to generate PDF",
+        icon: "error"
+      });
       return;
     }
 
-    // ✅ Use copiedDocUrl from backend
     const docUrl = result.copiedDocUrl;
-    if (docUrl) {
-      window.open(docUrl, "_blank");
-    } else {
-      console.warn("Backend did not return copiedDocUrl:", result);
-    }
+
+    // 🚀 SWEETALERT POPUP
+    Swal.fire({
+      title: 'PDF Generated!',
+      text: "What would you like to do next?",
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#28a745',
+      confirmButtonText: '🏠 View at Generated Dashboard',
+      cancelButtonText: '📄 View Report',
+      allowOutsideClick: false
+    }).then((choice) => {
+      if (choice.isConfirmed) {
+        // User clicked "Back to Dashboard"
+        window.location.href = "../generated/index.html"; 
+      } else if (choice.dismiss === Swal.DismissReason.cancel) {
+        // User clicked "View Report"
+        if (docUrl) {
+          window.open(docUrl, '_blank'); // Open PDF in new tab
+        }
+        // Redirect current tab to dashboard so the user doesn't stay in the editor
+        window.location.href = "../generated/index.html";
+      }
+    });
 
   } catch (err) {
-    console.error(err);
-    alert("Error generating PDF. Check console for details.");
-  } finally {
     showLoading(false);
+    console.error(err);
+    Swal.fire("Error", "Connection error while generating PDF.", "error");
   }
 }
 
@@ -400,5 +424,6 @@ function showLoading(show) {
 
 // Init
 window.addEventListener("DOMContentLoaded", loadEditor);
+
 
 
