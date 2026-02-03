@@ -92,29 +92,34 @@ function render(rows) {
 
 let activeMenu = null;
 
-function toggleActionMenu(btn, sheetId, sheetUrl, index) {
-  // Close existing menu
+// 1. Helper function to safely remove the menu
+function closeActiveMenu() {
   if (activeMenu) {
     activeMenu.remove();
     activeMenu = null;
   }
+}
+
+function toggleActionMenu(btn, sheetId, sheetUrl, index) {
+  // Close any existing menu first
+  closeActiveMenu();
 
   const rect = btn.getBoundingClientRect();
-
   const menu = document.createElement("div");
   menu.className = "menu-content-floating";
 
+  // Note: I added closeActiveMenu() to the Spreadsheet link and fixed a missing </button> tag
   menu.innerHTML = `
-    <a href="${sheetUrl}" target="_blank" rel="noopener">📄 Open Spreadsheet</a>
+    <a href="${sheetUrl}" target="_blank" rel="noopener" onclick="closeActiveMenu()">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
     <button type="button" onclick="openMRM('${sheetId}')">📦 Material Listing (MRM)</button>
-    <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour <small>(Coming soon)</small>
+    <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour <small>(Coming soon)</small></button>
     <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
   `;
 
   document.body.appendChild(menu);
 
-  // ---- POSITIONING LOGIC (VIEWPORT SAFE) ----
+  // ---- POSITIONING LOGIC ----
   const MENU_WIDTH = menu.offsetWidth;
   const MENU_HEIGHT = menu.offsetHeight;
   const MARGIN = 8;
@@ -122,25 +127,10 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   let top = rect.bottom + MARGIN;
   let left = rect.right - MENU_WIDTH;
 
-  // ⬅️ prevent overflow right
-  if (left + MENU_WIDTH > window.innerWidth - MARGIN) {
-    left = window.innerWidth - MENU_WIDTH - MARGIN;
-  }
-
-  // ➡️ prevent overflow left
-  if (left < MARGIN) {
-    left = MARGIN;
-  }
-
-  // 🔼 open upward if near bottom
-  if (top + MENU_HEIGHT > window.innerHeight - MARGIN) {
-    top = rect.top - MENU_HEIGHT - MARGIN;
-  }
-
-  // 🔒 final vertical clamp
-  if (top < MARGIN) {
-    top = MARGIN;
-  }
+  if (left + MENU_WIDTH > window.innerWidth - MARGIN) left = window.innerWidth - MENU_WIDTH - MARGIN;
+  if (left < MARGIN) left = MARGIN;
+  if (top + MENU_HEIGHT > window.innerHeight - MARGIN) top = rect.top - MENU_HEIGHT - MARGIN;
+  if (top < MARGIN) top = MARGIN;
 
   menu.style.position = "fixed";
   menu.style.top = `${top}px`;
@@ -150,13 +140,17 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   activeMenu = menu;
 
   // ---- CLICK OUTSIDE TO CLOSE ----
-  document.addEventListener("click", function closeMenu(e) {
-    if (!menu.contains(e.target) && e.target !== btn) {
-      menu.remove();
-      activeMenu = null;
-      document.removeEventListener("click", closeMenu);
-    }
-  });
+  // We use a small timeout so the click that opens the menu doesn't immediately close it
+  setTimeout(() => {
+    const closeListener = (e) => {
+      // If user clicks outside the menu OR on an item inside the menu, close it
+      if (!menu.contains(e.target) || e.target.tagName === 'BUTTON' || e.target.tagName === 'A') {
+        closeActiveMenu();
+        document.removeEventListener("click", closeListener);
+      }
+    };
+    document.addEventListener("click", closeListener);
+  }, 10);
 }
 
 
@@ -186,6 +180,7 @@ function editPIR(sheetId) {
     alert("No sheet ID found!");
     return;
   }
+  closeActiveMenu();
   window.location.href = `/editor/?id=${sheetId}`;
 }
 
@@ -328,6 +323,7 @@ function openMRM(sheetId) {
     alert("Error: No Sheet ID found for this PIR.");
     return;
   }
+  closeActiveMenu();
   // This sends ?id=...
   window.location.href = `../material/index.html?id=${sheetId}`;
 }
@@ -339,15 +335,24 @@ function openManhour(sheetId) {
     alert("Error: No Sheet ID found for this Work Order.");
     return;
   }
+  closeActiveMenu();
 
   // Directly redirect to the Manhour module
   // Using 'id' as the parameter to match your updated material/script.js logic
   window.location.href = `../manhour/index.html?id=${sheetId}`;
 }
 
+function closeActiveMenu() {
+  if (activeMenu) {
+    activeMenu.remove();
+    activeMenu = null;
+  }
+}
+
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
