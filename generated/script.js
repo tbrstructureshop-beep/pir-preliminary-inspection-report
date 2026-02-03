@@ -87,17 +87,28 @@ function formatDate(dateString) {
 
 
 /* FLOATING MENU */
+/* FLOATING MENU */
 let activeMenu = null;
 
+// Helper function to safely remove the menu
+function closeActiveMenu() {
+  if (activeMenu) {
+    activeMenu.remove();
+    activeMenu = null;
+  }
+}
+
 function toggleActionMenu(btn, pirId, docUrl, index) {
-  if (activeMenu) { activeMenu.remove(); activeMenu = null; }
+  // Close any existing menu first
+  closeActiveMenu();
 
   const rect = btn.getBoundingClientRect();
   const menu = document.createElement("div");
   menu.className = "menu-content-floating";
 
+  // Added onclick="closeActiveMenu()" to the link and delete button
   menu.innerHTML = `
-    <a href="${docUrl}" target="_blank" rel="noopener">📄 Open Document</a>
+    <a href="${docUrl}" target="_blank" rel="noopener" onclick="closeActiveMenu()">📄 Open Document</a>
     <button type="button" onclick="deleteGenerated('${pirId}', ${index})">🗑️ Delete</button>
   `;
 
@@ -107,28 +118,33 @@ function toggleActionMenu(btn, pirId, docUrl, index) {
   const MENU_HEIGHT = menu.offsetHeight;
   const MARGIN = 8;
 
-  let top = rect.bottom + MARGIN + window.scrollY;
+  // Using FIXED positioning (more reliable for floating menus)
+  let top = rect.bottom + MARGIN;
   let left = rect.right - MENU_WIDTH;
 
   if (left + MENU_WIDTH > window.innerWidth - MARGIN) left = window.innerWidth - MENU_WIDTH - MARGIN;
   if (left < MARGIN) left = MARGIN;
-  if (top + MENU_HEIGHT > window.innerHeight + window.scrollY - MARGIN) top = rect.top - MENU_HEIGHT - MARGIN;
-  if (top < MARGIN + window.scrollY) top = MARGIN + window.scrollY;
+  if (top + MENU_HEIGHT > window.innerHeight - MARGIN) top = rect.top - MENU_HEIGHT - MARGIN;
+  if (top < MARGIN) top = MARGIN;
 
-  menu.style.position = "absolute";
+  menu.style.position = "fixed"; 
   menu.style.top = `${top}px`;
   menu.style.left = `${left}px`;
   menu.style.zIndex = 9999;
 
   activeMenu = menu;
 
-  document.addEventListener("click", function closeMenu(e) {
-    if (!menu.contains(e.target) && e.target !== btn) {
-      menu.remove();
-      activeMenu = null;
-      document.removeEventListener("click", closeMenu);
-    }
-  });
+  // ---- CLICK OUTSIDE OR ON ITEM TO CLOSE ----
+  setTimeout(() => {
+    const closeListener = (e) => {
+      // Close if click is outside OR if click is on a link/button inside the menu
+      if (!menu.contains(e.target) || e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+        closeActiveMenu();
+        document.removeEventListener("click", closeListener);
+      }
+    };
+    document.addEventListener("click", closeListener);
+  }, 10);
 }
 
 /* SEARCH */
@@ -178,6 +194,8 @@ function deleteGenerated(pirId) {
     alert("No PIR ID found!");
     return;
   }
+  
+  closeActiveMenu();
 
   if (!confirm("Are you sure you want to delete this document?")) return;
 
@@ -232,6 +250,7 @@ function logout() { sessionStorage.clear(); window.location.replace("../index.ht
 
 /* INIT */
 loadGeneratedDocs();
+
 
 
 
