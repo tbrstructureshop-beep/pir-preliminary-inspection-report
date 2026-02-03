@@ -113,7 +113,7 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
     <a href="${sheetUrl}" target="_blank" rel="noopener" onclick="closeActiveMenu()">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
     <button type="button" onclick="openMRM('${sheetId}')">📦 Material Listing (MRM)</button>
-    <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour <small>(Coming soon)</small></button>
+    <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour</button>
     <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
   `;
 
@@ -352,6 +352,7 @@ function closeActiveMenu() {
 /* ================= INIT ================= */
 
 loadDashboard();
+
 
 
 
