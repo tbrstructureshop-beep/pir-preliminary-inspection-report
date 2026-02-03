@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviation Maintenance Work Order</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <header class="app-header">
+        <div class="container">
+            <div class="header-content">
+                <h1 id="wo-title">Loading WO...</h1>
+                <div class="badge-row">
+                    <span id="header-reg" class="badge">--</span>
+                    <span id="header-customer" class="badge secondary">--</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="wo-info" class="wo-info-panel">
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Part Description</label>
+                    <p id="info-desc">--</p>
+                </div>
+                <div class="info-item">
+                    <label>P/N</label>
+                    <p id="info-pn">--</p>
+                </div>
+                <div class="info-item">
+                    <label>S/N</label>
+                    <p id="info-sn">--</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="findings-container" class="findings-list">
+            <!-- Cards injected by JS -->
+        </section>
+    </main>
+
+    <div id="image-modal" class="modal">
+        <div class="modal-content full-image-content">
+            <span class="close-modal">&times;</span>
+            <img id="modal-img-large" src="" alt="Finding Image">
+        </div>
+    </div>
+
+    <div id="conflict-modal" class="modal">
+        <div class="modal-content">
+            <h3>Active Session Conflict</h3>
+            <p>The following personnel are already working on this finding:</p>
+            <ul id="active-mechanics-list"></ul>
+            <p>Do you wish to join this task?</p>
+            <div class="modal-actions">
+                <button id="confirm-join" class="btn btn-primary">Join Task</button>
+                <button class="btn btn-secondary close-modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="stop-modal" class="modal">
+        <div class="modal-content">
+            <h3>Stop Man-hour</h3>
+            <p>Select your Employee ID to stop:</p>
+            <div id="stop-user-options" class="button-stack"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary close-modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+<!-- TASK SEQUENCE MODAL (The "Lock") -->
+    <div id="sequencing-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--danger);">Task Sequence Blocked</h3>
+            <p>You attempted to start Task: <b id="attempted-task"></b></p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            <p>However, the following task is currently <b>IN PROGRESS</b> for this finding:</p>
+            
+            <div style="background: #fff3f3; padding: 15px; border-radius: 4px; text-align: center; border: 1px solid #facccc; margin: 10px 0;">
+                <span style="font-size: 1.5rem; font-weight: bold; color: var(--danger);" id="active-task-name"></span>
+            </div>
+            
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                According to company policy, the active task must be stopped and finished before a new task sequence can begin.
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary close-modal-btn">Understood</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPDATED FINAL MODAL (The "Key") -->
+    <div id="final-modal" class="modal">
+        <div class="modal-content">
+            <h3>Finish Finding Work</h3>
+            <p>You are the last person working. What is the status of this Finding?</p>
+            
+            <div class="form-group">
+                <label>Next Step for Finding</label>
+                <select id="final-status-select">
+                    <!-- This option releases the "Lock" for the next task code -->
+                    <option value="PROGRESS">Current Task Finished - Waiting for Next Task Code</option>
+                    
+                    <!-- This option finishes the whole Finding -->
+                    <option value="CLOSED">All Tasks Completed - Ready to CLOSE Finding</option>
+                    
+                    <!-- This option keeps the task open but pauses it -->
+                    <option value="OPEN">Work Paused - Finding still OPEN (On-Hold)</option>
+                </select>
+            </div>
+
+            <div id="evidence-upload-section" class="form-group hidden">
+                <label>Evidence Image (Required for CLOSED)</label>
+                <input type="file" id="evidence-file" accept="image/*" capture="environment">
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px;">
+                    Take a photo of the completed work or the signed NRC.
+                </p>
+            </div>
+
+            <div class="modal-actions">
+                <button id="submit-finalize" class="btn btn-success">Submit</button>
+                <button class="btn btn-secondary close-modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
