@@ -267,7 +267,7 @@
 <script src="../../auth/script.js"></script>
 <script>
   const ALLOWED_IPS = ["118.97.115.66", "118.97.70.226"];
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; // Make sure to update this!
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; // <--- UPDATE THIS
 
   async function verifyCompanyWiFi() {
     try {
@@ -311,7 +311,6 @@
 
     let isClockedIn = false;
 
-    // UI Elements
     const greetingEl = document.getElementById("greeting");
     const metaEl = document.getElementById("employeeMeta");
     const dateEl = document.getElementById("todayDate");
@@ -320,46 +319,29 @@
     const durationEl = document.getElementById("duration");
     const clockButton = document.getElementById("clockButton");
 
-    // Helper: Update UI based on data from GAS
-    function updateUI(status) {
+    // Fetch existing status from Sheet for today
+    try {
+      const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
+      const status = await resp.json();
       if (status.lastAction === "CLOCK IN") {
         isClockedIn = true;
         clockInEl.textContent = status.time;
-        clockOutEl.textContent = "--:--";
-        durationEl.textContent = "In Progress";
         clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
         clockButton.classList.add("status-out");
       } else if (status.lastAction === "CLOCK OUT") {
         isClockedIn = false;
-        // status.time and status.duration are now clean strings from GAS getDisplayValues()
-        clockOutEl.textContent = status.time; 
-        durationEl.textContent = status.duration || "00:00:00"; 
-        clockButton.innerHTML = '<i class="fas fa-fingerprint"></i> Clock In';
-        clockButton.classList.remove("status-out");
+        clockOutEl.textContent = status.time;
+        durationEl.textContent = status.duration;
       }
-    }
+    } catch (e) { console.log("New day / No data yet"); }
 
-    // 1. Initial Load: Fetch status from GAS
-    try {
-      const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
-      const status = await resp.json();
-      if (status.lastAction) {
-        updateUI(status);
-      }
-    } catch (e) {
-      console.log("No previous data for today.");
-    }
-
-    // 2. Button Click Handler
     if(clockButton) {
         clockButton.addEventListener("click", async () => {
           const action = !isClockedIn ? "CLOCK IN" : "CLOCK OUT";
           
-          // Visual feedback (Loading)
+          // Visual feedback
           clockButton.disabled = true;
           clockButton.style.opacity = "0.5";
-          const originalText = clockButton.innerHTML;
-          clockButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
           const payload = {
             userId: employeeId,
@@ -370,49 +352,52 @@
           };
 
           try {
-            // Submit data
-            await fetch(WEB_APP_URL, {
+            const response = await fetch(WEB_APP_URL, {
               method: 'POST',
-              mode: 'no-cors', 
+              mode: 'no-cors', // Essential for GAS Web Apps
               body: JSON.stringify(payload)
             });
 
-            // Since we can't read the response in no-cors, we wait 1.5s 
-            // for the sheet to update and then re-fetch the clean display data
-            setTimeout(async () => {
-              try {
-                const updatedResp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
-                const updatedStatus = await updatedResp.json();
-                updateUI(updatedStatus);
-              } catch (err) {
-                // Fallback: If fetch fails, refresh page
-                window.location.reload();
-              } finally {
-                clockButton.disabled = false;
-                clockButton.style.opacity = "1";
-              }
-            }, 1500);
-
+            // Since no-cors doesn't return body, we update UI locally 
+            // and assume success or re-fetch status
+            const nowTime = new Date().toLocaleTimeString("en-GB");
+            
+            if (!isClockedIn) {
+              clockInEl.textContent = nowTime;
+              clockOutEl.textContent = "--:--";
+              isClockedIn = true;
+              clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
+              clockButton.classList.add("status-out");
+            } else {
+              clockOutEl.textContent = nowTime;
+              isClockedIn = false;
+              clockButton.innerHTML = '<i class="fas fa-fingerprint"></i> Clock In';
+              clockButton.classList.remove("status-out");
+              // Refresh page to get duration calculation from server
+              setTimeout(() => window.location.reload(), 1000);
+            }
           } catch (err) {
-            alert("Error saving data. Please check your connection.");
+            alert("Error saving data. Please try again.");
+          } finally {
             clockButton.disabled = false;
             clockButton.style.opacity = "1";
-            clockButton.innerHTML = originalText;
           }
         });
     }
 
-    // Set Static Info
     greetingEl.textContent = `Good Day, ${employeeName}`;
     metaEl.textContent = `${employeeId} • ${department} • ${jobTitle}`;
+    
     const today = new Date();
     dateEl.textContent = today.toLocaleDateString("en-GB", {
-      weekday: "long", day: "2-digit", month: "short", year: "numeric"
+      weekday: "long",
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
     });
   }
 
   window.addEventListener("DOMContentLoaded", verifyCompanyWiFi);
 </script>
-  
 </body>
 </html>
