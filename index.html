@@ -211,7 +211,15 @@
         }
 
         // ✅ store session
-        sessionStorage.setItem("userId", result.userId);
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify({
+            userId: result.userId,
+            name: result.name,
+            unit: result.unit,
+            jobTitle: result.jobTitle
+          })
+        );
 
         // ✅ show loading
         document.querySelector(".login-card").style.display = "none";
