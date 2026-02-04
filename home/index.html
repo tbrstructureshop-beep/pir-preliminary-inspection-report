@@ -6,19 +6,32 @@
 
   <link rel="icon" type="image/png" href="/assets/logo.png">
 
-  <script>
+ <script>
     window.addEventListener("DOMContentLoaded", () => {
       const user = JSON.parse(sessionStorage.getItem("user"));
-
+      
       if (!user || !user.userId) {
         window.location.replace("../index.html");
         return;
       }
+      
+      // Inject user data into the top bar
+      document.getElementById("display-name").textContent = user.name || "User";
+      document.getElementById("display-id").textContent = user.userId || "-";
+      document.getElementById("display-job").textContent = user.jobTitle || "-";
+      document.getElementById("display-unit").textContent = user.unit || "-";
 
-      // User is authenticated and ready
       console.log("Logged in as:", user.name);
     });
-  </script>
+    
+    // Logout function
+    function handleLogout() {
+      // Clear session
+      sessionStorage.removeItem("user");
+  // Redirect to login page (index.html at root)
+      window.location.href = "../index.html";
+    }
+</script>
 
   <style>
     :root {
@@ -28,6 +41,86 @@
       --card: #ffffff;
       --text: #1f2933;
       --muted: #6b7280;
+    }
+
+    /* Top Bar Styling */
+    .top-bar {
+      background: #fff;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1100;
+    }
+
+    /* Dropdown Logic */
+    .user-info-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background: none;
+      border: 1px solid #e2e8f0;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--primary);
+      transition: all 0.2s;
+    }
+
+    .dropbtn:hover {
+      background: #f8fafc;
+    }
+
+    .dropdown-content {
+      display: none; /* Hidden by default */
+      position: absolute;
+      left: 0;
+      background-color: white;
+      min-width: 220px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+      z-index: 1;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #eee;
+    }
+
+    /* Show dropdown on hover */
+    .user-info-dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .user-detail-row {
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+      color: var(--text);
+    }
+    
+    .user-detail-row:last-child { border-bottom: none; }
+
+    /* Right Side Logout Button */
+    .logout-btn {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .logout-btn:hover {
+      background: #fecaca;
     }
 
     * {
@@ -164,6 +257,22 @@
   </div>
   
 <body>
+
+  <!-- New Top Bar -->
+  <nav class="top-bar">
+    <div class="user-info-dropdown">
+      <button class="dropbtn" id="user-display-name">Hi, Loading...</button>
+      <div class="dropdown-content">
+        <div class="user-detail-row"><strong>ID:</strong> <span id="user-id"></span></div>
+        <div class="user-detail-row"><strong>Title:</strong> <span id="user-job"></span></div>
+        <div class="user-detail-row"><strong>Unit:</strong> <span id="user-unit"></span></div>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
 
   <div class="container">
 
