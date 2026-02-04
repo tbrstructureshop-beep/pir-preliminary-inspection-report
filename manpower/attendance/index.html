@@ -302,6 +302,14 @@
     `;
   }
 
+function formatDuration(seconds) {
+  if (!seconds || seconds <= 0) return "--:--:--";
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return [hrs, mins, secs].map(v => v < 10 ? "0" + v : v).join(":");
+}
+  
 async function initializeApp() {
   const user = protectPage();
   const employeeName = user.name;
@@ -324,20 +332,14 @@ async function initializeApp() {
     const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
     const status = await resp.json();
 
-    // Fill Clock In if it exists (Fixes the "disappearing clock-in" issue)
-    if (status.clockIn) {
-      clockInEl.textContent = status.clockIn;
-    }
+    // Map the backend data to your UI
+    clockInEl.textContent = status.clockIn;
+    clockOutEl.textContent = status.clockOut;
+    
+    // Convert seconds from backend to HH:mm:ss
+    durationEl.textContent = formatDuration(status.durationSeconds);
 
-    // Fill Clock Out and Duration if they exist
-    if (status.clockOut) {
-      clockOutEl.textContent = status.clockOut;
-    }
-    if (status.duration) {
-      durationEl.textContent = status.duration;
-    }
-
-    // Set Button State based on the last action performed
+    // Set Button State
     if (status.lastAction === "CLOCK IN") {
       isClockedIn = true;
       clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
@@ -348,7 +350,7 @@ async function initializeApp() {
       clockButton.classList.remove("status-out");
     }
   } catch (e) {
-    console.log("New day / No data yet");
+    console.log("No data found or server error");
   }
 
   // --- 2. BUTTON CLICK LOGIC ---
