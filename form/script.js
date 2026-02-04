@@ -1,3 +1,10 @@
+const currentUser = protectPage(); 
+
+// 2. Stop execution if no user (protectPage will handle the redirect)
+if (!currentUser) {
+    throw new Error("Unauthorized"); 
+}
+
 function addFinding() {
   const container = document.getElementById("findingList");
   const index = container.children.length + 1;
@@ -208,17 +215,11 @@ function toggleUserMenu() {
 
 // Function for redirecting to Home
 function goHome() {
-  window.location.href = "/home/index.html"; // Redirect to /home/index.html
+  window.location.href = "../home/index.html"; 
 }
 
-// Function for Log Out (with placeholder functionality)
-function logout() {
-  // clear session
-  sessionStorage.clear();
+console.log("Form ready for user:", currentUser.name);
 
-  // force reload + redirect to login page
-  window.location.replace("../index.html");
-}
 
 
 
