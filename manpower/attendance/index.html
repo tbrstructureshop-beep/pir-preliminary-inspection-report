@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Attendance</title>
-  <!-- Added Google Fonts and Icons for a more modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -23,12 +22,7 @@
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', -apple-system, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
     body {
       background-color: var(--bg);
@@ -42,19 +36,9 @@
       padding: 20px;
     }
 
-    .app {
-      width: 100%;
-      max-width: 500px; /* Centered narrow layout looks better for mobile-first apps */
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      animation: fadeIn 0.6s ease-out;
-    }
+    .app { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; animation: fadeIn 0.6s ease-out; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     header {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -66,156 +50,46 @@
       overflow: hidden;
     }
 
-    /* Decorative circle in header */
-    header::after {
-      content: '';
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 100px;
-      height: 100px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-    }
+    .greeting { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+    .employee-meta { font-size: 0.85rem; opacity: 0.9; margin-bottom: 16px; font-weight: 300; }
+    .date-badge { display: inline-block; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; }
 
-    .greeting {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: -0.5px;
-    }
-
-    .employee-meta {
-      font-size: 0.85rem;
-      opacity: 0.9;
-      margin-bottom: 16px;
-      font-weight: 300;
-    }
-
-    .date-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(4px);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+    .summary { display: grid; grid-template-columns: 1fr; gap: 12px; }
 
     .card {
       background: var(--card);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 16px;
       box-shadow: var(--shadow);
-      transition: var(--transition);
       border: 1px solid rgba(255,255,255,0.8);
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgba(48, 124, 145, 0.15);
-    }
+    .card-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .card-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--text-sub); letter-spacing: 0.5px; }
+    .card-value { font-size: 1.15rem; font-weight: 700; }
 
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: var(--primary-light);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .card-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--text-sub);
-      letter-spacing: 1px;
-      margin-bottom: 2px;
-    }
-
-    .card-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    button {
-      border: none;
+    /* History Section Styling */
+    .history-section {
+      background: #f8fafc;
       border-radius: var(--radius);
-      padding: 18px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      padding: 20px;
+      border: 1px dashed #cbd5e1;
     }
+    .history-title { font-size: 0.75rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .history-item { display: flex; flex-direction: column; }
+    .history-label { font-size: 0.65rem; color: #94a3b8; font-weight: 600; }
+    .history-val { font-size: 0.85rem; font-weight: 700; color: #1e293b; }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 4px 14px 0 rgba(48, 124, 145, 0.39);
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: scale(1.02);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-    }
-
-    .btn-secondary {
-      background: #fff;
-      color: var(--text-sub);
-      border: 1px solid #e2e8f0;
-    }
-
-    .btn-secondary:hover {
-      background: var(--primary-light);
-      color: var(--primary-dark);
-    }
-
-    /* Status Color Modifier */
-    .status-out {
-        background: #ef4444 !important;
-        box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39) !important;
-    }
-
-    /* Mobile Responsive tweaks */
-    @media (min-width: 480px) {
-      .app {
-        max-width: 450px;
-      }
-    }
+    .actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+    button { border: none; border-radius: var(--radius); padding: 18px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 14px 0 rgba(48, 124, 145, 0.39); }
+    .btn-primary:hover { transform: scale(1.02); }
+    .btn-secondary { background: #fff; color: var(--text-sub); border: 1px solid #e2e8f0; }
+    .status-out { background: #ef4444 !important; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39) !important; }
   </style>
 </head>
 <body>
@@ -223,166 +97,158 @@
     <header>
       <div class="greeting" id="greeting">Loading...</div>
       <div class="employee-meta" id="employeeMeta">Please wait...</div>
-      <div class="date-badge">
-        <i class="far fa-calendar-alt"></i> &nbsp;<span id="todayDate">-- --- ----</span>
-      </div>
+      <div class="date-badge"><i class="far fa-calendar-alt"></i> &nbsp;<span id="todayDate">-- --- ----</span></div>
     </header>
 
     <section class="summary">
       <div class="card">
         <div class="card-icon"><i class="fas fa-sign-in-alt"></i></div>
         <div class="card-info">
-          <div class="card-label">Clock In</div>
+          <div class="card-label">Today's Clock In</div>
           <div class="card-value" id="clockIn">--:--</div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-icon"><i class="fas fa-sign-out-alt"></i></div>
         <div class="card-info">
-          <div class="card-label">Clock Out</div>
+          <div class="card-label">Today's Clock Out</div>
           <div class="card-value" id="clockOut">--:--</div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-icon"><i class="fas fa-stopwatch"></i></div>
         <div class="card-info">
-          <div class="card-label">Work Duration</div>
-          <div class="card-value" id="duration">00:00:00</div>
+          <div class="card-label">Today's Work Duration</div>
+          <div class="card-value" id="duration">--:--:--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW HISTORY SECTION -->
+    <section class="history-section">
+      <div class="history-title"><i class="fas fa-history"></i> Last Session History</div>
+      <div class="history-grid">
+        <div class="history-item">
+          <span class="history-label">Previous In</span>
+          <span class="history-val" id="histIn">--</span>
+        </div>
+        <div class="history-item">
+          <span class="history-label">Previous Out</span>
+          <span class="history-val" id="histOut">--</span>
+        </div>
+        <div class="history-item" style="grid-column: span 2; margin-top: 4px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+          <span class="history-label">Calculated Duration</span>
+          <span class="history-val" id="histDur" style="color:var(--primary)">--</span>
         </div>
       </div>
     </section>
 
     <section class="actions">
-      <button class="btn-primary" id="clockButton">
-        <i class="fas fa-fingerprint"></i> Clock In
-      </button>
-      <button class="btn-secondary">
-        <i class="fas fa-bars"></i> Main Menu
-      </button>
+      <button class="btn-primary" id="clockButton"><i class="fas fa-fingerprint"></i> Clock In</button>
+      <button class="btn-secondary"><i class="fas fa-bars"></i> Main Menu</button>
     </section>
   </div>
 
 <script src="../../auth/script.js"></script>
 <script>
   const ALLOWED_IPS = ["118.97.115.66", "118.97.70.226"];
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; // <--- UPDATE THIS
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec";
+
+  // Helper to turn seconds into "1h 5m" or "5m 12s"
+  function formatDuration(totalSeconds) {
+    if (totalSeconds === null || totalSeconds === undefined || totalSeconds <= 0) return "--:--:--";
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return h > 0 ? `${h}h ${m}m` : `${m}m ${s}s`;
+  }
 
   async function verifyCompanyWiFi() {
     try {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
-      const userIP = data.ip;
-      if (ALLOWED_IPS.includes(userIP)) {
-        initializeApp(); 
-      } else {
-        showWifiError(userIP);
-      }
-    } catch (error) {
-      showWifiError("Unknown/Offline");
-    }
+      if (ALLOWED_IPS.includes(data.ip)) { initializeApp(); } 
+      else { showWifiError(data.ip); }
+    } catch (error) { showWifiError("Offline"); }
   }
 
   function showWifiError(detectedIP) {
-    document.body.innerHTML = `
-      <div style="height:100vh; width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px;">
-        <div style="font-size: 80px; margin-bottom: 20px;">📡</div>
-        <h1 style="color:#0f2f36; margin-bottom: 15px;">Access Restricted</h1>
-        <p style="color:#5f7f88; max-width:400px; line-height:1.6; margin-bottom: 30px;">
-          To access the Manpower/PIR System, please connect to the <b>GMF-AeroAsia Office WiFi</b>.
-        </p>
-        <div style="background:white; padding:15px 25px; border-radius:12px; font-size:13px; color:#5f7f88; border:1px solid #e2e8f0; margin-bottom:30px;">
-            Current IP: <b style="color:#307c91;">${detectedIP}</b>
-        </div>
-        <button onclick="window.location.reload()" style="background:#307c91; color:white; padding:15px 40px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">
-          Retry Connection
-        </button>
-      </div>
-    `;
+    document.body.innerHTML = `<div style="text-align:center; padding:50px;"><h1>Access Restricted</h1><p>Connect to GMF-AeroAsia WiFi</p><b>IP: ${detectedIP}</b></div>`;
   }
 
-// Helper to turn seconds into "1h 5m" or "5m 12s"
-function formatDuration(totalSeconds) {
-  if (!totalSeconds || totalSeconds <= 0) return "--:--:--";
-  
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
+  async function initializeApp() {
+    const user = protectPage();
+    const { name: employeeName, userId: employeeId, unit: department, jobTitle } = user;
+    let isClockedIn = false;
 
-  if (h > 0) {
-    return `${h}h ${m}m`;
-  } else {
-    return `${m}m ${s}s`;
-  }
-}
+    const clockInEl = document.getElementById("clockIn");
+    const clockOutEl = document.getElementById("clockOut");
+    const durationEl = document.getElementById("duration");
+    const clockButton = document.getElementById("clockButton");
 
-async function initializeApp() {
-  const user = protectPage();
-  const { name: employeeName, userId: employeeId, unit: department, jobTitle } = user;
+    // History elements
+    const histInEl = document.getElementById("histIn");
+    const histOutEl = document.getElementById("histOut");
+    const histDurEl = document.getElementById("histDur");
 
-  let isClockedIn = false;
-  const clockInEl = document.getElementById("clockIn");
-  const clockOutEl = document.getElementById("clockOut");
-  const durationEl = document.getElementById("duration");
-  const clockButton = document.getElementById("clockButton");
+    try {
+      const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
+      const status = await resp.json();
 
-  try {
-    const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
-    const status = await resp.json();
-
-    if (status.clockIn) clockInEl.textContent = status.clockIn;
-    if (status.clockOut) clockOutEl.textContent = status.clockOut;
-    
-    // Convert seconds from sheet into "Xm Ys" string
-    if (status.duration) {
-      durationEl.textContent = formatDuration(status.duration);
-    }
-
-    if (status.lastAction === "CLOCK IN") {
-      isClockedIn = true;
-      clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
-      clockButton.classList.add("status-out");
-    }
-  } catch (e) { console.log("Init error:", e); }
-
-  if(clockButton) {
-    clockButton.addEventListener("click", async () => {
-      const action = !isClockedIn ? "CLOCK IN" : "CLOCK OUT";
-      clockButton.disabled = true;
-
-      const payload = { userId: employeeId, name: employeeName, title: jobTitle, unit: department, action: action };
-
-      try {
-        await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-
-        const nowTime = new Date().toLocaleTimeString("en-GB", { hour12: false });
-        
-        if (action === "CLOCK IN") {
-          clockInEl.textContent = nowTime;
-          clockOutEl.textContent = "--:--";
-          durationEl.textContent = "--:--:--";
-          isClockedIn = true;
-          clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
-          clockButton.classList.add("status-out");
-        } else {
-          // On Clock Out, reload to get the fresh duration from server
-          setTimeout(() => window.location.reload(), 1000);
-        }
-      } catch (err) {
-        alert("Error saving. Try again.");
-        clockButton.disabled = false;
+      // 1. Set Today's Status
+      if (status.clockIn) clockInEl.textContent = status.clockIn;
+      if (status.clockOut) clockOutEl.textContent = status.clockOut;
+      
+      // Only show duration in main card if user is currently Clocked Out today
+      if (status.lastAction === "CLOCK OUT") {
+        durationEl.textContent = formatDuration(status.historyDuration);
       }
+
+      // 2. Set History Status (Absolute Last Session)
+      histInEl.textContent = status.historyIn || "--";
+      histOutEl.textContent = status.historyOut || "--";
+      histDurEl.textContent = formatDuration(status.historyDuration);
+
+      // 3. Set Button State
+      if (status.lastAction === "CLOCK IN") {
+        isClockedIn = true;
+        clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
+        clockButton.classList.add("status-out");
+      }
+    } catch (e) { console.log("Init error:", e); }
+
+    if(clockButton) {
+      clockButton.addEventListener("click", async () => {
+        const action = !isClockedIn ? "CLOCK IN" : "CLOCK OUT";
+        clockButton.disabled = true;
+        clockButton.style.opacity = "0.5";
+
+        try {
+          await fetch(WEB_APP_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify({ userId: employeeId, name: employeeName, title: jobTitle, unit: department, action: action }) 
+          });
+
+          if (action === "CLOCK IN") {
+            window.location.reload(); // Reload to refresh history and today's status
+          } else {
+            // Give the sheet a moment to process the calculation
+            setTimeout(() => window.location.reload(), 1200);
+          }
+        } catch (err) {
+          alert("Error saving. Try again.");
+          clockButton.disabled = false;
+        }
+      });
+    }
+
+    document.getElementById("greeting").textContent = `Good Day, ${employeeName}`;
+    document.getElementById("employeeMeta").textContent = `${employeeId} • ${department} • ${jobTitle}`;
+    document.getElementById("todayDate").textContent = new Date().toLocaleDateString("en-GB", {
+      weekday: "long", day: "2-digit", month: "short", year: "numeric"
     });
   }
-
-  // Update static text
-  document.getElementById("greeting").textContent = `Good Day, ${employeeName}`;
-  document.getElementById("employeeMeta").textContent = `${employeeId} • ${department} • ${jobTitle}`;
-  document.getElementById("todayDate").textContent = new Date().toLocaleDateString("en-GB", {
-    weekday: "long", day: "2-digit", month: "short", year: "numeric"
-  });
-}
 
   window.addEventListener("DOMContentLoaded", verifyCompanyWiFi);
 </script>
