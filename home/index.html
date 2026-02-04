@@ -7,13 +7,19 @@
   <link rel="icon" type="image/png" href="/assets/logo.png">
 
   <script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-      const userId = sessionStorage.getItem("userId");
-      if (!userId) {
+    window.addEventListener("DOMContentLoaded", () => {
+      const user = JSON.parse(sessionStorage.getItem("user"));
+
+      if (!user || !user.userId) {
         window.location.replace("../index.html");
+        return;
       }
+
+      // User is authenticated and ready
+      console.log("Logged in as:", user.name);
     });
-  </script>
+</script>
+
   <style>
     :root {
       --primary: #00717a;
