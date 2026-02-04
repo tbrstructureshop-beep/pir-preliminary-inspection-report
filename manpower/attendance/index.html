@@ -266,8 +266,8 @@
 
 <script src="../../auth/script.js"></script>
 <script>
-  // ... (Keeping your original logic exactly as is, just updating the button style toggle)
   const ALLOWED_IPS = ["118.97.115.66", "118.97.70.226"];
+  const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE"; // <--- UPDATE THIS
 
   async function verifyCompanyWiFi() {
     try {
@@ -302,15 +302,13 @@
     `;
   }
 
-  function initializeApp() {
+  async function initializeApp() {
     const user = protectPage();
     const employeeName = user.name;
     const employeeId = user.userId;
     const department = user.unit;
     const jobTitle = user.jobTitle;
 
-    let clockInTime = null;
-    let clockOutTime = null;
     let isClockedIn = false;
 
     const greetingEl = document.getElementById("greeting");
@@ -321,43 +319,69 @@
     const durationEl = document.getElementById("duration");
     const clockButton = document.getElementById("clockButton");
 
-    function formatTime(date) { return date.toLocaleTimeString("en-GB"); }
-
-    function formatDuration(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-      const s = String(totalSeconds % 60).padStart(2, "0");
-      return `${h}:${m}:${s}`;
-    }
-
-    function updateDuration() {
-      if (clockInTime && clockOutTime) {
-        durationEl.textContent = formatDuration(clockOutTime - clockInTime);
-      } else {
-        durationEl.textContent = "00:00:00";
+    // Fetch existing status from Sheet for today
+    try {
+      const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
+      const status = await resp.json();
+      if (status.lastAction === "CLOCK IN") {
+        isClockedIn = true;
+        clockInEl.textContent = status.time;
+        clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
+        clockButton.classList.add("status-out");
+      } else if (status.lastAction === "CLOCK OUT") {
+        isClockedIn = false;
+        clockOutEl.textContent = status.time;
+        durationEl.textContent = status.duration;
       }
-    }
+    } catch (e) { console.log("New day / No data yet"); }
 
     if(clockButton) {
-        clockButton.addEventListener("click", () => {
-          const now = new Date();
-          if (!isClockedIn) {
-            clockInTime = now;
-            clockOutTime = null;
-            clockInEl.textContent = formatTime(now);
-            clockOutEl.textContent = "--:--";
-            isClockedIn = true;
-            clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
-            clockButton.classList.add("status-out");
-          } else {
-            clockOutTime = now;
-            clockOutEl.textContent = formatTime(now);
-            isClockedIn = false;
-            clockButton.innerHTML = '<i class="fas fa-fingerprint"></i> Clock In';
-            clockButton.classList.remove("status-out");
+        clockButton.addEventListener("click", async () => {
+          const action = !isClockedIn ? "CLOCK IN" : "CLOCK OUT";
+          
+          // Visual feedback
+          clockButton.disabled = true;
+          clockButton.style.opacity = "0.5";
+
+          const payload = {
+            userId: employeeId,
+            name: employeeName,
+            title: jobTitle,
+            unit: department,
+            action: action
+          };
+
+          try {
+            const response = await fetch(WEB_APP_URL, {
+              method: 'POST',
+              mode: 'no-cors', // Essential for GAS Web Apps
+              body: JSON.stringify(payload)
+            });
+
+            // Since no-cors doesn't return body, we update UI locally 
+            // and assume success or re-fetch status
+            const nowTime = new Date().toLocaleTimeString("en-GB");
+            
+            if (!isClockedIn) {
+              clockInEl.textContent = nowTime;
+              clockOutEl.textContent = "--:--";
+              isClockedIn = true;
+              clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
+              clockButton.classList.add("status-out");
+            } else {
+              clockOutEl.textContent = nowTime;
+              isClockedIn = false;
+              clockButton.innerHTML = '<i class="fas fa-fingerprint"></i> Clock In';
+              clockButton.classList.remove("status-out");
+              // Refresh page to get duration calculation from server
+              setTimeout(() => window.location.reload(), 1000);
+            }
+          } catch (err) {
+            alert("Error saving data. Please try again.");
+          } finally {
+            clockButton.disabled = false;
+            clockButton.style.opacity = "1";
           }
-          updateDuration();
         });
     }
 
