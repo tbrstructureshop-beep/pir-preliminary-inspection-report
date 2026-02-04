@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Main Manpower Menu</title>
+
+<style>
+:root{
+  --primary:#1f535c;
+  --primary-soft:#2f6f78;
+  --primary-light:#4f8f97;
+  --bg:#0f2f36;
+  --card:#ffffff;
+  --text:#0e2a30;
+  --muted:#6b8b91;
+}
+
+*{
+  box-sizing:border-box;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--bg),var(--primary));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.container{
+  max-width:960px;
+  width:100%;
+}
+
+.header{
+  text-align:center;
+  color:#fff;
+  margin-bottom:32px;
+}
+
+.header h1{
+  margin:0;
+  font-size:1.8rem;
+  letter-spacing:.5px;
+}
+
+.header p{
+  margin-top:8px;
+  opacity:.85;
+  font-size:.95rem;
+}
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.menu-card{
+  background:var(--card);
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.menu-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 28px 55px rgba(0,0,0,.35);
+}
+
+.menu-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.menu-icon{
+  width:54px;
+  height:54px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary-soft),var(--primary-light));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+}
+
+.menu-title{
+  font-size:1.15rem;
+  font-weight:600;
+  color:var(--text);
+}
+
+.menu-desc{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.5;
+}
+
+.menu-action{
+  margin-top:22px;
+}
+
+.menu-action button{
+  width:100%;
+  border:none;
+  border-radius:14px;
+  padding:12px 14px;
+  background:var(--primary);
+  color:#fff;
+  font-size:.95rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:background .25s ease;
+}
+
+.menu-action button:hover{
+  background:var(--primary-soft);
+}
+
+@media (max-width:480px){
+  .header h1{
+    font-size:1.5rem;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Manpower Management</h1>
+    <p>Professional workforce tools designed for operational efficiency</p>
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div>
+        <div class="menu-top">
+          <div class="menu-icon">🕒</div>
+          <div class="menu-title">Attendance</div>
+        </div>
+        <div class="menu-desc">
+          Record daily clock-in and clock-out activities with precise timestamps,
+          ensuring accurate attendance tracking and work duration monitoring.
+        </div>
+      </div>
+      <div class="menu-action">
+        <button onclick="openAttendance()">Open Attendance</button>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <div>
+        <div class="menu-top">
+          <div class="menu-icon">🧑‍✈️</div>
+          <div class="menu-title">Personnel Distribution</div>
+        </div>
+        <div class="menu-desc">
+          Manage manpower allocation across units and tasks, providing clear
+          visibility of personnel deployment and operational readiness.
+        </div>
+      </div>
+      <div class="menu-action">
+        <button onclick="openDistribution()">Open Distribution</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openAttendance(){
+  alert("Navigate to Attendance module");
+}
+
+function openDistribution(){
+  alert("Navigate to Personnel Distribution module");
+}
+</script>
+</body>
+</html>
