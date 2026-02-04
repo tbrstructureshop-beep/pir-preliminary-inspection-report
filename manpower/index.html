@@ -4,235 +4,306 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Daily Attendance</title>
+  <!-- Added Google Fonts and Icons for a more modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     :root {
       --primary: #307c91;
       --primary-dark: #245f6f;
-      --bg: #f4f8fa;
+      --primary-light: #e6f1f4;
+      --bg: #f0f4f7;
       --card: #ffffff;
       --text-main: #0f2f36;
       --text-sub: #5f7f88;
       --accent: #3fa2b8;
-      --radius: 14px;
-      --transition: all 0.25s ease;
+      --radius: 16px;
+      --shadow: 0 10px 25px -5px rgba(48, 124, 145, 0.1), 0 8px 10px -6px rgba(48, 124, 145, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
     }
 
     body {
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(48, 124, 145, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(63, 162, 184, 0.05) 0px, transparent 50%);
       color: var(--text-main);
       min-height: 100vh;
-      padding: 16px;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
     }
 
     .app {
-      max-width: 900px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 500px; /* Centered narrow layout looks better for mobile-first apps */
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     header {
-      background: var(--card);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative circle in header */
+    header::after {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
     }
 
     .greeting {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 6px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
     }
 
     .employee-meta {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      margin-bottom: 10px;
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 16px;
+      font-weight: 300;
     }
 
-    .date {
-      font-size: 0.95rem;
-      color: var(--primary-dark);
+    .date-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
       font-weight: 500;
     }
 
     .summary {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    @media (min-width: 600px) {
-      .summary {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      gap: 16px;
     }
 
     .card {
       background: var(--card);
       border-radius: var(--radius);
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
       transition: var(--transition);
+      border: 1px solid rgba(255,255,255,0.8);
     }
 
     .card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(48, 124, 145, 0.15);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .card-info {
+      display: flex;
+      flex-direction: column;
     }
 
     .card-label {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
       color: var(--text-sub);
-      margin-bottom: 8px;
-      letter-spacing: 0.3px;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
     }
 
     .card-value {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: var(--primary);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .actions {
       display: flex;
       flex-direction: column;
       gap: 12px;
-    }
-
-    @media (min-width: 600px) {
-      .actions {
-        flex-direction: row;
-      }
+      margin-top: 8px;
     }
 
     button {
       border: none;
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 18px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .btn-primary {
-      flex: 1;
       background: var(--primary);
       color: #fff;
+      box-shadow: 0 4px 14px 0 rgba(48, 124, 145, 0.39);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: scale(1.02);
     }
 
     .btn-primary:active {
-      background: var(--primary-dark);
       transform: scale(0.98);
     }
 
     .btn-secondary {
-      background: #e6f1f4;
+      background: #fff;
+      color: var(--text-sub);
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-light);
       color: var(--primary-dark);
     }
 
-    .btn-secondary:active {
-      background: #d4e7ec;
-      transform: scale(0.98);
+    /* Status Color Modifier */
+    .status-out {
+        background: #ef4444 !important;
+        box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39) !important;
+    }
+
+    /* Mobile Responsive tweaks */
+    @media (min-width: 480px) {
+      .app {
+        max-width: 450px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <div class="greeting" id="greeting"></div>
-      <div class="employee-meta" id="employeeMeta"></div>
-      <div class="date" id="todayDate"></div>
+      <div class="greeting" id="greeting">Loading...</div>
+      <div class="employee-meta" id="employeeMeta">Please wait...</div>
+      <div class="date-badge">
+        <i class="far fa-calendar-alt"></i> &nbsp;<span id="todayDate">-- --- ----</span>
+      </div>
     </header>
 
     <section class="summary">
       <div class="card">
-        <div class="card-label">Clock In</div>
-        <div class="card-value" id="clockIn">--:--</div>
+        <div class="card-icon"><i class="fas fa-sign-in-alt"></i></div>
+        <div class="card-info">
+          <div class="card-label">Clock In</div>
+          <div class="card-value" id="clockIn">--:--</div>
+        </div>
       </div>
+
       <div class="card">
-        <div class="card-label">Clock Out</div>
-        <div class="card-value" id="clockOut">--:--</div>
+        <div class="card-icon"><i class="fas fa-sign-out-alt"></i></div>
+        <div class="card-info">
+          <div class="card-label">Clock Out</div>
+          <div class="card-value" id="clockOut">--:--</div>
+        </div>
       </div>
+
       <div class="card">
-        <div class="card-label">Work Duration</div>
-        <div class="card-value" id="duration">--:--</div>
+        <div class="card-icon"><i class="fas fa-stopwatch"></i></div>
+        <div class="card-info">
+          <div class="card-label">Work Duration</div>
+          <div class="card-value" id="duration">00:00:00</div>
+        </div>
       </div>
     </section>
 
     <section class="actions">
-      <button class="btn-primary" id="clockButton">Clock In</button>
-      <button class="btn-secondary">Menu</button>
+      <button class="btn-primary" id="clockButton">
+        <i class="fas fa-fingerprint"></i> Clock In
+      </button>
+      <button class="btn-secondary">
+        <i class="fas fa-bars"></i> Main Menu
+      </button>
     </section>
   </div>
 
 <script src="../../auth/script.js"></script>
 <script>
-  // 1. CONFIGURATION: The authorized Public IPs for your office
-  // This covers both your PC network and your Mobile network
+  // ... (Keeping your original logic exactly as is, just updating the button style toggle)
   const ALLOWED_IPS = ["118.97.115.66", "118.97.70.226"];
 
-  /**
-   * NETWORK CHECK LOGIC
-   * This fetches the user's current public IP and compares it to the list.
-   */
   async function verifyCompanyWiFi() {
     try {
-      // We use a public API to find the user's current IP address
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
       const userIP = data.ip;
-
-      console.log("Detected IP:", userIP);
-
       if (ALLOWED_IPS.includes(userIP)) {
-        console.log("Network Verified: GMF Office Network");
         initializeApp(); 
       } else {
         showWifiError(userIP);
       }
     } catch (error) {
-      console.error("IP check failed:", error);
-      // If the IP service is down, we show the error as a safety measure
       showWifiError("Unknown/Offline");
     }
   }
 
   function showWifiError(detectedIP) {
     document.body.innerHTML = `
-      <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-family:sans-serif; background:#f4f7f9; padding:20px;">
-        <div style="font-size: 60px;">📶</div>
-        <h1 style="color:#00717a;">Connection Restricted</h1>
-        <p style="font-size:18px; color:#4b5563; max-width:450px;">
+      <div style="height:100vh; width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px;">
+        <div style="font-size: 80px; margin-bottom: 20px;">📡</div>
+        <h1 style="color:#0f2f36; margin-bottom: 15px;">Access Restricted</h1>
+        <p style="color:#5f7f88; max-width:400px; line-height:1.6; margin-bottom: 30px;">
           To access the Manpower/PIR System, please connect to the <b>GMF-AeroAsia Office WiFi</b>.
         </p>
-        <p style="color:#9ca3af; font-size:13px; margin-top:10px;">
-          Your current IP: <b>${detectedIP}</b><br>
-          (Access is only allowed from registered Office Gateways)
-        </p>
-        <button onclick="window.location.reload()" style="margin-top:20px; padding:12px 24px; background:#00717a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
+        <div style="background:white; padding:15px 25px; border-radius:12px; font-size:13px; color:#5f7f88; border:1px solid #e2e8f0; margin-bottom:30px;">
+            Current IP: <b style="color:#307c91;">${detectedIP}</b>
+        </div>
+        <button onclick="window.location.reload()" style="background:#307c91; color:white; padding:15px 40px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">
           Retry Connection
         </button>
       </div>
     `;
   }
 
-  /**
-   * YOUR ORIGINAL LOGIC
-   */
   function initializeApp() {
-    // Auth check
     const user = protectPage();
-
     const employeeName = user.name;
     const employeeId = user.userId;
     const department = user.unit;
@@ -250,9 +321,7 @@
     const durationEl = document.getElementById("duration");
     const clockButton = document.getElementById("clockButton");
 
-    function formatTime(date) {
-      return date.toLocaleTimeString("en-GB");
-    }
+    function formatTime(date) { return date.toLocaleTimeString("en-GB"); }
 
     function formatDuration(ms) {
       const totalSeconds = Math.floor(ms / 1000);
@@ -266,7 +335,7 @@
       if (clockInTime && clockOutTime) {
         durationEl.textContent = formatDuration(clockOutTime - clockInTime);
       } else {
-        durationEl.textContent = "--:--";
+        durationEl.textContent = "00:00:00";
       }
     }
 
@@ -279,21 +348,21 @@
             clockInEl.textContent = formatTime(now);
             clockOutEl.textContent = "--:--";
             isClockedIn = true;
-            clockButton.textContent = "Clock Out";
-            clockButton.style.background = "#d9534f"; 
+            clockButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Clock Out';
+            clockButton.classList.add("status-out");
           } else {
             clockOutTime = now;
             clockOutEl.textContent = formatTime(now);
             isClockedIn = false;
-            clockButton.textContent = "Clock In";
-            clockButton.style.background = "var(--primary)"; 
+            clockButton.innerHTML = '<i class="fas fa-fingerprint"></i> Clock In';
+            clockButton.classList.remove("status-out");
           }
           updateDuration();
         });
     }
 
     greetingEl.textContent = `Good Day, ${employeeName}`;
-    metaEl.textContent = `${employeeId} | ${department} | ${jobTitle}`;
+    metaEl.textContent = `${employeeId} • ${department} • ${jobTitle}`;
     
     const today = new Date();
     dateEl.textContent = today.toLocaleDateString("en-GB", {
@@ -304,7 +373,6 @@
     });
   }
 
-  // START THE CHECK
   window.addEventListener("DOMContentLoaded", verifyCompanyWiFi);
 </script>
 </body>
