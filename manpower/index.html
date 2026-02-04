@@ -177,69 +177,121 @@
 
 <script src="../../auth/script.js"></script>
 <script>
-  // Auth check - this will redirect to login if no session exists
-  const user = protectPage();
+  // 1. CONFIGURATION: The internal IP address of your server/gateway
+  const INTERNAL_IP = "http://172.16.144.157"; 
 
-  // Use session data
-  const employeeName = user.name;
-  const employeeId = user.userId;
-  const department = user.unit;
-  const jobTitle = user.jobTitle;
+  /**
+   * NETWORK CHECK LOGIC
+   * This tries to "ping" your internal server. 
+   * If it fails, it hides the app and shows the WiFi message.
+   */
+  function verifyCompanyWiFi() {
+    const img = new Image();
+    const timer = setTimeout(() => {
+      img.onload = null;
+      img.onerror = null;
+      showWifiError();
+    }, 2500); // 2.5 seconds timeout
 
-  let clockInTime = null;
-  let clockOutTime = null;
-  let isClockedIn = false;
+    img.onload = function() {
+      clearTimeout(timer);
+      console.log("Network Verified: GMF WiFi");
+      initializeApp(); // Proceed to your original logic
+    };
 
-  const greetingEl = document.getElementById("greeting");
-  const metaEl = document.getElementById("employeeMeta");
-  const dateEl = document.getElementById("todayDate");
-  const clockInEl = document.getElementById("clockIn");
-  const clockOutEl = document.getElementById("clockOut");
-  const durationEl = document.getElementById("duration");
-  const clockButton = document.getElementById("clockButton");
+    img.onerror = function() {
+      clearTimeout(timer);
+      showWifiError();
+    };
 
-  function formatTime(date) {
-    return date.toLocaleTimeString("en-GB");
+    // We try to load the favicon or a small image from your internal server
+    img.src = INTERNAL_IP + "/favicon.ico?t=" + new Date().getTime();
   }
 
-  function formatDuration(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-    const s = String(totalSeconds % 60).padStart(2, "0");
-    return `${h}:${m}:${s}`;
+  function showWifiError() {
+    // This replaces the screen with a restricted message
+    document.body.innerHTML = `
+      <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-family:sans-serif; background:#f4f7f9; padding:20px;">
+        <div style="font-size: 60px;">📶</div>
+        <h1 style="color:#00717a;">Connection Restricted</h1>
+        <p style="font-size:18px; color:#4b5563; max-width:450px;">
+          To access the Manpower/PIR System, please connect to the <b>GMF-AeroAsia WiFi</b>.
+        </p>
+        <p style="color:#9ca3af; font-size:14px;">(Detected: Personal Data / External Network)</p>
+        <button onclick="window.location.reload()" style="margin-top:20px; padding:12px 24px; background:#00717a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
+          Retry Connection
+        </button>
+      </div>
+    `;
   }
 
-  function updateDuration() {
-    if (clockInTime && clockOutTime) {
-      durationEl.textContent = formatDuration(clockOutTime - clockInTime);
-    } else {
-      durationEl.textContent = "--:--";
+  /**
+   * YOUR ORIGINAL LOGIC
+   * Wrapped in a function so it only runs after WiFi is verified.
+   */
+  function initializeApp() {
+    // Auth check
+    const user = protectPage();
+
+    // Use session data
+    const employeeName = user.name;
+    const employeeId = user.userId;
+    const department = user.unit;
+    const jobTitle = user.jobTitle;
+
+    let clockInTime = null;
+    let clockOutTime = null;
+    let isClockedIn = false;
+
+    const greetingEl = document.getElementById("greeting");
+    const metaEl = document.getElementById("employeeMeta");
+    const dateEl = document.getElementById("todayDate");
+    const clockInEl = document.getElementById("clockIn");
+    const clockOutEl = document.getElementById("clockOut");
+    const durationEl = document.getElementById("duration");
+    const clockButton = document.getElementById("clockButton");
+
+    function formatTime(date) {
+      return date.toLocaleTimeString("en-GB");
     }
-  }
 
-  clockButton.addEventListener("click", () => {
-    const now = new Date();
-    if (!isClockedIn) {
-      clockInTime = now;
-      clockOutTime = null;
-      clockInEl.textContent = formatTime(now);
-      clockOutEl.textContent = "--:--";
-      isClockedIn = true;
-      clockButton.textContent = "Clock Out";
-      clockButton.style.background = "#d9534f"; // Change color to red for Clock Out
-    } else {
-      clockOutTime = now;
-      clockOutEl.textContent = formatTime(now);
-      isClockedIn = false;
-      clockButton.textContent = "Clock In";
-      clockButton.style.background = "var(--primary)"; // Change back
+    function formatDuration(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+      const s = String(totalSeconds % 60).padStart(2, "0");
+      return `${h}:${m}:${s}`;
     }
-    updateDuration();
-  });
 
-  function init() {
-    // Dynamically set the UI using the user object
+    function updateDuration() {
+      if (clockInTime && clockOutTime) {
+        durationEl.textContent = formatDuration(clockOutTime - clockInTime);
+      } else {
+        durationEl.textContent = "--:--";
+      }
+    }
+
+    clockButton.addEventListener("click", () => {
+      const now = new Date();
+      if (!isClockedIn) {
+        clockInTime = now;
+        clockOutTime = null;
+        clockInEl.textContent = formatTime(now);
+        clockOutEl.textContent = "--:--";
+        isClockedIn = true;
+        clockButton.textContent = "Clock Out";
+        clockButton.style.background = "#d9534f"; 
+      } else {
+        clockOutTime = now;
+        clockOutEl.textContent = formatTime(now);
+        isClockedIn = false;
+        clockButton.textContent = "Clock In";
+        clockButton.style.background = "var(--primary)"; 
+      }
+      updateDuration();
+    });
+
+    // Run UI Initializer
     greetingEl.textContent = `Good Day, ${employeeName}`;
     metaEl.textContent = `${employeeId} | ${department} | ${jobTitle}`;
     
@@ -252,7 +304,8 @@
     });
   }
 
-  init();
+  // START THE CHECK
+  window.addEventListener("DOMContentLoaded", verifyCompanyWiFi);
 </script>
 </body>
 </html>
