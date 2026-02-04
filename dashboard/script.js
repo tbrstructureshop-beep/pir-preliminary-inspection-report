@@ -7,12 +7,7 @@ let rowsPerPage = 10;
 
 /* ==== DASHBOARD PAGE PROTECTION === */
 
-function protectPage() {
-  const userId = sessionStorage.getItem("userId");
-  if (!userId) {
-    window.location.replace("../index.html");
-  }
-}
+const currentUser = protectPage();
 
 /* ========== LOADING SPINNER =========== */
 
@@ -352,6 +347,7 @@ function closeActiveMenu() {
 if (currentUser) {
   loadDashboard();
 }
+
 
 
 
