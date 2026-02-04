@@ -1,7 +1,5 @@
 const API = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
-protectPage(); // 👈 MUST BE FIRST
-
 let MASTER_ROWS = [];
 
 let currentPage = 1;
@@ -351,7 +349,9 @@ function closeActiveMenu() {
 
 /* ================= INIT ================= */
 
-loadDashboard();
+if (currentUser) {
+  loadDashboard();
+}
 
 
 
