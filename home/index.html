@@ -6,29 +6,29 @@
 
   <link rel="icon" type="image/png" href="/assets/logo.png">
 
- <script>
+<script>
     window.addEventListener("DOMContentLoaded", () => {
+      // 1. Get data from sessionStorage
       const user = JSON.parse(sessionStorage.getItem("user"));
       
+      // 2. Security check
       if (!user || !user.userId) {
         window.location.replace("../index.html");
         return;
       }
       
-      // Inject user data into the top bar
-      document.getElementById("display-name").textContent = user.name || "User";
-      document.getElementById("display-id").textContent = user.userId || "-";
-      document.getElementById("display-job").textContent = user.jobTitle || "-";
-      document.getElementById("display-unit").textContent = user.unit || "-";
+      // 3. Inject user data using the CORRECT IDs from your HTML
+      // Note: We added "Hi, " back to the name string
+      document.getElementById("user-display-name").textContent = "Hi, " + (user.name || "User");
+      document.getElementById("user-id").textContent = user.userId || "-";
+      document.getElementById("user-job").textContent = user.jobTitle || "-";
+      document.getElementById("user-unit").textContent = user.unit || "-";
 
       console.log("Logged in as:", user.name);
     });
     
-    // Logout function
     function handleLogout() {
-      // Clear session
       sessionStorage.removeItem("user");
-  // Redirect to login page (index.html at root)
       window.location.href = "../index.html";
     }
 </script>
