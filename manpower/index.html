@@ -177,47 +177,48 @@
 
 <script src="../../auth/script.js"></script>
 <script>
-  // 1. CONFIGURATION: The internal IP address of your server/gateway
-  const INTERNAL_IP = "https://www.gmf-aeroasia.co.id"; // The office router
+  // 1. CONFIGURATION: The authorized Public IPs for your office
+  // This covers both your PC network and your Mobile network
+  const ALLOWED_IPS = ["118.97.115.66", "118.97.70.226"];
 
   /**
    * NETWORK CHECK LOGIC
-   * This tries to "ping" your internal server. 
-   * If it fails, it hides the app and shows the WiFi message.
+   * This fetches the user's current public IP and compares it to the list.
    */
-  function verifyCompanyWiFi() {
-    const img = new Image();
-    const timer = setTimeout(() => {
-      img.onload = null;
-      img.onerror = null;
-      showWifiError();
-    }, 2500); // 2.5 seconds timeout
+  async function verifyCompanyWiFi() {
+    try {
+      // We use a public API to find the user's current IP address
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      const userIP = data.ip;
 
-    img.onload = function() {
-      clearTimeout(timer);
-      console.log("Network Verified: GMF WiFi");
-      initializeApp(); // Proceed to your original logic
-    };
+      console.log("Detected IP:", userIP);
 
-    img.onerror = function() {
-      clearTimeout(timer);
-      showWifiError();
-    };
-
-    // We try to load the favicon or a small image from your internal server
-    img.src = INTERNAL_IP + "/favicon.ico?t=" + new Date().getTime();
+      if (ALLOWED_IPS.includes(userIP)) {
+        console.log("Network Verified: GMF Office Network");
+        initializeApp(); 
+      } else {
+        showWifiError(userIP);
+      }
+    } catch (error) {
+      console.error("IP check failed:", error);
+      // If the IP service is down, we show the error as a safety measure
+      showWifiError("Unknown/Offline");
+    }
   }
 
-  function showWifiError() {
-    // This replaces the screen with a restricted message
+  function showWifiError(detectedIP) {
     document.body.innerHTML = `
       <div style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-family:sans-serif; background:#f4f7f9; padding:20px;">
         <div style="font-size: 60px;">📶</div>
         <h1 style="color:#00717a;">Connection Restricted</h1>
         <p style="font-size:18px; color:#4b5563; max-width:450px;">
-          To access the Manpower/PIR System, please connect to the <b>GMF-AeroAsia WiFi</b>.
+          To access the Manpower/PIR System, please connect to the <b>GMF-AeroAsia Office WiFi</b>.
         </p>
-        <p style="color:#9ca3af; font-size:14px;">(Detected: Personal Data / External Network)</p>
+        <p style="color:#9ca3af; font-size:13px; margin-top:10px;">
+          Your current IP: <b>${detectedIP}</b><br>
+          (Access is only allowed from registered Office Gateways)
+        </p>
         <button onclick="window.location.reload()" style="margin-top:20px; padding:12px 24px; background:#00717a; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
           Retry Connection
         </button>
@@ -227,13 +228,11 @@
 
   /**
    * YOUR ORIGINAL LOGIC
-   * Wrapped in a function so it only runs after WiFi is verified.
    */
   function initializeApp() {
     // Auth check
     const user = protectPage();
 
-    // Use session data
     const employeeName = user.name;
     const employeeId = user.userId;
     const department = user.unit;
@@ -271,27 +270,28 @@
       }
     }
 
-    clockButton.addEventListener("click", () => {
-      const now = new Date();
-      if (!isClockedIn) {
-        clockInTime = now;
-        clockOutTime = null;
-        clockInEl.textContent = formatTime(now);
-        clockOutEl.textContent = "--:--";
-        isClockedIn = true;
-        clockButton.textContent = "Clock Out";
-        clockButton.style.background = "#d9534f"; 
-      } else {
-        clockOutTime = now;
-        clockOutEl.textContent = formatTime(now);
-        isClockedIn = false;
-        clockButton.textContent = "Clock In";
-        clockButton.style.background = "var(--primary)"; 
-      }
-      updateDuration();
-    });
+    if(clockButton) {
+        clockButton.addEventListener("click", () => {
+          const now = new Date();
+          if (!isClockedIn) {
+            clockInTime = now;
+            clockOutTime = null;
+            clockInEl.textContent = formatTime(now);
+            clockOutEl.textContent = "--:--";
+            isClockedIn = true;
+            clockButton.textContent = "Clock Out";
+            clockButton.style.background = "#d9534f"; 
+          } else {
+            clockOutTime = now;
+            clockOutEl.textContent = formatTime(now);
+            isClockedIn = false;
+            clockButton.textContent = "Clock In";
+            clockButton.style.background = "var(--primary)"; 
+          }
+          updateDuration();
+        });
+    }
 
-    // Run UI Initializer
     greetingEl.textContent = `Good Day, ${employeeName}`;
     metaEl.textContent = `${employeeId} | ${department} | ${jobTitle}`;
     
