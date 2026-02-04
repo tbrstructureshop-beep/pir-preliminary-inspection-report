@@ -345,9 +345,9 @@ function closeActiveMenu() {
 /* ================= INIT ================= */
 
 if (currentUser) {
+  console.log("Welcome,", currentUser.name);
   loadDashboard();
 }
-
 
 
 
