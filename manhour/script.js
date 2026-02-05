@@ -1,4 +1,4 @@
-
+const currentUser = protectPage();
 const API = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 const urlParams = new URLSearchParams(window.location.search);
 // Update: Look for 'id' (from Dashboard) first, then 'sheetId' (legacy), then fallback
@@ -99,6 +99,9 @@ function renderFindings() {
         return;
     }
 
+    // Get the ID once here for safety
+    const currentEmpId = currentUser ? currentUser.userId : "";
+
     APP_STATE.findings.forEach(f => {
         const card = document.createElement('div');
         card.className = 'finding-card';
@@ -157,7 +160,7 @@ function renderFindings() {
                     ${isClosed ? 
                         `<div class="closed-message">✅ Job Closed - No further actions required</div>` : 
                         `<div class="controls-row compact-row">
-                            <input type="text" id="emp-${f.no}" placeholder="EMP ID">
+                            <input type="text" id="emp-${f.no}" value="${currentEmpId}" readonly placeholder="EMP ID">
                             <input type="text" id="task-${f.no}" placeholder="Task Code">
                             <button class="btn btn-primary" onclick="handleStart('${f.no}')">START</button>
                         </div>`
@@ -434,4 +437,8 @@ function startAutoRefresh() {
         // Fetch data in the background without showing the heavy loader
         fetchInitialData(true); 
     }, REFRESH_INTERVAL);
+}
+
+if (!currentUser) {
+    console.error("No user session found.");
 }
