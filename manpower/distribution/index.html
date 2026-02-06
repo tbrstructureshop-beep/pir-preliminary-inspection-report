@@ -205,43 +205,51 @@ th {
     </div>
     
     <div class="section-content">
-      <!-- Group 1: ON DUTY -->
-      <div class="sub-group-title">ON DUTY PERSONNEL</div>
-      <div class="table-wrapper">
-        <table id="onDutyTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Clock-In</th>
-              <th>Assignment Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
+      <!-- Main Empty State: Shown if no records at all exist for the unit today -->
+      <div id="mainEmptyState" class="empty-state-main" style="display:none; text-align: center; padding: 20px; color: #666; font-weight: bold; border: 1px dashed #ccc; border-radius: 8px; margin: 10px;">
+        No Attendance Record For Today
       </div>
 
-      <!-- Group 2: OFF DUTY -->
-      <div class="sub-group-title">OFF DUTY PERSONNEL</div>
-      <div class="table-wrapper">
-        <table id="offDutyTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Clock-In</th>
-              <th>Clock-Out</th>
-              <th>Completion Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+      <!-- Container for the tables -->
+      <div id="attendanceContent">
+        <!-- Group 1: ON DUTY -->
+        <div class="sub-group-title">ON DUTY PERSONNEL</div>
+        <div class="table-wrapper">
+          <table id="onDutyTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Clock-In</th>
+                <th>Assignment Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
+        </div>
+
+        <!-- Group 2: OFF DUTY -->
+        <div class="sub-group-title">OFF DUTY PERSONNEL</div>
+        <div class="table-wrapper">
+          <table id="offDutyTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Clock-In</th>
+                <th>Clock-Out</th>
+                <th>Completion Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+        </div>
       </div>
     </div>
   </div>
-
+  
   <!-- SECTION 3: ACTION LOG -->
   <div class="card section collapsed" id="logSection">
     <div class="section-header">
