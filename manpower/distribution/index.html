@@ -354,83 +354,60 @@ async function loadDHHeader() {
 }
 
 async function fetchAndRenderAttendance() {
-  // 1. Get user and unit from the auth script
   const user = protectPage();
-  if (!user || !user.unit) {
-    console.error("No unit found for user");
-    return;
-  }
-
-  // Show loading state
-  document.querySelector("#onDutyTable tbody").innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+  if (!user || !user.unit) return;
 
   try {
-    // 2. Include 'unit' in the fetch URL (same style as loadDHHeader)
-    const url = `${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`;
-    const response = await fetch(url);
-    const realData = await response.json();
+    // Pass unit to the backend
+    const response = await fetch(`${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`);
+    const data = await response.json();
     
-    // 3. Render the data
-    renderAttendance(realData);
+    renderAttendance(data);
   } catch (error) {
-    console.error("Error fetching attendance:", error);
-    renderAttendance([]); // Show empty states on error
+    console.error("Error:", error);
+    renderAttendance([]);
   }
 }
 
 function renderAttendance(data) {
   const onDutyBody = document.querySelector("#onDutyTable tbody");
   const offDutyBody = document.querySelector("#offDutyTable tbody");
-  const onDutyEmpty = document.getElementById("onDutyEmpty");
-  const offDutyEmpty = document.getElementById("offDutyEmpty");
-
+  
   onDutyBody.innerHTML = "";
   offDutyBody.innerHTML = "";
 
-  // Split data into Group 1 and Group 2
   const onDutyList = data.filter(p => p.isDuty);
   const offDutyList = data.filter(p => !p.isDuty);
 
-  // Group 1: ON DUTY (Assignment Status)
-  if (onDutyList.length === 0) {
-    onDutyEmpty.style.display = "block";
-  } else {
-    onDutyEmpty.style.display = "none";
-    onDutyList.forEach(p => {
-      const tr = document.createElement("tr");
-      // Assignment Status Logic: Uses "On Task" for green badge
-      const statusClass = "status-green"; 
-      tr.innerHTML = `
-        <td>${p.id}</td>
-        <td>${p.name}</td>
-        <td>${p.clockIn}</td>
-        <td><span class="badge ${statusClass}">${p.status || "On Task"}</span></td>
-      `;
-      onDutyBody.appendChild(tr);
-    });
-  }
+  // Toggle empty state visibility
+  document.getElementById("onDutyEmpty").style.display = onDutyList.length === 0 ? "block" : "none";
+  document.getElementById("offDutyEmpty").style.display = offDutyList.length === 0 ? "block" : "none";
 
-  // Group 2: OFF DUTY (Completion Status)
-  if (offDutyList.length === 0) {
-    offDutyEmpty.style.display = "block";
-  } else {
-    offDutyEmpty.style.display = "none";
-    offDutyList.forEach(p => {
-      const tr = document.createElement("tr");
-      // Completion Status Logic: Uses "Completely STOP" for green badge
-      const statusClass = "status-green"; 
-      tr.innerHTML = `
-        <td>${p.id}</td>
-        <td>${p.name}</td>
-        <td>${p.clockIn}</td>
-        <td>${p.clockOut}</td>
-        <td><span class="badge ${statusClass}">${p.status || "Completely STOP"}</span></td>
-      `;
-      offDutyBody.appendChild(tr);
-    });
-  }
+  // Render Group 1: On Duty
+  onDutyList.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.name}</td>
+      <td>${p.clockIn}</td>
+      <td><span class="badge status-green">${p.status}</span></td>
+    `;
+    onDutyBody.appendChild(tr);
+  });
+
+  // Render Group 2: Off Duty
+  offDutyList.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.name}</td>
+      <td>${p.clockIn}</td>
+      <td>${p.clockOut}</td>
+      <td><span class="badge status-green">${p.status}</span></td>
+    `;
+    offDutyBody.appendChild(tr);
+  });
 }
-
   
 function renderLog() {
   const tbody = document.querySelector("#logTable tbody");
