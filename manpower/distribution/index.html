@@ -197,6 +197,18 @@ th {
     border-radius: 8px;
     margin-top: 10px;
 }
+
+.status-green { background-color: #28a745; color: white; }
+.status-red { background-color: #dc3545; color: white; }
+.status-yellow { background-color: #ffc107; color: #212529; } /* For IDLE */
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.85em;
+  display: inline-block;
+}
   
 </style>
 </head>
@@ -397,23 +409,29 @@ function renderAttendance(data) {
   const onDutyList = data.filter(p => p.isDuty);
   const offDutyList = data.filter(p => !p.isDuty);
 
-  // Toggle empty state visibility
   document.getElementById("onDutyEmpty").style.display = onDutyList.length === 0 ? "block" : "none";
   document.getElementById("offDutyEmpty").style.display = offDutyList.length === 0 ? "block" : "none";
 
-  // Render Group 1: On Duty
+  // Helper to determine badge class
+  const getStatusClass = (status) => {
+    if (status === "On Task") return "status-green";
+    if (status === "IDLE") return "status-yellow"; // You can define this in CSS
+    return "status-red";
+  };
+
+  // Render On Duty
   onDutyList.forEach(p => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${p.id}</td>
       <td>${p.name}</td>
       <td>${p.clockIn}</td>
-      <td><span class="badge status-green">${p.status}</span></td>
+      <td><span class="badge ${getStatusClass(p.status)}">${p.status}</span></td>
     `;
     onDutyBody.appendChild(tr);
   });
 
-  // Render Group 2: Off Duty
+  // Render Off Duty
   offDutyList.forEach(p => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -421,7 +439,7 @@ function renderAttendance(data) {
       <td>${p.name}</td>
       <td>${p.clockIn}</td>
       <td>${p.clockOut}</td>
-      <td><span class="badge status-green">${p.status}</span></td>
+      <td><span class="badge status-red">${p.status}</span></td>
     `;
     offDutyBody.appendChild(tr);
   });
