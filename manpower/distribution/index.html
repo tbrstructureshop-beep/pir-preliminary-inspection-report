@@ -177,6 +177,27 @@ th {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Add this to your existing CSS if not present */
+.badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+#logEmpty {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+    font-style: italic;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+  
 </style>
 </head>
 
@@ -285,10 +306,7 @@ th {
 const user = protectPage();
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; 
 
-const actionLogData = [
-  { employeeId: "EMP-2102", workOrder: "WO-88921", task: "Inspection", time: "09:15", action: "Started", progression: "In Progress" }
-];
-
+  
 /**
  * Fetch and Fill Department Head Data */
   
@@ -409,19 +427,56 @@ function renderAttendance(data) {
   });
 }
   
-function renderLog() {
-  const tbody = document.querySelector("#logTable tbody");
-  tbody.innerHTML = actionLogData.map(row => `
-    <tr>
-      <td>${row.employeeId}</td>
-      <td>${row.workOrder}</td>
-      <td>${row.task}</td>
-      <td>${row.time}</td>
-      <td>${row.action}</td>
-      <td><span class="badge">${row.progression}</span></td>
-    </tr>
-  `).join('');
+// --- Update fetchAndRenderLog ---
+async function fetchAndRenderLog() {
+  const user = protectPage();
+  if (!user || !user.unit) return;
+
+  const logTableBody = document.querySelector("#logTable tbody");
+  const logEmpty = document.getElementById("logEmpty");
+
+  try {
+    const response = await fetch(`${WEB_APP_URL}?action=getActionLog&unit=${encodeURIComponent(user.unit)}`);
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      logTableBody.innerHTML = "";
+      logEmpty.style.display = "block";
+      logEmpty.innerText = "No Action Log for today";
+      return;
+    }
+
+    logEmpty.style.display = "none";
+    logTableBody.innerHTML = data.map(row => {
+      // Logic to determine badge color based on status string
+      let statusClass = "bg-completed"; // default
+      const status = (row.status || "").toLowerCase();
+      
+      if (status.includes("progress") || status.includes("running")) statusClass = "bg-idle";
+      if (status.includes("start") || status.includes("open")) statusClass = "status-green";
+      if (status.includes("stop") || status.includes("hold")) statusClass = "status-red";
+      if (status.includes("complete") || status.includes("finish")) statusClass = "bg-completed";
+
+      return `
+        <tr>
+          <td><strong>${row.employeeId}</strong></td>
+          <td>${row.workOrder}</td>
+          <td>${row.task}</td>
+          <td>${row.time}</td>
+          <td>${row.action}</td>
+          <td><span class="badge ${statusClass}">${row.status}</span></td>
+        </tr>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error("Error fetching log:", error);
+    logEmpty.style.display = "block";
+    logEmpty.innerText = "Error loading logs";
+  }
 }
+
+
 
 function setupCollapse(sectionId) {
   const section = document.getElementById(sectionId);
@@ -430,19 +485,14 @@ function setupCollapse(sectionId) {
   });
 }
 
+// --- Update DOMContentLoaded ---
 window.addEventListener("DOMContentLoaded", () => {
-  // 1. Setup UI interactions (Collapse/Expand logic)
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
-  
-  // 2. Load Department Head Profile Info
   loadDHHeader(); 
-
-  // 3. Load Real Attendance Data (This replaces the mock data)
-  fetchAndRenderAttendance();
   
-  // 4. Render Log (If this is still mock data for now)
-  renderLog();
+  fetchAndRenderAttendance(); // Existing
+  fetchAndRenderLog();        // New real data fetcher
 });
   
 </script>
