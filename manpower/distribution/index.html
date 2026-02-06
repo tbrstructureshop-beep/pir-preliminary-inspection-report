@@ -263,7 +263,14 @@ th {
 
 </div>
 
+
+<script src="../../auth/script.js"></script>
 <script>
+  
+// 1. Protect the page and get user info
+const user = protectPage();
+const WEB_APP_URL = "YOUR_GAS_DEPLOYMENT_URL_HERE"; 
+  
 const attendanceData = [
   { employeeId: "EMP-2101", clockIn: "07:45", status: "Idle" },
   { employeeId: "EMP-2102", clockIn: "07:52", status: "Handling Job" },
@@ -288,6 +295,40 @@ const actionLogData = [
     progression: "Completed"
   }
 ];
+
+/**
+ * Fetch and Fill Department Head Data
+ */
+async function loadDHHeader() {
+  if (!user) return;
+
+  try {
+    // Show a loading state if you want, or just wait for fetch
+    const response = await fetch(`${WEB_APP_URL}?userId=${user.userId}&action=getDHData`);
+    const data = await response.json();
+
+    if (data.success) {
+      // Update Name
+      document.querySelector(".info-item:nth-child(1)").innerHTML = `<span>Name:</span> ${data.name}`;
+      // Update ID
+      document.querySelector(".info-item:nth-child(2)").innerHTML = `<span>Employee ID:</span> ${data.id}`;
+      // Update Unit
+      document.querySelector(".info-item:nth-child(3)").innerHTML = `<span>Department Code:</span> ${data.unit}`;
+      
+      // Update Profile Pic Initials (Optional: Gets first letter of first and last name)
+      const names = data.name.split(" ");
+      const initials = names.length > 1 
+        ? (names[0][0] + names[names.length-1][0]).toUpperCase() 
+        : names[0][0].toUpperCase();
+      document.querySelector(".profile-pic").textContent = initials;
+
+    } else {
+      console.error("DH Data Error:", data.error);
+    }
+  } catch (err) {
+    console.error("Failed to fetch DH info:", err);
+  }
+}
 
 function renderAttendance() {
   const tbody = document.querySelector("#attendanceTable tbody");
@@ -355,10 +396,16 @@ function setupCollapse(sectionId) {
   });
 }
 
-renderAttendance();
-renderLog();
-setupCollapse("attendanceSection");
-setupCollapse("logSection");
+// Initialize Page
+window.addEventListener("DOMContentLoaded", () => {
+  renderAttendance();
+  renderLog();
+  setupCollapse("attendanceSection");
+  setupCollapse("logSection");
+  
+  // Fetch real data for the header
+  loadDHHeader();
+});
 </script>
 </body>
 </html>
