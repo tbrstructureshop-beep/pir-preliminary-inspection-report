@@ -87,15 +87,9 @@ body {
   font-weight: 600;
 }
 
-.badge.present {
-  background: rgba(46,159,110,0.15);
-  color: var(--success);
-}
+.badge.present { background: rgba(46, 159, 110, 0.15); color: var(--success); }   /* Green */
 
-.badge.absent {
-  background: rgba(201,75,75,0.15);
-  color: var(--danger);
-}
+.badge.absent { background: rgba(201, 75, 75, 0.15); color: var(--danger); }      /* Red */
 
 .badge.idle {
   background: rgba(216,164,65,0.15);
@@ -107,16 +101,18 @@ body {
   color: var(--info);
 }
 
-.badge.completed {
-  background: rgba(46,159,110,0.15);
-  color: var(--success);
-}
+.badge.completed { background: rgba(107, 124, 133, 0.15); color: var(--muted); }  /* Grey */
 
 .badge.inprogress {
   background: rgba(216,164,65,0.15);
   color: var(--warning);
 }
 
+/* Smooth transition for the badge color change */
+#dhStatus {
+  transition: all 0.3s ease;
+}
+  
 .section {
   overflow: hidden;
 }
@@ -203,7 +199,7 @@ th {
       <div class="info-item"><span>Department Code:</span> <span id="dhUnit">...</span></div>
       <div class="info-item">
         <span>Attended Status:</span>
-        <span class="badge present">Present</span>
+        <span id="dhStatus" class="badge">Checking...</span>
       </div>
     </div>
   </div>
