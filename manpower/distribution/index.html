@@ -307,12 +307,20 @@ async function loadDHHeader() {
     const data = await response.json();
 
     if (data.success) {
-      // 1. Fill the text fields using IDs
+      // 1. Fill Text Data
       document.getElementById("dhName").textContent = data.name;
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       
-      // 2. Update Profile Pic Initials
+      // 2. Update Attendance Badge
+      const statusBadge = document.getElementById("dhStatus");
+      statusBadge.textContent = data.attendanceStatus;
+      
+      // Remove old classes and add the new one
+      statusBadge.classList.remove("present", "absent", "completed", "idle");
+      statusBadge.classList.add(data.statusCode);
+
+      // 3. Update Profile Pic
       const names = data.name.split(" ");
       const initials = names.length > 1 
         ? (names[0][0] + names[names.length-1][0]).toUpperCase() 
@@ -320,15 +328,10 @@ async function loadDHHeader() {
       document.getElementById("dhInitials").textContent = initials;
 
     } else {
-      // If DH is not found
-      document.getElementById("dhName").textContent = "Not Found";
-      document.getElementById("dhId").textContent = "N/A";
-      document.getElementById("dhUnit").textContent = "N/A";
-      console.error("DH Data Error:", data.error);
+      document.getElementById("dhName").textContent = "DH Not Found";
     }
   } catch (err) {
-    document.getElementById("dhName").textContent = "Error loading";
-    console.error("Failed to fetch DH info:", err);
+    console.error("Fetch error:", err);
   }
 }
 
