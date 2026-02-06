@@ -377,12 +377,9 @@ async function loadDHHeader() {
 async function fetchAndRenderAttendance() {
   const user = protectPage();
   if (!user || !user.unit) return;
-
   try {
-    // Pass unit to the backend
     const response = await fetch(`${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`);
     const data = await response.json();
-    
     renderAttendance(data);
   } catch (error) {
     console.error("Error:", error);
@@ -431,19 +428,22 @@ function renderAttendance(data) {
 }
   
 
-// Update fetchAndRenderLog to accept unit as an argument
+// Revised fetchAndRenderLog
 async function fetchAndRenderLog(unit) {
   const logTableBody = document.querySelector("#logTable tbody");
   const logEmpty = document.getElementById("logEmpty");
   
-  if (!unit) return;
+  if (!unit) {
+    logEmpty.style.display = "block";
+    logEmpty.innerText = "Unit not identified.";
+    return;
+  }
 
   try {
     const response = await fetch(`${WEB_APP_URL}?action=getActionLog&unit=${encodeURIComponent(unit)}`);
     const data = await response.json();
 
-    // Clear existing rows
-    logTableBody.innerHTML = "";
+    logTableBody.innerHTML = ""; // Clear existing rows
 
     if (!data || data.length === 0) {
       logEmpty.style.display = "block";
@@ -453,8 +453,7 @@ async function fetchAndRenderLog(unit) {
     logEmpty.style.display = "none";
     
     const rowsHtml = data.map(row => {
-      // Determine Status Color
-      let statusClass = "bg-completed"; // Default
+      let statusClass = "bg-completed"; 
       const status = (row.status || "").toLowerCase();
       
       if (status.includes("progress") || status.includes("running")) statusClass = "bg-idle";
@@ -478,7 +477,7 @@ async function fetchAndRenderLog(unit) {
   } catch (error) {
     console.error("Log Error:", error);
     logEmpty.style.display = "block";
-    logEmpty.innerText = "Error loading logs. Please try again.";
+    logEmpty.innerText = "Error loading logs.";
   }
 }
 
@@ -490,14 +489,18 @@ function setupCollapse(sectionId) {
   });
 }
 
-// --- Update DOMContentLoaded ---
+// --- IMPORTANT: Fixed DOMContentLoaded ---
 window.addEventListener("DOMContentLoaded", () => {
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
+  
   loadDHHeader(); 
   
-  fetchAndRenderAttendance(); // Existing
-  fetchAndRenderLog();        // New real data fetcher
+  // Call functions using the 'user' object retrieved at top of script
+  if (user && user.unit) {
+    fetchAndRenderAttendance();
+    fetchAndRenderLog(user.unit); // Pass the unit here
+  }
 });
   
 </script>
