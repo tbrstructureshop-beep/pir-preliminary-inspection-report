@@ -93,6 +93,10 @@ body {
 .status-red { background: rgba(201, 75, 75, 0.15); color: var(--danger); }
 .badge.on-duty { background: rgba(46, 159, 110, 0.15); color: var(--success); }
 .badge.off-duty { background: rgba(107, 124, 133, 0.15); color: var(--muted); }
+.bg-present { background: rgba(46, 159, 110, 0.15); color: var(--success); }
+.bg-absent { background: rgba(201, 75, 75, 0.15); color: var(--danger); }
+.bg-idle { background: rgba(216, 164, 107, 0.15); color: var(--warning); }
+.bg-completed { background: rgba(107, 124, 133, 0.15); color: var(--muted); }
 
 .section-header {
   display: flex;
@@ -286,8 +290,8 @@ const actionLogData = [
 ];
 
 /**
- * Fetch and Fill Department Head Data
- */
+ * Fetch and Fill Department Head Data */
+  
 async function loadDHHeader() {
   if (!user || !user.userId) {
     console.warn("User not logged in yet...");
@@ -299,60 +303,56 @@ async function loadDHHeader() {
     const data = await response.json();
 
     if (data.success) {
+      // Fill Text Data
       document.getElementById("dhName").textContent = data.name;
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       
+      // Handle Initials
+      const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
+      document.getElementById("dhInitials").textContent = initials.substring(0, 2);
+
+      // --- SYNC STATUS & CSS ---
       const statusBadge = document.getElementById("dhStatus");
-      
-      // --- START MAPPING LOGIC ---
       let displayText = "";
       let cssClass = "";
 
-      // We look at what the GAS returned and map it to your requirements
       switch (data.attendanceStatus) {
-        case "Not Yet Present":
-          displayText = "belum hadir";
-          cssClass = "absent"; // Red color
-          break;
         case "On Duty":
           displayText = "On Duty";
-          cssClass = "present"; // Green color
+          cssClass = "bg-present"; // Green
           break;
-        case "Shift Completed":
-          displayText = "Off Duty";
-          cssClass = "completed"; // Grey color
-          break;
+        case "Not Yet Present":
         case "Absent":
-          displayText = "Absent";
-          cssClass = "absent"; // Red color
+          displayText = data.attendanceStatus;
+          cssClass = "bg-absent";  // Red
           break;
         case "On Leave":
           displayText = "On Leave";
-          cssClass = "idle"; // Yellow/Orange color
+          cssClass = "bg-idle";    // Yellow
+          break;
+        case "Shift Completed":
+          displayText = "Off Duty";
+          cssClass = "bg-completed"; // Grey
           break;
         default:
           displayText = data.attendanceStatus || "Unknown";
-          cssClass = data.statusCode || "idle";
+          cssClass = "bg-idle";
       }
 
       statusBadge.textContent = displayText;
+      // IMPORTANT: Reset classes and apply 'badge' + the specific color class
       statusBadge.className = `badge ${cssClass}`;
-      // --- END MAPPING LOGIC ---
-
-      const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
-      document.getElementById("dhInitials").textContent = initials.substring(0, 2);
+      
     } else {
-      document.getElementById("dhName").textContent = "No DH Assigned";
+      document.getElementById("dhName").textContent = "Data Not Found";
     }
   } catch (err) {
-    document.getElementById("dhName").textContent = "Connection Error";
     console.error("Fetch error:", err);
+    document.getElementById("dhName").textContent = "Connection Error";
   }
 }
 
-  
-  
 function renderAttendance() {
   const onDutyBody = document.querySelector("#onDutyTable tbody");
   const offDutyBody = document.querySelector("#offDutyTable tbody");
@@ -423,18 +423,16 @@ function setupCollapse(sectionId) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  // 1. Render static/mock tables
   renderAttendance();
   renderLog();
+  
+  // 2. Setup UI interactions
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
   
-  // Simulated Header Load
-  document.getElementById("dhName").textContent = "Admin Supervisor";
-  document.getElementById("dhId").textContent = "SUP-991";
-  document.getElementById("dhUnit").textContent = "MAINT-01";
-  document.getElementById("dhStatus").textContent = "On Duty";
-  document.getElementById("dhStatus").classList.add("on-duty");
-  document.getElementById("dhInitials").textContent = "AS";
+  // 3. Load dynamic data from Google Apps Script
+  loadDHHeader(); 
 });
 </script>
 </body>
