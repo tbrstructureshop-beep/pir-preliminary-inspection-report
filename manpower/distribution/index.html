@@ -83,25 +83,16 @@ body {
   display: inline-block;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  text-transform: uppercase;
 }
 
-/* REMOVE the old badge classes and REPLACE with these: */
-.badge.on-duty { background: rgba(46, 159, 110, 0.15); color: var(--success); }   /* Green */
-.badge.off-duty { background: rgba(107, 124, 133, 0.15); color: var(--muted); }   /* Grey */
-.badge.absent { background: rgba(201, 75, 75, 0.15); color: var(--danger); }      /* Red */
-.badge.on-leave { background: rgba(216, 164, 65, 0.15); color: var(--warning); }  /* Orange */
-.badge.not-checked { background: rgba(75, 140, 201, 0.15); color: var(--info); }  /* Blue */
-
-/* Smooth transition for the badge color change */
-#dhStatus {
-  transition: all 0.3s ease;
-}
-  
-.section {
-  overflow: hidden;
-}
+/* Status Colors */
+.status-green { background: rgba(46, 159, 110, 0.15); color: var(--success); }
+.status-red { background: rgba(201, 75, 75, 0.15); color: var(--danger); }
+.badge.on-duty { background: rgba(46, 159, 110, 0.15); color: var(--success); }
+.badge.off-duty { background: rgba(107, 124, 133, 0.15); color: var(--muted); }
 
 .section-header {
   display: flex;
@@ -113,6 +104,15 @@ body {
 .section-header h2 {
   font-size: 16px;
   margin: 0;
+}
+
+.sub-group-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 20px 0 10px 0;
+  border-left: 4px solid var(--primary);
+  padding-left: 8px;
 }
 
 .chevron {
@@ -137,6 +137,7 @@ body {
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
+  margin-bottom: 20px;
 }
 
 table {
@@ -156,13 +157,15 @@ th, td {
 th {
   color: var(--muted);
   font-weight: 600;
+  background: #fafcfd;
 }
 
 .empty-state {
-  padding: 16px;
+  padding: 10px;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--muted);
+  font-style: italic;
 }
 
 @media (min-width: 768px) {
@@ -176,7 +179,7 @@ th {
 <body>
 <div class="container">
 
-  <!-- SECTION 1 -->
+  <!-- SECTION 1: HEADER -->
   <div class="card header-card">
     <div class="profile-pic" id="dhInitials">--</div>
     <div class="info-grid">
@@ -190,32 +193,52 @@ th {
     </div>
   </div>
 
-  <!-- SECTION 2 -->
+  <!-- SECTION 2: ATTENDANCE GROUPS -->
   <div class="card section" id="attendanceSection">
     <div class="section-header">
-      <h2>Our Manpower Attendance</h2>
+      <h2>Manpower Attendance Status</h2>
       <div class="chevron">▼</div>
     </div>
+    
     <div class="section-content">
+      <!-- Group 1: ON DUTY -->
+      <div class="sub-group-title">ON DUTY PERSONNEL</div>
       <div class="table-wrapper">
-        <table id="attendanceTable">
+        <table id="onDutyTable">
           <thead>
             <tr>
-              <th>Employee ID</th>
-              <th>Clock In</th>
-              <th>Job Handling Status</th>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Clock-In</th>
+              <th>Assignment Status</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+        <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
       </div>
-      <div class="empty-state" id="attendanceEmpty" style="display:none;">
-        No records available
+
+      <!-- Group 2: OFF DUTY -->
+      <div class="sub-group-title">OFF DUTY PERSONNEL</div>
+      <div class="table-wrapper">
+        <table id="offDutyTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Clock-In</th>
+              <th>Clock-Out</th>
+              <th>Completion Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
       </div>
     </div>
   </div>
 
-  <!-- SECTION 3 -->
+  <!-- SECTION 3: ACTION LOG -->
   <div class="card section collapsed" id="logSection">
     <div class="section-header">
       <h2>Manpower Action Log</h2>
@@ -227,24 +250,21 @@ th {
           <thead>
             <tr>
               <th>Employee ID</th>
-              <th>Work Order Handled</th>
-              <th>Task Handled</th>
-              <th>Time Performed</th>
+              <th>Work Order</th>
+              <th>Task</th>
+              <th>Time</th>
               <th>Action</th>
-              <th>Progression Status</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-      <div class="empty-state" id="logEmpty" style="display:none;">
-        No records available
-      </div>
+      <div class="empty-state" id="logEmpty" style="display:none;">No records available</div>
     </div>
   </div>
 
 </div>
-
 
 <script src="../../auth/script.js"></script>
 <script>
@@ -253,29 +273,16 @@ th {
 const user = protectPage();
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; 
   
+// Mock Data (Updated to match your requirements)
 const attendanceData = [
-  { employeeId: "EMP-2101", clockIn: "07:45", status: "Idle" },
-  { employeeId: "EMP-2102", clockIn: "07:52", status: "Handling Job" },
-  { employeeId: "EMP-2103", clockIn: "08:05", status: "Idle" }
+  { id: "EMP-2101", name: "John Doe", clockIn: "07:45", clockOut: "-", isDuty: true, status: "Idle" },
+  { id: "EMP-2102", name: "Jane Smith", clockIn: "07:52", clockOut: "-", isDuty: true, status: "On Task" },
+  { id: "EMP-2103", name: "Mike Ross", clockIn: "08:00", clockOut: "17:05", isDuty: false, status: "Completely STOP" },
+  { id: "EMP-2104", name: "Harvey Specter", clockIn: "08:15", clockOut: "16:30", isDuty: false, status: "STOP Required" }
 ];
 
 const actionLogData = [
-  {
-    employeeId: "EMP-2102",
-    workOrder: "WO-88921",
-    task: "Panel Inspection",
-    time: "09:15",
-    action: "Inspection Started",
-    progression: "In Progress"
-  },
-  {
-    employeeId: "EMP-2102",
-    workOrder: "WO-88921",
-    task: "Panel Inspection",
-    time: "10:40",
-    action: "Inspection Completed",
-    progression: "Completed"
-  }
+  { employeeId: "EMP-2102", workOrder: "WO-88921", task: "Inspection", time: "09:15", action: "Started", progression: "In Progress" }
 ];
 
 /**
@@ -347,80 +354,87 @@ async function loadDHHeader() {
   
   
 function renderAttendance() {
-  const tbody = document.querySelector("#attendanceTable tbody");
-  const empty = document.getElementById("attendanceEmpty");
-  tbody.innerHTML = "";
+  const onDutyBody = document.querySelector("#onDutyTable tbody");
+  const offDutyBody = document.querySelector("#offDutyTable tbody");
+  const onDutyEmpty = document.getElementById("onDutyEmpty");
+  const offDutyEmpty = document.getElementById("offDutyEmpty");
 
-  if (attendanceData.length === 0) {
-    empty.style.display = "block";
-    return;
+  onDutyBody.innerHTML = "";
+  offDutyBody.innerHTML = "";
+
+  const onDutyList = attendanceData.filter(p => p.isDuty);
+  const offDutyList = attendanceData.filter(p => !p.isDuty);
+
+  // Render ON DUTY
+  if (onDutyList.length === 0) onDutyEmpty.style.display = "block";
+  else {
+    onDutyEmpty.style.display = "none";
+    onDutyList.forEach(p => {
+      const statusClass = p.status === "On Task" ? "status-green" : "status-red";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>${p.clockIn}</td>
+        <td><span class="badge ${statusClass}">${p.status}</span></td>
+      `;
+      onDutyBody.appendChild(tr);
+    });
   }
 
-  empty.style.display = "none";
-
-  attendanceData.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.employeeId}</td>
-      <td>${row.clockIn}</td>
-      <td>
-        <span class="badge ${row.status === "Idle" ? "idle" : "handling"}">
-          ${row.status}
-        </span>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+  // Render OFF DUTY
+  if (offDutyList.length === 0) offDutyEmpty.style.display = "block";
+  else {
+    offDutyEmpty.style.display = "none";
+    offDutyList.forEach(p => {
+      const statusClass = p.status === "Completely STOP" ? "status-green" : "status-red";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>${p.clockIn}</td>
+        <td>${p.clockOut}</td>
+        <td><span class="badge ${statusClass}">${p.status}</span></td>
+      `;
+      offDutyBody.appendChild(tr);
+    });
+  }
 }
 
 function renderLog() {
   const tbody = document.querySelector("#logTable tbody");
-  const empty = document.getElementById("logEmpty");
-  tbody.innerHTML = "";
-
-  if (actionLogData.length === 0) {
-    empty.style.display = "block";
-    return;
-  }
-
-  empty.style.display = "none";
-
-  actionLogData.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+  tbody.innerHTML = actionLogData.map(row => `
+    <tr>
       <td>${row.employeeId}</td>
       <td>${row.workOrder}</td>
       <td>${row.task}</td>
       <td>${row.time}</td>
       <td>${row.action}</td>
-      <td>
-        <span class="badge ${row.progression === "Completed" ? "completed" : "inprogress"}">
-          ${row.progression}
-        </span>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+      <td><span class="badge">${row.progression}</span></td>
+    </tr>
+  `).join('');
 }
 
 function setupCollapse(sectionId) {
   const section = document.getElementById(sectionId);
-  const header = section.querySelector(".section-header");
-
-  header.addEventListener("click", () => {
+  section.querySelector(".section-header").addEventListener("click", () => {
     section.classList.toggle("collapsed");
   });
 }
 
-// Initialize Page
 window.addEventListener("DOMContentLoaded", () => {
   renderAttendance();
   renderLog();
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
   
-  // Fetch real data for the header
-  loadDHHeader();
+  // Simulated Header Load
+  document.getElementById("dhName").textContent = "Admin Supervisor";
+  document.getElementById("dhId").textContent = "SUP-991";
+  document.getElementById("dhUnit").textContent = "MAINT-01";
+  document.getElementById("dhStatus").textContent = "On Duty";
+  document.getElementById("dhStatus").classList.add("on-duty");
+  document.getElementById("dhInitials").textContent = "AS";
 });
 </script>
 </body>
