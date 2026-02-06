@@ -87,26 +87,12 @@ body {
   font-weight: 600;
 }
 
-.badge.present { background: rgba(46, 159, 110, 0.15); color: var(--success); }   /* Green */
-
+/* REMOVE the old badge classes and REPLACE with these: */
+.badge.on-duty { background: rgba(46, 159, 110, 0.15); color: var(--success); }   /* Green */
+.badge.off-duty { background: rgba(107, 124, 133, 0.15); color: var(--muted); }   /* Grey */
 .badge.absent { background: rgba(201, 75, 75, 0.15); color: var(--danger); }      /* Red */
-
-.badge.idle {
-  background: rgba(216,164,65,0.15);
-  color: var(--warning);
-}
-
-.badge.handling {
-  background: rgba(75,140,201,0.15);
-  color: var(--info);
-}
-
-.badge.completed { background: rgba(107, 124, 133, 0.15); color: var(--muted); }  /* Grey */
-
-.badge.inprogress {
-  background: rgba(216,164,65,0.15);
-  color: var(--warning);
-}
+.badge.on-leave { background: rgba(216, 164, 65, 0.15); color: var(--warning); }  /* Orange */
+.badge.not-checked { background: rgba(75, 140, 201, 0.15); color: var(--info); }  /* Blue */
 
 /* Smooth transition for the badge color change */
 #dhStatus {
@@ -296,7 +282,6 @@ const actionLogData = [
  * Fetch and Fill Department Head Data
  */
 async function loadDHHeader() {
-  // Use a small delay or check to ensure user object exists
   if (!user || !user.userId) {
     console.warn("User not logged in yet...");
     return;
@@ -312,20 +297,54 @@ async function loadDHHeader() {
       document.getElementById("dhUnit").textContent = data.unit;
       
       const statusBadge = document.getElementById("dhStatus");
-      statusBadge.textContent = data.attendanceStatus;
-      statusBadge.className = `badge ${data.statusCode}`; // Reset and add class
+      
+      // --- START MAPPING LOGIC ---
+      let displayText = "";
+      let cssClass = "";
+
+      // We look at what the GAS returned and map it to your requirements
+      switch (data.attendanceStatus) {
+        case "Not Yet Present":
+          displayText = "belum hadir";
+          cssClass = "absent"; // Red color
+          break;
+        case "On Duty":
+          displayText = "On Duty";
+          cssClass = "present"; // Green color
+          break;
+        case "Shift Completed":
+          displayText = "Off Duty";
+          cssClass = "completed"; // Grey color
+          break;
+        case "Absent":
+          displayText = "Absent";
+          cssClass = "absent"; // Red color
+          break;
+        case "On Leave":
+          displayText = "On Leave";
+          cssClass = "idle"; // Yellow/Orange color
+          break;
+        default:
+          displayText = data.attendanceStatus || "Unknown";
+          cssClass = data.statusCode || "idle";
+      }
+
+      statusBadge.textContent = displayText;
+      statusBadge.className = `badge ${cssClass}`;
+      // --- END MAPPING LOGIC ---
 
       const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
       document.getElementById("dhInitials").textContent = initials.substring(0, 2);
     } else {
       document.getElementById("dhName").textContent = "No DH Assigned";
-      console.error("Backend Error:", data.error);
     }
   } catch (err) {
     document.getElementById("dhName").textContent = "Connection Error";
     console.error("Fetch error:", err);
   }
 }
+
+  
   
 function renderAttendance() {
   const tbody = document.querySelector("#attendanceTable tbody");
