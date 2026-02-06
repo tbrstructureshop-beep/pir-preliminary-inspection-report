@@ -354,25 +354,30 @@ async function loadDHHeader() {
 }
 
 async function fetchAndRenderAttendance() {
+  // 1. Get user and unit from the auth script
   const user = protectPage();
-  if (!user || !user.unit) return;
+  if (!user || !user.unit) {
+    console.error("No unit found for user");
+    return;
+  }
 
-  // Show a "Loading..." message in the tables if desired
-  document.querySelector("#onDutyTable tbody").innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading data...</td></tr>';
+  // Show loading state
+  document.querySelector("#onDutyTable tbody").innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
 
   try {
-    const response = await fetch(`${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`);
+    // 2. Include 'unit' in the fetch URL (same style as loadDHHeader)
+    const url = `${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`;
+    const response = await fetch(url);
     const realData = await response.json();
     
-    // Pass the real data to the render function
+    // 3. Render the data
     renderAttendance(realData);
   } catch (error) {
     console.error("Error fetching attendance:", error);
-    // On error, trigger the "No Record" state
-    renderAttendance([]);
+    renderAttendance([]); // Show empty states on error
   }
 }
-  
+
 function renderAttendance(data) {
   const onDutyBody = document.querySelector("#onDutyTable tbody");
   const offDutyBody = document.querySelector("#offDutyTable tbody");
@@ -382,60 +387,51 @@ function renderAttendance(data) {
   onDutyBody.innerHTML = "";
   offDutyBody.innerHTML = "";
 
+  // Split data into Group 1 and Group 2
   const onDutyList = data.filter(p => p.isDuty);
   const offDutyList = data.filter(p => !p.isDuty);
 
-  // Default messages if data is empty
-  if (data.length === 0) {
-    onDutyEmpty.textContent = "No Attendance Record For Today";
-    offDutyEmpty.textContent = "No Attendance Record For Today";
-    onDutyEmpty.style.display = "block";
-    offDutyEmpty.style.display = "block";
-    return;
-  }
-
-  // Render ON DUTY
+  // Group 1: ON DUTY (Assignment Status)
   if (onDutyList.length === 0) {
     onDutyEmpty.style.display = "block";
-    onDutyEmpty.textContent = "No personnel on duty";
   } else {
     onDutyEmpty.style.display = "none";
     onDutyList.forEach(p => {
-      // Logic for status colors
-      const statusClass = p.status === "On Task" ? "status-green" : "status-red";
       const tr = document.createElement("tr");
+      // Assignment Status Logic: Uses "On Task" for green badge
+      const statusClass = "status-green"; 
       tr.innerHTML = `
         <td>${p.id}</td>
         <td>${p.name}</td>
         <td>${p.clockIn}</td>
-        <td><span class="badge ${statusClass}">${p.status}</span></td>
+        <td><span class="badge ${statusClass}">${p.status || "On Task"}</span></td>
       `;
       onDutyBody.appendChild(tr);
     });
   }
 
-  // Render OFF DUTY
+  // Group 2: OFF DUTY (Completion Status)
   if (offDutyList.length === 0) {
     offDutyEmpty.style.display = "block";
-    offDutyEmpty.textContent = "No personnel off duty";
   } else {
     offDutyEmpty.style.display = "none";
     offDutyList.forEach(p => {
-      const statusClass = p.status === "Completely STOP" ? "status-green" : "status-red";
       const tr = document.createElement("tr");
+      // Completion Status Logic: Uses "Completely STOP" for green badge
+      const statusClass = "status-green"; 
       tr.innerHTML = `
         <td>${p.id}</td>
         <td>${p.name}</td>
         <td>${p.clockIn}</td>
         <td>${p.clockOut}</td>
-        <td><span class="badge ${statusClass}">${p.status}</span></td>
+        <td><span class="badge ${statusClass}">${p.status || "Completely STOP"}</span></td>
       `;
       offDutyBody.appendChild(tr);
     });
   }
 }
 
-
+  
 function renderLog() {
   const tbody = document.querySelector("#logTable tbody");
   tbody.innerHTML = actionLogData.map(row => `
