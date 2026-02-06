@@ -430,35 +430,29 @@ function renderAttendance(data) {
   });
 }
   
-// --- Update fetchAndRenderLog ---
-async function fetchAndRenderLog() {
-  const user = protectPage();
-  if (!user || !user.unit) return;
 
+// Update fetchAndRenderLog to accept unit as an argument
+async function fetchAndRenderLog(unit) {
   const logTableBody = document.querySelector("#logTable tbody");
   const logEmpty = document.getElementById("logEmpty");
+  logTableBody.innerHTML = ""; // Clear table
 
   try {
-    const response = await fetch(`${WEB_APP_URL}?action=getActionLog&unit=${encodeURIComponent(user.unit)}`);
+    const response = await fetch(`${WEB_APP_URL}?action=getActionLog&unit=${encodeURIComponent(unit)}`);
     const data = await response.json();
 
     if (!data || data.length === 0) {
-      logTableBody.innerHTML = "";
       logEmpty.style.display = "block";
-      logEmpty.innerText = "No Action Log for today";
       return;
     }
 
     logEmpty.style.display = "none";
     logTableBody.innerHTML = data.map(row => {
-      // Logic to determine badge color based on status string
-      let statusClass = "bg-completed"; // default
+      let statusClass = "bg-completed"; 
       const status = (row.status || "").toLowerCase();
-      
       if (status.includes("progress") || status.includes("running")) statusClass = "bg-idle";
       if (status.includes("start") || status.includes("open")) statusClass = "status-green";
       if (status.includes("stop") || status.includes("hold")) statusClass = "status-red";
-      if (status.includes("complete") || status.includes("finish")) statusClass = "bg-completed";
 
       return `
         <tr>
@@ -471,14 +465,11 @@ async function fetchAndRenderLog() {
         </tr>
       `;
     }).join('');
-
   } catch (error) {
-    console.error("Error fetching log:", error);
     logEmpty.style.display = "block";
     logEmpty.innerText = "Error loading logs";
   }
 }
-
 
 
 function setupCollapse(sectionId) {
