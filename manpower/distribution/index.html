@@ -196,11 +196,11 @@ th {
 
   <!-- SECTION 1 -->
   <div class="card header-card">
-    <div class="profile-pic">DH</div>
+    <div class="profile-pic" id="dhInitials">--</div>
     <div class="info-grid">
-      <div class="info-item"><span>Name:</span> John Anderson</div>
-      <div class="info-item"><span>Employee ID:</span> DH-1023</div>
-      <div class="info-item"><span>Department Code:</span> STR-MNT</div>
+      <div class="info-item"><span>Name:</span> <span id="dhName">Loading...</span></div>
+      <div class="info-item"><span>Employee ID:</span> <span id="dhId">...</span></div>
+      <div class="info-item"><span>Department Code:</span> <span id="dhUnit">...</span></div>
       <div class="info-item">
         <span>Attended Status:</span>
         <span class="badge present">Present</span>
@@ -303,33 +303,36 @@ async function loadDHHeader() {
   if (!user) return;
 
   try {
-    // Show a loading state if you want, or just wait for fetch
     const response = await fetch(`${WEB_APP_URL}?userId=${user.userId}&action=getDHData`);
     const data = await response.json();
 
     if (data.success) {
-      // Update Name
-      document.querySelector(".info-item:nth-child(1)").innerHTML = `<span>Name:</span> ${data.name}`;
-      // Update ID
-      document.querySelector(".info-item:nth-child(2)").innerHTML = `<span>Employee ID:</span> ${data.id}`;
-      // Update Unit
-      document.querySelector(".info-item:nth-child(3)").innerHTML = `<span>Department Code:</span> ${data.unit}`;
+      // 1. Fill the text fields using IDs
+      document.getElementById("dhName").textContent = data.name;
+      document.getElementById("dhId").textContent = data.id;
+      document.getElementById("dhUnit").textContent = data.unit;
       
-      // Update Profile Pic Initials (Optional: Gets first letter of first and last name)
+      // 2. Update Profile Pic Initials
       const names = data.name.split(" ");
       const initials = names.length > 1 
         ? (names[0][0] + names[names.length-1][0]).toUpperCase() 
         : names[0][0].toUpperCase();
-      document.querySelector(".profile-pic").textContent = initials;
+      document.getElementById("dhInitials").textContent = initials;
 
     } else {
+      // If DH is not found
+      document.getElementById("dhName").textContent = "Not Found";
+      document.getElementById("dhId").textContent = "N/A";
+      document.getElementById("dhUnit").textContent = "N/A";
       console.error("DH Data Error:", data.error);
     }
   } catch (err) {
+    document.getElementById("dhName").textContent = "Error loading";
     console.error("Failed to fetch DH info:", err);
   }
 }
 
+  
 function renderAttendance() {
   const tbody = document.querySelector("#attendanceTable tbody");
   const empty = document.getElementById("attendanceEmpty");
