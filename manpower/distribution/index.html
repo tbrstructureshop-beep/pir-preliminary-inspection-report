@@ -296,41 +296,36 @@ const actionLogData = [
  * Fetch and Fill Department Head Data
  */
 async function loadDHHeader() {
-  if (!user) return;
+  // Use a small delay or check to ensure user object exists
+  if (!user || !user.userId) {
+    console.warn("User not logged in yet...");
+    return;
+  }
 
   try {
     const response = await fetch(`${WEB_APP_URL}?userId=${user.userId}&action=getDHData`);
     const data = await response.json();
 
     if (data.success) {
-      // 1. Fill Text Data
       document.getElementById("dhName").textContent = data.name;
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       
-      // 2. Update Attendance Badge
       const statusBadge = document.getElementById("dhStatus");
       statusBadge.textContent = data.attendanceStatus;
-      
-      // Remove old classes and add the new one
-      statusBadge.classList.remove("present", "absent", "completed", "idle");
-      statusBadge.classList.add(data.statusCode);
+      statusBadge.className = `badge ${data.statusCode}`; // Reset and add class
 
-      // 3. Update Profile Pic
-      const names = data.name.split(" ");
-      const initials = names.length > 1 
-        ? (names[0][0] + names[names.length-1][0]).toUpperCase() 
-        : names[0][0].toUpperCase();
-      document.getElementById("dhInitials").textContent = initials;
-
+      const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
+      document.getElementById("dhInitials").textContent = initials.substring(0, 2);
     } else {
-      document.getElementById("dhName").textContent = "DH Not Found";
+      document.getElementById("dhName").textContent = "No DH Assigned";
+      console.error("Backend Error:", data.error);
     }
   } catch (err) {
+    document.getElementById("dhName").textContent = "Connection Error";
     console.error("Fetch error:", err);
   }
 }
-
   
 function renderAttendance() {
   const tbody = document.querySelector("#attendanceTable tbody");
