@@ -435,11 +435,15 @@ function renderAttendance(data) {
 async function fetchAndRenderLog(unit) {
   const logTableBody = document.querySelector("#logTable tbody");
   const logEmpty = document.getElementById("logEmpty");
-  logTableBody.innerHTML = ""; // Clear table
+  
+  if (!unit) return;
 
   try {
     const response = await fetch(`${WEB_APP_URL}?action=getActionLog&unit=${encodeURIComponent(unit)}`);
     const data = await response.json();
+
+    // Clear existing rows
+    logTableBody.innerHTML = "";
 
     if (!data || data.length === 0) {
       logEmpty.style.display = "block";
@@ -447,9 +451,12 @@ async function fetchAndRenderLog(unit) {
     }
 
     logEmpty.style.display = "none";
-    logTableBody.innerHTML = data.map(row => {
-      let statusClass = "bg-completed"; 
+    
+    const rowsHtml = data.map(row => {
+      // Determine Status Color
+      let statusClass = "bg-completed"; // Default
       const status = (row.status || "").toLowerCase();
+      
       if (status.includes("progress") || status.includes("running")) statusClass = "bg-idle";
       if (status.includes("start") || status.includes("open")) statusClass = "status-green";
       if (status.includes("stop") || status.includes("hold")) statusClass = "status-red";
@@ -465,9 +472,13 @@ async function fetchAndRenderLog(unit) {
         </tr>
       `;
     }).join('');
+
+    logTableBody.innerHTML = rowsHtml;
+
   } catch (error) {
+    console.error("Log Error:", error);
     logEmpty.style.display = "block";
-    logEmpty.innerText = "Error loading logs";
+    logEmpty.innerText = "Error loading logs. Please try again.";
   }
 }
 
