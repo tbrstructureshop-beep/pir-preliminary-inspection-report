@@ -276,14 +276,6 @@ th {
 // 1. Protect the page and get user info
 const user = protectPage();
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7JIasZnwRFhGrTPOCsZmo16R8b9Gzim5gZSrTgOSUTqoYUOFVKQ/exec"; 
-  
-// Mock Data (Updated to match your requirements)
-const attendanceData = [
-  { id: "EMP-2101", name: "John Doe", clockIn: "07:45", clockOut: "-", isDuty: true, status: "Idle" },
-  { id: "EMP-2102", name: "Jane Smith", clockIn: "07:52", clockOut: "-", isDuty: true, status: "On Task" },
-  { id: "EMP-2103", name: "Mike Ross", clockIn: "08:00", clockOut: "17:05", isDuty: false, status: "Completely STOP" },
-  { id: "EMP-2104", name: "Harvey Specter", clockIn: "08:15", clockOut: "16:30", isDuty: false, status: "STOP Required" }
-];
 
 const actionLogData = [
   { employeeId: "EMP-2102", workOrder: "WO-88921", task: "Inspection", time: "09:15", action: "Started", progression: "In Progress" }
@@ -353,7 +345,27 @@ async function loadDHHeader() {
   }
 }
 
-function renderAttendance() {
+async function fetchAndRenderAttendance() {
+  const user = protectPage();
+  if (!user || !user.unit) return;
+
+  // Show a "Loading..." message in the tables if desired
+  document.querySelector("#onDutyTable tbody").innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading data...</td></tr>';
+
+  try {
+    const response = await fetch(`${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`);
+    const realData = await response.json();
+    
+    // Pass the real data to the render function
+    renderAttendance(realData);
+  } catch (error) {
+    console.error("Error fetching attendance:", error);
+    // On error, trigger the "No Record" state
+    renderAttendance([]);
+  }
+}
+  
+function renderAttendance(data) {
   const onDutyBody = document.querySelector("#onDutyTable tbody");
   const offDutyBody = document.querySelector("#offDutyTable tbody");
   const onDutyEmpty = document.getElementById("onDutyEmpty");
@@ -362,14 +374,26 @@ function renderAttendance() {
   onDutyBody.innerHTML = "";
   offDutyBody.innerHTML = "";
 
-  const onDutyList = attendanceData.filter(p => p.isDuty);
-  const offDutyList = attendanceData.filter(p => !p.isDuty);
+  const onDutyList = data.filter(p => p.isDuty);
+  const offDutyList = data.filter(p => !p.isDuty);
+
+  // Default messages if data is empty
+  if (data.length === 0) {
+    onDutyEmpty.textContent = "No Attendance Record For Today";
+    offDutyEmpty.textContent = "No Attendance Record For Today";
+    onDutyEmpty.style.display = "block";
+    offDutyEmpty.style.display = "block";
+    return;
+  }
 
   // Render ON DUTY
-  if (onDutyList.length === 0) onDutyEmpty.style.display = "block";
-  else {
+  if (onDutyList.length === 0) {
+    onDutyEmpty.style.display = "block";
+    onDutyEmpty.textContent = "No personnel on duty";
+  } else {
     onDutyEmpty.style.display = "none";
     onDutyList.forEach(p => {
+      // Logic for status colors
       const statusClass = p.status === "On Task" ? "status-green" : "status-red";
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -383,8 +407,10 @@ function renderAttendance() {
   }
 
   // Render OFF DUTY
-  if (offDutyList.length === 0) offDutyEmpty.style.display = "block";
-  else {
+  if (offDutyList.length === 0) {
+    offDutyEmpty.style.display = "block";
+    offDutyEmpty.textContent = "No personnel off duty";
+  } else {
     offDutyEmpty.style.display = "none";
     offDutyList.forEach(p => {
       const statusClass = p.status === "Completely STOP" ? "status-green" : "status-red";
@@ -400,6 +426,7 @@ function renderAttendance() {
     });
   }
 }
+
 
 function renderLog() {
   const tbody = document.querySelector("#logTable tbody");
@@ -423,17 +450,20 @@ function setupCollapse(sectionId) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // 1. Render static/mock tables
-  renderAttendance();
-  renderLog();
-  
-  // 2. Setup UI interactions
+  // 1. Setup UI interactions (Collapse/Expand logic)
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
   
-  // 3. Load dynamic data from Google Apps Script
+  // 2. Load Department Head Profile Info
   loadDHHeader(); 
+
+  // 3. Load Real Attendance Data (This replaces the mock data)
+  fetchAndRenderAttendance();
+  
+  // 4. Render Log (If this is still mock data for now)
+  renderLog();
 });
+  
 </script>
 </body>
 </html>
