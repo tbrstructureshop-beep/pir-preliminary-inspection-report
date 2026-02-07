@@ -6,79 +6,84 @@
 <title>Attendance & Manpower Dashboard</title>
 
 <style>
+/* Import High-End Inter Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --primary: #2b888f;      /* Your requested theme */
-  --primary-dark: #1e6166;
-  --primary-light: #eaf3f4;
-  --bg: #f8fafb;
+  --primary: #2b888f;         /* Theme Teal */
+  --primary-soft: #eaf3f4;    /* Background Tint */
+  --primary-dark: #1a565a;    /* Deep Teal */
+  --bg: #f4f7f8;              /* Soft Grey-Teal Canvas */
   --card-bg: #ffffff;
-  --text: #334141;
-  --muted: #708080;
+  --text-main: #1e292b;       /* High Contrast Slate */
+  --text-muted: #64748b;      /* Elegant Grey */
   
-  /* Status Colors (Clean & Professional) */
-  --success: #218c53;
-  --danger: #c53030;
-  --warning: #b57d05;
-  --info: #2b6cb0;
+  /* Modern Status Palette */
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --slate: #64748b;
 }
 
 * {
   box-sizing: border-box;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   margin: 0;
   background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
+  color: var(--text-main);
+  padding: 32px 0;
 }
 
 .container {
-  max-width: 1140px;
-  margin: 24px auto;
-  padding: 0 20px;
+  max-width: 1000px; /* Tighter container = more professional look */
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
-/* Card Styling */
+/* Card - The "Notion" Style */
 .card {
   background: var(--card-bg);
-  border-radius: 10px;
-  border: 1px solid #d1dee0;
-  box-shadow: 0 4px 12px rgba(43, 136, 143, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(43, 136, 143, 0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(43, 136, 143, 0.04);
   overflow: hidden;
 }
 
-/* Header Card */
+/* Header / Profile Area */
 .header-card {
-  padding: 24px;
+  padding: 32px;
   display: flex;
   align-items: center;
-  gap: 28px;
-  border-top: 5px solid var(--primary);
+  gap: 32px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fcfc 100%);
 }
 
 .profile-pic {
-  width: 76px;
-  height: 76px;
-  border-radius: 12px;
+  width: 84px;
+  height: 84px;
+  border-radius: 20px; /* Modern "Squircle" */
   background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(43, 136, 143, 0.2);
   flex-shrink: 0;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px;
   width: 100%;
 }
 
@@ -88,67 +93,80 @@ body {
 }
 
 .info-item span:first-child {
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
 }
 
 .info-item span:last-child {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-main);
 }
 
-/* Section Controls */
+/* Collapsible Sections */
 .section-header {
-  background: #fff;
-  padding: 16px 24px;
+  padding: 20px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  border-bottom: 1px solid #e2eef0;
+  background: #fff;
+  transition: background 0.2s;
+}
+
+.section-header:hover {
+  background: var(--primary-soft);
 }
 
 .section-header h2 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   margin: 0;
-  color: var(--primary);
+  color: var(--primary-dark);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .chevron {
   color: var(--primary);
-  transition: transform 0.3s ease;
+  font-size: 14px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section.collapsed .chevron {
   transform: rotate(-90deg);
 }
 
-/* Content & Sub-titles */
+/* Content Area */
 .section-content {
-  padding: 0 24px 24px 24px;
+  padding: 0 28px 28px 28px;
 }
 
 .sub-group-title {
   font-size: 12px;
   font-weight: 700;
-  color: var(--primary-dark);
+  color: var(--primary);
   margin: 24px 0 12px 0;
-  padding-bottom: 4px;
-  border-bottom: 2px solid var(--primary-light);
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Table Design */
+.sub-group-title::after {
+  content: "";
+  height: 1px;
+  flex-grow: 1;
+  background: linear-gradient(to right, rgba(43, 136, 143, 0.2), transparent);
+}
+
+/* Master-Class Table Design */
 .table-wrapper {
-  border: 1px solid #e2eef0;
-  border-radius: 8px;
+  border: 1px solid #eef2f3;
+  border-radius: 10px;
   overflow: hidden;
 }
 
@@ -158,60 +176,78 @@ table {
 }
 
 th {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  padding: 12px 16px;
+  background: #fcfdfe;
+  padding: 14px 18px;
   text-align: left;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
+  color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #eef2f3;
 }
 
 td {
-  padding: 14px 16px;
+  padding: 16px 18px;
   font-size: 14px;
-  border-bottom: 1px solid #f0f4f5;
+  border-bottom: 1px solid #f8fafb;
+  color: var(--text-main);
   background: #fff;
 }
 
 tr:hover td {
-  background-color: #fcfdfe;
+  background-color: #f9fbfc;
 }
 
-/* Modern Badge Theme (White background, thick border) */
+/* Modern Status Pills (Winning Master Look) */
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 12px;
-  border-radius: 6px;
+  border-radius: 99px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  background: #fff;
-  border-width: 2px;
-  border-style: solid;
+  letter-spacing: 0.3px;
 }
 
-/* Color Mappings */
+/* Custom Status Dot */
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
 .status-green, .bg-present { 
-  border-color: var(--success); color: var(--success); 
+  background: #ecfdf5; color: #065f46; 
 }
-.status-red, .bg-absent { 
-  border-color: var(--danger); color: var(--danger); 
-}
-.bg-idle { 
-  border-color: var(--warning); color: var(--warning); 
-}
-.bg-completed { 
-  border-color: var(--muted); color: var(--muted); 
-}
+.status-green::before, .bg-present::before { background: var(--green); }
 
-/* Empty State */
+.status-red, .bg-absent { 
+  background: #fef2f2; color: #991b1b; 
+}
+.status-red::before, .bg-absent::before { background: var(--red); }
+
+.bg-idle { 
+  background: #fffbeb; color: #92400e; 
+}
+.bg-idle::before { background: var(--amber); }
+
+.bg-completed { 
+  background: #f8fafb; color: #475569; 
+}
+.bg-completed::before { background: var(--slate); }
+
+/* Empty States */
 .empty-state {
-  padding: 24px;
+  padding: 32px;
   text-align: center;
-  color: var(--muted);
+  color: var(--text-muted);
   font-style: italic;
   font-size: 13px;
+  background: #fafcfc;
 }
 
 /* Logic for Collapse */
@@ -220,8 +256,8 @@ tr:hover td {
 }
 
 @media (max-width: 768px) {
-  .header-card { flex-direction: column; text-align: center; }
-  .info-grid { grid-template-columns: 1fr 1fr; }
+  .header-card { flex-direction: column; text-align: center; padding: 24px; }
+  .info-grid { grid-template-columns: 1fr; gap: 16px; }
 }
 </style>
   
