@@ -14,8 +14,17 @@ let APP_STATE = {
     findings: [],
     materials: [],
     logs: [],
-    woId: "" // Fetched from INFO!C4
+    woId: "", // Fetched from INFO!C4
+    userMap: {}
 };
+
+function initApp() {
+    // Fetch users from GAS
+    google.script.run.withSuccessHandler(data => {
+        APP_STATE.userMap = data;
+        startTimerEngine(); // Start engine after names are loaded
+    }).getUserMap();
+}
 
 window.addEventListener('DOMContentLoaded', () => {
     fetchInitialData();      // Initial load (shows loader)
@@ -482,12 +491,20 @@ function startTimerEngine() {
                 const m = Math.floor((diff % 3600) / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
                 
-                // NEW: Check if the timer belongs to the person logged in
                 const isOwner = (currentUser && String(a.employeeId) === String(currentUser.userId));
+                
+                // LOOKUP NAME HERE
+                const empName = APP_STATE.userMap[String(a.employeeId)] || "Unknown User";
                 
                 return `
                     <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
-                        <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
+                        <div class="timer-info-left">
+                            <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
+                            <!-- Added the Name below the ID -->
+                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #666; margin-top: -2px;">
+                                ${empName}
+                            </div>
+                        </div>
                         <div class="timer-controls-right">
                             <span class="timer-val">${h}:${m}:${s}</span>
                             <button 
