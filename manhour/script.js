@@ -463,17 +463,57 @@ function processStop(fNo, empId) {
 async function finalizeStop(fNo, empId, isLast) {
     const finalStatus = isLast ? document.getElementById('final-status-select').value : 'IN_PROGRESS';
     let evidenceBase64 = "";
+
     if (isLast && finalStatus === 'CLOSED') {
         const file = document.getElementById('evidence-file').files[0];
-        if (!file) return alert("Evidence required");
+        if (!file) {
+            Swal.fire('Required', 'Please upload evidence to close this job', 'warning');
+            return;
+        }
         evidenceBase64 = await toBase64(file);
     }
+
     showLoader(true);
     try {
-        await fetch(API, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'stopManhour', sheetId: SHEET_ID, woId: APP_STATE.woId, findingId: fNo, employeeId: empId, stopTime: new Date().toISOString(), finalStatus: finalStatus, evidenceBase64: evidenceBase64 }) });
-        document.getElementById('final-modal').style.display = 'none';
-        setTimeout(fetchInitialData, 2500);
-    } catch (e) { showLoader(false); }
+        await fetch(API, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify({ 
+                action: 'stopManhour', 
+                sheetId: SHEET_ID, 
+                woId: APP_STATE.woId, 
+                findingId: fNo, 
+                employeeId: empId, 
+                stopTime: new Date().toISOString(), 
+                finalStatus: finalStatus, 
+                evidenceBase64: evidenceBase64 
+            }) 
+        });
+
+        // 1. Hide the loader first
+        showLoader(false);
+        
+        // 2. Hide the manual modal if it was open
+        if (isLast) {
+            document.getElementById('final-modal').style.display = 'none';
+        }
+
+        // 3. SHOW THE SWEET SUCCESS NOTIFICATION
+        Swal.fire({
+            icon: 'success',
+            title: 'Work Logged',
+            text: finalStatus === 'CLOSED' ? 'Finding has been CLOSED' : 'Progress saved',
+            timer: 2000,
+            showConfirmButton: false
+        });
+
+        // 4. Refresh data
+        setTimeout(fetchInitialData, 2000);
+
+    } catch (e) { 
+        showLoader(false);
+        Swal.fire('Error', 'Failed to save work log', 'error');
+    }
 }
 
 function getActiveSessions(fNo) {
