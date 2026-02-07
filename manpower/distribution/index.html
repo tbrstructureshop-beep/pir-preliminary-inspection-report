@@ -257,6 +257,54 @@
       margin: 10px 0;
     }
 
+    /* 1. Fix the spacing between sections */
+.sub-group-wrapper {
+  margin-top: 30px; /* Adds space above each sub-section */
+}
+
+/* 2. Differentiate the Titles with Colors and Icons */
+.sub-group-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 5px;
+}
+
+.title-on-duty {
+  color: #10b981; /* Success Green */
+  border-left: 4px solid #10b981;
+  padding-left: 10px;
+}
+
+.title-off-duty {
+  color: #64748b; /* Slate Gray */
+  border-left: 4px solid #64748b;
+  padding-left: 10px;
+}
+
+/* 3. Give the tables different header colors */
+#onDutyTable th {
+  background: #ecfdf5; /* Light green bg */
+  color: #065f46;
+  border-bottom: 2px solid #10b981;
+}
+
+#offDutyTable th {
+  background: #f1f5f9; /* Light gray bg */
+  color: #475569;
+  border-bottom: 2px solid #64748b;
+}
+
+/* Subtle row tinting for Off Duty to look "faded" */
+#offDutyTable tbody tr {
+  background-color: #fafafa;
+  opacity: 0.85;
+}
+
   </style>
 </head>
 <body>
@@ -291,40 +339,53 @@
         No Attendance Record For Today
       </div>
 
-      <div class="sub-group-title">ON DUTY PERSONNEL</div>
-      <div class="table-container">
-        <table id="onDutyTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Clock-In</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
-      </div>
-
-      <div class="sub-group-title">OFF DUTY PERSONNEL</div>
-      <div class="table-container">
-        <table id="offDutyTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>In</th>
-              <th>Out</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
-      </div>
+  <!-- ON DUTY SECTION -->
+  <div class="sub-group-wrapper">
+    <div class="sub-group-title title-on-duty">
+      <i class="fas fa-circle-check"></i> ON DUTY PERSONNEL
+    </div>
+    <div class="table-container">
+      <table id="onDutyTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Clock-In</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+           <!-- Rows here -->
+        </tbody>
+      </table>
+      <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
     </div>
   </div>
+
+  <!-- OFF DUTY SECTION -->
+  <div class="sub-group-wrapper">
+    <div class="sub-group-title title-off-duty">
+      <i class="fas fa-clock-rotate-left"></i> OFF DUTY PERSONNEL
+    </div>
+    <div class="table-container">
+      <table id="offDutyTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>In</th>
+            <th>Out</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+           <!-- Rows here -->
+        </tbody>
+      </table>
+      <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+    </div>
+  </div>
+</div>
 
   <!-- ACTION LOG SECTION -->
   <div class="section-card collapsed" id="logSection">
