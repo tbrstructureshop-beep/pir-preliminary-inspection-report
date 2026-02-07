@@ -33,6 +33,8 @@ function initApp() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    
+    initApp(); 
     fetchInitialData();      // Initial load (shows loader)
     setupGlobalEvents();
     startTimerEngine();
