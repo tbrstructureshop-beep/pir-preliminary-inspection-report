@@ -19,23 +19,17 @@ let APP_STATE = {
 };
 
 function initApp() {
-    console.log("Fetching User Map...");
-    google.script.run
-        .withSuccessHandler(data => {
-            console.log("User Map Received:", data); 
-            APP_STATE.userMap = data; // Now this is populated
-        })
-        .withFailureHandler(err => console.error("Failed to get users:", err))
-        .getUserMap();
+    // Fetch users from GAS
+    google.script.run.withSuccessHandler(data => {
+        APP_STATE.userMap = data;
+        startTimerEngine(); // Start engine after names are loaded
+    }).getUserMap();
 }
 
-
 window.addEventListener('DOMContentLoaded', () => {
-    
     fetchInitialData();      // Initial load (shows loader)
     setupGlobalEvents();
     startTimerEngine();
-    initApp(); 
 
     // ADD THIS: Refresh data every 50 seconds without showing loader
     setInterval(() => {
@@ -484,14 +478,8 @@ function getActiveSessions(fNo) {
     return Object.values(activeMap);
 }
 
-
 function startTimerEngine() {
-    if (window.timerInterval) clearInterval(window.timerInterval);
-
-    window.timerInterval = setInterval(() => {
-        // Check if map is empty to avoid flickering (optional)
-        const hasMap = Object.keys(APP_STATE.userMap).length > 0;
-
+    setInterval(() => {
         APP_STATE.findings.forEach(f => {
             const container = document.getElementById(`timers-${f.no}`);
             if (!container) return;
@@ -503,21 +491,17 @@ function startTimerEngine() {
                 const m = Math.floor((diff % 3600) / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
                 
-                // CRITICAL: Ensure both are compared as trimmed strings
-                const cleanId = String(a.employeeId).trim();
-                const isOwner = (currentUser && String(currentUser.userId).trim() === cleanId);
+                const isOwner = (currentUser && String(a.employeeId) === String(currentUser.userId));
                 
-                // Lookup
-                let empName = "Loading...";
-                if (hasMap) {
-                    empName = APP_STATE.userMap[cleanId] || `ID: ${cleanId} (No Name Found)`;
-                }
+                // LOOKUP NAME HERE
+                const empName = APP_STATE.userMap[String(a.employeeId)] || "Unknown User";
                 
                 return `
                     <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
                         <div class="timer-info-left">
-                            <span class="timer-emp">ID: ${cleanId} ${isOwner ? '(You)' : ''}</span>
-                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #555; font-weight: bold;">
+                            <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
+                            <!-- Added the Name below the ID -->
+                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #666; margin-top: -2px;">
                                 ${empName}
                             </div>
                         </div>
@@ -526,7 +510,7 @@ function startTimerEngine() {
                             <button 
                                 class="btn-stop-mini" 
                                 style="${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
-                                onclick="${isOwner ? `processStop('${f.no}', '${cleanId}')` : 'void(0)'}">
+                                onclick="processStop('${f.no}', '${a.employeeId}')">
                                 STOP
                             </button>
                         </div>
