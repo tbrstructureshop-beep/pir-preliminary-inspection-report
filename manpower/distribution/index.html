@@ -1,16 +1,45 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manpower Dashboard</title>
-
-  <!-- Google Fonts and Icons -->
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
+    /* ================================
+      RENDERING STABILIZER (CRITICAL)
+   ================================ */
+
+   html {
+     -webkit-text-size-adjust: 100%;
+     text-size-adjust: 100%;
+     font-smoothing: antialiased;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+   }
+
+   body {
+     text-rendering: optimizeLegibility;
+   }
+
+   /* Normalize layout */
+   table {
+     border-spacing: 0;
+   }
+
+   img, svg {
+     display: block;
+     max-width: 100%;
+   }
+
+   *, *::before, *::after {
+     box-sizing: border-box;
+   }
+    
     :root {
       --primary: #307c91;
       --primary-dark: #245f6f;
