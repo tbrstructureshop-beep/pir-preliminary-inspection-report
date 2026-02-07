@@ -20,24 +20,22 @@ let APP_STATE = {
 
 function initApp() {
     console.log("Fetching User Map...");
-    
-    google.script.run.withSuccessHandler(data => {
-        console.log("User Map Received:", data); // Check if this shows your IDs and Names
-        APP_STATE.userMap = data;
-        
-        // Only start the timer AFTER we have the user map
-        startTimerEngine(); 
-    })
-    .withFailureHandler(err => console.error("Failed to get users:", err))
-    .getUserMap();
+    google.script.run
+        .withSuccessHandler(data => {
+            console.log("User Map Received:", data); 
+            APP_STATE.userMap = data; // Now this is populated
+        })
+        .withFailureHandler(err => console.error("Failed to get users:", err))
+        .getUserMap();
 }
+
 
 window.addEventListener('DOMContentLoaded', () => {
     
-    initApp(); 
     fetchInitialData();      // Initial load (shows loader)
     setupGlobalEvents();
     startTimerEngine();
+    initApp(); 
 
     // ADD THIS: Refresh data every 50 seconds without showing loader
     setInterval(() => {
