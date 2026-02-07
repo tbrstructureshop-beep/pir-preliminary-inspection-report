@@ -313,50 +313,77 @@ function previewImage(url) {
 
 function handleStart(fNo) {
     const finding = APP_STATE.findings.find(f => f.no == fNo);
-    if (finding && finding.status === 'CLOSED') return alert("Job is CLOSED.");
+    if (finding && finding.status === 'CLOSED') return Swal.fire("Notice", "Job is CLOSED.", "info");
 
-    const empId = document.getElementById(`emp-${fNo}`).value.trim();
-    const taskCode = document.getElementById(`task-${fNo}`).value.trim();
-    if (!empId || !taskCode) return alert("Fill credentials");
+    // NORMALIZE: Ensure IDs are strings and trimmed of any hidden spaces
+    const empId = String(document.getElementById(`emp-${fNo}`).value).trim();
+    const taskCode = String(document.getElementById(`task-${fNo}`).value).trim();
+
+    if (!empId || !taskCode) return Swal.fire("Required", "Fill credentials", "warning");
 
     const actives = getActiveSessions(fNo);
 
+    // 1. CHECK IF *YOU* ARE ALREADY ACTIVE ON THIS FINDING
+    // We search the active list for your specific ID
+    const mySession = actives.find(a => String(a.employeeId).trim() === empId);
+
+    if (mySession) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Already Working',
+            text: "You are already clocked into this Finding. Please use the STOP button below when finished.",
+            confirmButtonColor: 'var(--primary)'
+        });
+        return; // Stop here, no need to show conflict modals to yourself
+    }
+
+    // 2. CHECK LOGIC FOR *OTHER* MECHANICS
     if (actives.length > 0) {
-        // Get the task code currently being worked on
         const currentTask = actives[0].taskCode;
 
-        // --- NEW MODAL LOGIC STARTS HERE ---
+        // SEQUENCE CHECK: Someone else is working on a DIFFERENT task
         if (taskCode !== currentTask) {
-            // 1. Fill the text in the sequencing modal
+            // Fill sequencing modal details
             document.getElementById('attempted-task').textContent = taskCode;
-            document.getElementById('active-task-name').textContent = currentTask;
             
-            // 2. Show the professional sequencing modal
-            document.getElementById('sequencing-modal').style.display = 'block';
-            return; // Stop the function so the new task isn't started
-        }
-        // --- NEW MODAL LOGIC ENDS HERE ---
+            // Look up the name(s) of the people currently working to show in the modal
+            const names = actives.map(a => {
+                const name = APP_STATE.userMap[String(a.employeeId).trim()] || "Unknown User";
+                return `${name} (${a.employeeId})`;
+            }).join(', ');
 
-        // If it's the same task, show the standard join confirmation
+            document.getElementById('active-task-name').textContent = `${currentTask} (By: ${names})`;
+            
+            document.getElementById('sequencing-modal').style.display = 'block';
+            return; 
+        }
+
+        // JOIN CHECK: Someone else is working on the SAME task
         const modal = document.getElementById('conflict-modal');
-        document.getElementById('active-mechanics-list').innerHTML = actives.map(a => `<li>${a.employeeId}</li>`).join('');
+        document.getElementById('active-mechanics-list').innerHTML = actives.map(a => {
+            const name = APP_STATE.userMap[String(a.employeeId).trim()] || "User";
+            return `<li><b>${name}</b> (ID: ${a.employeeId})</li>`;
+        }).join('');
+
         document.getElementById('confirm-join').onclick = () => { 
             modal.style.display = 'none'; 
             executeStart(fNo, empId, taskCode); 
         };
         modal.style.display = 'block';
     } else { 
-        // No active sessions, start the task immediately
+        // No active sessions at all, proceed normally
         executeStart(fNo, empId, taskCode); 
     }
 }
 
 async function executeStart(fNo, empId, taskCode) {
-    // 1. SECURITY CHECK (Remains the same...)
+    const cleanEmpId = String(empId).trim();
     let alreadyWorkingFinding = null;
+
+    // SECURITY CHECK: Is user active on ANY finding?
     APP_STATE.findings.forEach(f => {
         const actives = getActiveSessions(f.no);
-        if (actives.some(a => String(a.employeeId) === String(empId))) {
+        if (actives.some(a => String(a.employeeId).trim() === cleanEmpId)) {
             alreadyWorkingFinding = f.no;
         }
     });
@@ -365,21 +392,20 @@ async function executeStart(fNo, empId, taskCode) {
         Swal.fire({
             icon: 'warning',
             title: 'Already Working',
-            text: `You have an active timer running on Finding #${alreadyWorkingFinding}.`,
+            text: `You have an active timer running on Finding #${alreadyWorkingFinding}. Stop that first!`,
             confirmButtonColor: '#f39c12'
         });
         return;
     }
 
-    // 2. Start Process
-    showLoader(true); // Show loader while waiting for network
+    showLoader(true); 
     try {
         const payload = { 
             action: 'startManhour', 
             sheetId: SHEET_ID, 
             woId: APP_STATE.woId, 
             findingId: fNo, 
-            employeeId: empId, 
+            employeeId: cleanEmpId, 
             taskCode: taskCode, 
             startTime: new Date().toISOString() 
         };
@@ -390,8 +416,8 @@ async function executeStart(fNo, empId, taskCode) {
             body: JSON.stringify(payload) 
         });
 
-        // --- CRITICAL CHANGE HERE ---
-        showLoader(false); // HIDE LOADER FIRST
+        // Hide loader before showing the success message
+        showLoader(false); 
 
         Swal.fire({
             icon: 'success',
@@ -400,9 +426,9 @@ async function executeStart(fNo, empId, taskCode) {
             showConfirmButton: false
         });
 
-        setTimeout(fetchInitialData, 500); // Small delay to let GAS process
+        setTimeout(fetchInitialData, 500); 
     } catch (e) { 
-        showLoader(false); // HIDE LOADER ON ERROR
+        showLoader(false); 
         Swal.fire('Error', 'Could not connect to server', 'error');
     }
 }
