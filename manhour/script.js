@@ -19,11 +19,17 @@ let APP_STATE = {
 };
 
 function initApp() {
-    // Fetch users from GAS
+    console.log("Fetching User Map...");
+    
     google.script.run.withSuccessHandler(data => {
+        console.log("User Map Received:", data); // Check if this shows your IDs and Names
         APP_STATE.userMap = data;
-        startTimerEngine(); // Start engine after names are loaded
-    }).getUserMap();
+        
+        // Only start the timer AFTER we have the user map
+        startTimerEngine(); 
+    })
+    .withFailureHandler(err => console.error("Failed to get users:", err))
+    .getUserMap();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -478,8 +484,12 @@ function getActiveSessions(fNo) {
     return Object.values(activeMap);
 }
 
+
 function startTimerEngine() {
-    setInterval(() => {
+    // Prevent multiple intervals if initApp is called twice
+    if (window.timerInterval) clearInterval(window.timerInterval);
+
+    window.timerInterval = setInterval(() => {
         APP_STATE.findings.forEach(f => {
             const container = document.getElementById(`timers-${f.no}`);
             if (!container) return;
@@ -491,17 +501,17 @@ function startTimerEngine() {
                 const m = Math.floor((diff % 3600) / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
                 
-                const isOwner = (currentUser && String(a.employeeId) === String(currentUser.userId));
+                const isOwner = (currentUser && String(a.employeeId).trim() === String(currentUser.userId).trim());
                 
-                // LOOKUP NAME HERE
-                const empName = APP_STATE.userMap[String(a.employeeId)] || "Unknown User";
+                // Lookup with Trimming
+                const cleanId = String(a.employeeId).trim();
+                const empName = APP_STATE.userMap[cleanId] || "Name not found";
                 
                 return `
                     <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
                         <div class="timer-info-left">
                             <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
-                            <!-- Added the Name below the ID -->
-                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #666; margin-top: -2px;">
+                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #555; font-weight: bold;">
                                 ${empName}
                             </div>
                         </div>
@@ -510,7 +520,7 @@ function startTimerEngine() {
                             <button 
                                 class="btn-stop-mini" 
                                 style="${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
-                                onclick="processStop('${f.no}', '${a.employeeId}')">
+                                onclick="isOwner ? processStop('${f.no}', '${a.employeeId}') : null">
                                 STOP
                             </button>
                         </div>
