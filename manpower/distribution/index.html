@@ -117,20 +117,6 @@
       font-weight: 300;
     }
 
-    .header-badges {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .date-badge {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-
     /* --- DASHBOARD SECTIONS --- */
     .section-card {
       background: var(--card);
@@ -179,26 +165,15 @@
       padding: 0 20px 20px 20px;
     }
 
-    .sub-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-sub);
-      margin: 15px 0 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     /* --- SLIDABLE TABLE SYSTEM --- */
     .table-container {
       width: 100%;
-      overflow-x: auto; /* This allows the "Slide" behavior */
+      overflow-x: auto;
       border-radius: 12px;
       border: 1px solid var(--primary-light);
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Custom scrollbar for a cleaner look */
     .table-container::-webkit-scrollbar {
       height: 4px;
     }
@@ -209,7 +184,7 @@
 
     table {
       width: 100%;
-      min-width: 450px; /* Forces scroll on small screens */
+      min-width: 450px;
       border-collapse: collapse;
       font-size: 0.85rem;
     }
@@ -257,164 +232,159 @@
       margin: 10px 0;
     }
 
-    /* 1. Fix the spacing between sections */
-.sub-group-wrapper {
-  margin-top: 30px; /* Adds space above each sub-section */
-}
+    /* Sub-group Styling */
+    .sub-group-wrapper {
+      margin-top: 30px;
+    }
 
-/* 2. Differentiate the Titles with Colors and Icons */
-.sub-group-title {
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-left: 5px;
-}
+    .sub-group-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 5px;
+    }
 
-.title-on-duty {
-  color: #10b981; /* Success Green */
-  border-left: 4px solid #10b981;
-  padding-left: 10px;
-}
+    .title-on-duty {
+      color: #10b981;
+      border-left: 4px solid #10b981;
+      padding-left: 10px;
+    }
 
-.title-off-duty {
-  color: #64748b; /* Slate Gray */
-  border-left: 4px solid #64748b;
-  padding-left: 10px;
-}
+    .title-off-duty {
+      color: #64748b;
+      border-left: 4px solid #64748b;
+      padding-left: 10px;
+    }
 
-/* 3. Give the tables different header colors */
-#onDutyTable th {
-  background: #ecfdf5; /* Light green bg */
-  color: #065f46;
-  border-bottom: 2px solid #10b981;
-}
+    #onDutyTable th {
+      background: #ecfdf5;
+      color: #065f46;
+      border-bottom: 2px solid #10b981;
+    }
 
-#offDutyTable th {
-  background: #f1f5f9; /* Light gray bg */
-  color: #475569;
-  border-bottom: 2px solid #64748b;
-}
+    #offDutyTable th {
+      background: #f1f5f9;
+      color: #475569;
+      border-bottom: 2px solid #64748b;
+    }
 
-/* Subtle row tinting for Off Duty to look "faded" */
-#offDutyTable tbody tr {
-  background-color: #fafafa;
-  opacity: 0.85;
-}
-
+    #offDutyTable tbody tr {
+      background-color: #fafafa;
+      opacity: 0.85;
+    }
   </style>
 </head>
 <body>
 
-<body>
-
-<div class="app">
-  
-  <!-- PROFILE HEADER -->
-  <header>
-    <div class="profile-section">
-      <div class="profile-pic" id="dhInitials">--</div>
-      <div class="greeting">
-        <h1 id="dhName">Loading...</h1>
-        <div class="employee-meta">
-          ID: <span id="dhId">...</span> | Dept: <span id="dhUnit">...</span>
+  <div class="app">
+    
+    <!-- PROFILE HEADER -->
+    <header>
+      <div class="profile-info">
+        <div class="profile-pic" id="dhInitials">--</div>
+        <div class="greeting">
+          <h1 id="dhName">Loading...</h1>
+          <div class="employee-meta">
+            ID: <span id="dhId">...</span> | Dept: <span id="dhUnit">...</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="dhStatus" class="badge bg-idle">Checking Status...</div>
-  </header>
+      <div id="dhStatus" class="badge bg-idle">Checking Status...</div>
+    </header>
 
-  <!-- ATTENDANCE SECTION -->
-  <div class="section-card" id="attendanceSection">
-    <div class="section-header">
-      <h2><i class="fas fa-users-viewfinder"></i> Manpower Attendance</h2>
-      <i class="fas fa-chevron-down chevron"></i>
-    </div>
-    
-    <div class="section-content">
-      <div id="mainEmptyState" class="empty-state-main" style="display:none;">
-        No Attendance Record For Today
+    <!-- ATTENDANCE SECTION -->
+    <div class="section-card" id="attendanceSection">
+      <div class="section-header">
+        <h2><i class="fas fa-users-viewfinder"></i> Manpower Attendance</h2>
+        <i class="fas fa-chevron-down chevron"></i>
       </div>
+      
+      <div class="section-content">
+        <div id="mainEmptyState" class="empty-state" style="display:none;">
+          No Attendance Record For Today
+        </div>
 
-  <!-- ON DUTY SECTION -->
-  <div class="sub-group-wrapper">
-    <div class="sub-group-title title-on-duty">
-      <i class="fas fa-circle-check"></i> ON DUTY PERSONNEL
-    </div>
-    <div class="table-container">
-      <table id="onDutyTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Clock-In</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-           <!-- Rows here -->
-        </tbody>
-      </table>
-      <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
-    </div>
-  </div>
+        <!-- ON DUTY SUB-SECTION -->
+        <div class="sub-group-wrapper">
+          <div class="sub-group-title title-on-duty">
+            <i class="fas fa-circle-check"></i> ON DUTY PERSONNEL
+          </div>
+          <div class="table-container">
+            <table id="onDutyTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Clock-In</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows injected here -->
+              </tbody>
+            </table>
+            <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
+          </div>
+        </div>
 
-  <!-- OFF DUTY SECTION -->
-  <div class="sub-group-wrapper">
-    <div class="sub-group-title title-off-duty">
-      <i class="fas fa-clock-rotate-left"></i> OFF DUTY PERSONNEL
-    </div>
-    <div class="table-container">
-      <table id="offDutyTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>In</th>
-            <th>Out</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-           <!-- Rows here -->
-        </tbody>
-      </table>
-      <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
-    </div>
-  </div>
-</div>
+        <!-- OFF DUTY SUB-SECTION -->
+        <div class="sub-group-wrapper">
+          <div class="sub-group-title title-off-duty">
+            <i class="fas fa-clock-rotate-left"></i> OFF DUTY PERSONNEL
+          </div>
+          <div class="table-container">
+            <table id="offDutyTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows injected here -->
+              </tbody>
+            </table>
+            <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+          </div>
+        </div>
+      </div> <!-- End Section Content -->
+    </div> <!-- End Section Card -->
 
-  <!-- ACTION LOG SECTION -->
-  <div class="section-card collapsed" id="logSection">
-    <div class="section-header">
-      <h2><i class="fas fa-list-check"></i> Action Log</h2>
-      <i class="fas fa-chevron-down chevron"></i>
-    </div>
-    <div class="section-content">
-      <div class="table-container">
-        <table id="logTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Work Order</th>
-              <th>Task</th>
-              <th>Time</th>
-              <th>Action</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+    <!-- ACTION LOG SECTION -->
+    <div class="section-card collapsed" id="logSection">
+      <div class="section-header">
+        <h2><i class="fas fa-list-check"></i> Action Log</h2>
+        <i class="fas fa-chevron-down chevron"></i>
       </div>
-      <div class="empty-state" id="logEmpty" style="display:none;">No Action Log for today</div>
+      <div class="section-content">
+        <div class="table-container">
+          <table id="logTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Work Order</th>
+                <th>Task</th>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="logEmpty" style="display:none;">No Action Log for today</div>
+      </div>
     </div>
-  </div>
 
-</div>
-
+  </div> <!-- End App -->
+  
 <script src="../../auth/script.js"></script>
 <script>
   
