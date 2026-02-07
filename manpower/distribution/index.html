@@ -6,119 +6,94 @@
 <title>Attendance & Manpower Dashboard</title>
 
 <style>
-/* 
-  Refined Global Styles 
-  Theme Primary: #259ba8
-*/
+/* Import Inter with specific weights */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Brand System */
   --primary: #259ba8;
-  --primary-hover: #1e7d88;
-  --primary-soft: #e9f5f6;
-  --primary-light: #f1f9f9;
-  --primary-dark: #176068;
+  --primary-surface: #f0f9fa;
+  --primary-dark: #1b747e;
   
-  --bg: #f8fafb;
+  /* Neutral Palette */
+  --bg: #f8fafc;
   --card-bg: #ffffff;
-  --text-main: #1a2e30;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
+  --text-main: #0f172a;    /* Deep Slate */
+  --text-secondary: #475569; /* Medium Slate */
+  --text-muted: #94a3b8;    /* Light Slate */
+  --border: #e2e8f0;
   
-  /* Semantic Status Palette */
-  --green: #10b981;
-  --green-bg: #ecfdf5;
-  --red: #ef4444;
-  --red-bg: #fef2f2;
-  --amber: #f59e0b;
-  --amber-bg: #fffbeb;
-  --slate: #64748b;
-  --slate-bg: #f8fafb;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.02);
+  /* Status Colors (Muted Professional) */
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --neutral: #64748b;
+  --neutral-bg: #f1f5f9;
 }
 
 * {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
   background-color: var(--bg);
-  background-image: radial-gradient(at 0% 0%, rgba(37, 155, 168, 0.03) 0, transparent 50%), 
-                    radial-gradient(at 50% 0%, rgba(37, 155, 168, 0.05) 0, transparent 50%);
   color: var(--text-main);
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
+  padding: 48px 0;
   line-height: 1.5;
-  padding: 40px 0;
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
-/* Modern Card Architecture */
+/* --- Card Base --- */
 .card {
   background: var(--card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
-/* Header & Profile Refinement */
+/* --- Header & Profile --- */
 .header-card {
-  padding: 40px;
+  padding: 32px;
   display: flex;
   align-items: center;
   gap: 40px;
-  position: relative;
-  overflow: hidden;
-}
-
-.header-card::after {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, var(--primary-soft) 0%, transparent 70%);
-  z-index: 0;
-  opacity: 0.5;
+  border-left: 4px solid var(--primary); /* Minimal brand accent */
 }
 
 .profile-pic {
-  width: 96px;
-  height: 96px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 700;
-  box-shadow: 0 12px 24px rgba(37, 155, 168, 0.3);
-  position: relative;
-  z-index: 1;
   flex-shrink: 0;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 32px;
   width: 100%;
-  position: relative;
-  z-index: 1;
 }
 
 .info-item {
@@ -128,124 +103,103 @@ body {
 
 .info-item span:first-child {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .info-item span:last-child {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-main);
 }
 
-/* Collapsible Sections & Headers */
+/* --- Section Headers --- */
 .section-header {
-  padding: 24px 32px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   background: #fff;
-  border-radius: 16px;
-  transition: all 0.2s ease;
+  border-radius: 12px;
 }
 
 .section-header:hover {
-  background: var(--primary-light);
+  background: var(--bg);
 }
 
 .section-header h2 {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   margin: 0;
-  color: var(--primary-dark);
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  letter-spacing: 0.05em;
 }
 
 .chevron {
-  color: var(--primary);
-  font-size: 12px;
-  background: var(--primary-soft);
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: var(--text-muted);
+  font-size: 10px;
+  transition: transform 0.25s ease;
 }
 
 .section.collapsed .chevron {
   transform: rotate(-90deg);
 }
 
-/* Content Area Spacing */
+/* --- Content Styling --- */
 .section-content {
-  padding: 0 32px 32px 32px;
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  padding: 0 24px 24px 24px;
 }
 
 .sub-group-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--primary-dark);
-  margin: 32px 0 16px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 24px 0 12px 0;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .sub-group-title::after {
   content: "";
-  height: 2px;
+  height: 1px;
   flex-grow: 1;
-  background: linear-gradient(to right, var(--primary-soft), transparent);
+  background: var(--border);
 }
 
-/* Premium Table UI */
+/* --- Tables (Enterprise Grade) --- */
 .table-wrapper {
-  background: #fff;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
 }
 
 th {
-  background: #fcfdfe;
-  padding: 16px 20px;
+  background: var(--bg);
+  padding: 12px 16px;
+  text-align: left;
   font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
 }
 
 td {
-  padding: 16px 20px;
-  font-size: 14px;
-  border-bottom: 1px solid var(--primary-light);
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
   color: var(--text-main);
-  transition: background 0.2s ease;
+  background: #fff;
 }
 
 tr:last-child td {
@@ -253,85 +207,78 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background-color: var(--primary-light);
+  background-color: #f8fafc;
 }
 
-/* High-End Status Badges */
+/* --- High-End Badge System --- */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 600;
-  white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
+/* Remove dot for a cleaner look, or keep it subtle */
 .badge::before {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px currentColor;
-  opacity: 0.8;
+  margin-right: 6px;
+  display: inline-block;
 }
 
 .status-green, .bg-present { 
-  background: var(--green-bg); color: #065f46; 
+  background: var(--success-bg); color: #065f46; 
 }
-.status-red, .bg-absent { 
-  background: var(--red-bg); color: #991b1b; 
-}
-.bg-idle { 
-  background: var(--amber-bg); color: #92400e; 
-}
-.bg-completed { 
-  background: var(--slate-bg); color: #334155; 
-  border: 1px solid var(--border-color);
-}
+.status-green::before, .bg-present::before { background: var(--success); }
 
-/* Empty States */
-.empty-state, .empty-state-main {
-  padding: 48px;
+.status-red, .bg-absent { 
+  background: var(--danger-bg); color: #991b1b; 
+}
+.status-red::before, .bg-absent::before { background: var(--danger); }
+
+.bg-idle { 
+  background: var(--warning-bg); color: #92400e; 
+}
+.bg-idle::before { background: var(--warning); }
+
+.bg-completed { 
+  background: var(--neutral-bg); color: #334155; 
+}
+.bg-completed::before { background: var(--neutral); }
+
+/* --- Empty States --- */
+.empty-state {
+  padding: 40px;
   text-align: center;
   color: var(--text-muted);
-  background: var(--primary-light);
-  border-radius: 12px;
-  border: 1px dashed var(--primary);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  border: 1px dashed var(--border);
   margin: 10px 0;
+  border-radius: 8px;
 }
 
-/* Logic for Collapse */
+.empty-state-main {
+  background: var(--bg);
+  border-color: var(--border) !important;
+}
+
+/* --- Collapse Logic --- */
 .section.collapsed .section-content {
   display: none;
 }
 
-/* Responsive Scaling */
+/* --- Responsive --- */
 @media (max-width: 768px) {
-  body { padding: 20px 0; }
+  .header-card { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .info-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
   .container { padding: 0 16px; }
-  .header-card { 
-    flex-direction: column; 
-    text-align: center; 
-    padding: 32px 24px; 
-    gap: 24px; 
-  }
-  .info-grid { 
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px; 
-    text-align: left;
-  }
-  .profile-pic { margin: 0 auto; }
-  .table-wrapper { overflow-x: auto; }
-  th, td { padding: 12px 16px; }
 }
-
-@media (max-width: 480px) {
-  .info-grid { grid-template-columns: 1fr; }
-}
+  
 </style>
   
 </head>
