@@ -344,11 +344,31 @@ input, select { width: 100%; height: 44px; padding: 0 10px; border: 1px solid va
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 .button-stack { display: flex; flex-direction: column; gap: 10px; }
 
+/* --- UPDATED LOADER (Fixed Z-Index for SweetAlert) --- */
 .loader-overlay {
-    position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 2000;
+    position: fixed; 
+    inset: 0; 
+    /* Use 0.7 alpha for better visibility of what's happening behind */
+    background: rgba(255, 255, 255, 0.7); 
+    display: none; 
+    align-items: center; 
+    justify-content: center; 
+    /* Must be LOWER than SweetAlert's 1060 */
+    z-index: 1050; 
 }
+
 .spinner {
-    width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;
+    width: 40px; 
+    height: 40px; 
+    border: 4px solid #f3f3f3; 
+    border-top: 4px solid var(--primary); 
+    border-radius: 50%; 
+    animation: spin 1s linear infinite;
 }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+@keyframes spin { 
+    0% { transform: rotate(0deg); } 
+    100% { transform: rotate(360deg); } 
+}
+
 .hidden { display: none !important; }
