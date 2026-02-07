@@ -6,28 +6,36 @@
 <title>Attendance & Manpower Dashboard</title>
 
 <style>
-/* Import High-End Inter Font */
+/* Import Inter with specific weights */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: #2b888f;         /* Theme Teal */
-  --primary-soft: #eaf3f4;    /* Background Tint */
-  --primary-dark: #1a565a;    /* Deep Teal */
-  --bg: #f4f7f8;              /* Soft Grey-Teal Canvas */
-  --card-bg: #ffffff;
-  --text-main: #1e292b;       /* High Contrast Slate */
-  --text-muted: #64748b;      /* Elegant Grey */
+  /* Brand System */
+  --primary: #259ba8;
+  --primary-surface: #f0f9fa;
+  --primary-dark: #1b747e;
   
-  /* Modern Status Palette */
-  --green: #10b981;
-  --red: #ef4444;
-  --amber: #f59e0b;
-  --slate: #64748b;
+  /* Neutral Palette */
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #0f172a;    /* Deep Slate */
+  --text-secondary: #475569; /* Medium Slate */
+  --text-muted: #94a3b8;    /* Light Slate */
+  --border: #e2e8f0;
+  
+  /* Status Colors (Muted Professional) */
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --neutral: #64748b;
+  --neutral-bg: #f1f5f9;
 }
 
 * {
   box-sizing: border-box;
-  font-family: 'Inter', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -35,11 +43,13 @@ body {
   margin: 0;
   background-color: var(--bg);
   color: var(--text-main);
-  padding: 32px 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  padding: 48px 0;
+  line-height: 1.5;
 }
 
 .container {
-  max-width: 1000px; /* Tighter container = more professional look */
+  max-width: 1040px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
@@ -47,43 +57,42 @@ body {
   gap: 24px;
 }
 
-/* Card - The "Notion" Style */
+/* --- Card Base --- */
 .card {
   background: var(--card-bg);
   border-radius: 12px;
-  border: 1px solid rgba(43, 136, 143, 0.15);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(43, 136, 143, 0.04);
-  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
 
-/* Header / Profile Area */
+/* --- Header & Profile --- */
 .header-card {
   padding: 32px;
   display: flex;
   align-items: center;
-  gap: 32px;
-  background: linear-gradient(135deg, #ffffff 0%, #f9fcfc 100%);
+  gap: 40px;
+  border-left: 4px solid var(--primary); /* Minimal brand accent */
 }
 
 .profile-pic {
-  width: 84px;
-  height: 84px;
-  border-radius: 20px; /* Modern "Squircle" */
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
   background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
-  box-shadow: 0 10px 20px rgba(43, 136, 143, 0.2);
   flex-shrink: 0;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 32px;
   width: 100%;
 }
 
@@ -97,76 +106,76 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.05em;
   margin-bottom: 4px;
 }
 
 .info-item span:last-child {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-main);
 }
 
-/* Collapsible Sections */
+/* --- Section Headers --- */
 .section-header {
-  padding: 20px 28px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   background: #fff;
-  transition: background 0.2s;
+  border-radius: 12px;
 }
 
 .section-header:hover {
-  background: var(--primary-soft);
+  background: var(--bg);
 }
 
 .section-header h2 {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   margin: 0;
-  color: var(--primary-dark);
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
 }
 
 .chevron {
-  color: var(--primary);
-  font-size: 14px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-muted);
+  font-size: 10px;
+  transition: transform 0.25s ease;
 }
 
 .section.collapsed .chevron {
   transform: rotate(-90deg);
 }
 
-/* Content Area */
+/* --- Content Styling --- */
 .section-content {
-  padding: 0 28px 28px 28px;
+  padding: 0 24px 24px 24px;
 }
 
 .sub-group-title {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--primary);
   margin: 24px 0 12px 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .sub-group-title::after {
   content: "";
   height: 1px;
   flex-grow: 1;
-  background: linear-gradient(to right, rgba(43, 136, 143, 0.2), transparent);
+  background: var(--border);
 }
 
-/* Master-Class Table Design */
+/* --- Tables (Enterprise Grade) --- */
 .table-wrapper {
-  border: 1px solid #eef2f3;
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -176,89 +185,100 @@ table {
 }
 
 th {
-  background: #fcfdfe;
-  padding: 14px 18px;
+  background: var(--bg);
+  padding: 12px 16px;
   text-align: left;
   font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid #eef2f3;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
 }
 
 td {
-  padding: 16px 18px;
-  font-size: 14px;
-  border-bottom: 1px solid #f8fafb;
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
   color: var(--text-main);
   background: #fff;
 }
 
-tr:hover td {
-  background-color: #f9fbfc;
+tr:last-child td {
+  border-bottom: none;
 }
 
-/* Modern Status Pills (Winning Master Look) */
+tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* --- High-End Badge System --- */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 99px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
-/* Custom Status Dot */
+/* Remove dot for a cleaner look, or keep it subtle */
 .badge::before {
   content: "";
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
+  margin-right: 6px;
+  display: inline-block;
 }
 
 .status-green, .bg-present { 
-  background: #ecfdf5; color: #065f46; 
+  background: var(--success-bg); color: #065f46; 
 }
-.status-green::before, .bg-present::before { background: var(--green); }
+.status-green::before, .bg-present::before { background: var(--success); }
 
 .status-red, .bg-absent { 
-  background: #fef2f2; color: #991b1b; 
+  background: var(--danger-bg); color: #991b1b; 
 }
-.status-red::before, .bg-absent::before { background: var(--red); }
+.status-red::before, .bg-absent::before { background: var(--danger); }
 
 .bg-idle { 
-  background: #fffbeb; color: #92400e; 
+  background: var(--warning-bg); color: #92400e; 
 }
-.bg-idle::before { background: var(--amber); }
+.bg-idle::before { background: var(--warning); }
 
 .bg-completed { 
-  background: #f8fafb; color: #475569; 
+  background: var(--neutral-bg); color: #334155; 
 }
-.bg-completed::before { background: var(--slate); }
+.bg-completed::before { background: var(--neutral); }
 
-/* Empty States */
+/* --- Empty States --- */
 .empty-state {
-  padding: 32px;
+  padding: 40px;
   text-align: center;
   color: var(--text-muted);
-  font-style: italic;
   font-size: 13px;
-  background: #fafcfc;
+  border: 1px dashed var(--border);
+  margin: 10px 0;
+  border-radius: 8px;
 }
 
-/* Logic for Collapse */
+.empty-state-main {
+  background: var(--bg);
+  border-color: var(--border) !important;
+}
+
+/* --- Collapse Logic --- */
 .section.collapsed .section-content {
   display: none;
 }
 
+/* --- Responsive --- */
 @media (max-width: 768px) {
-  .header-card { flex-direction: column; text-align: center; padding: 24px; }
-  .info-grid { grid-template-columns: 1fr; gap: 16px; }
+  .header-card { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .info-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .container { padding: 0 16px; }
 }
+  
 </style>
   
 </head>
