@@ -8,7 +8,7 @@
   <!-- Google Fonts and Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <style>
     :root {
       --primary: #307c91;
@@ -23,7 +23,6 @@
       --shadow: 0 10px 25px -5px rgba(48, 124, 145, 0.1), 0 8px 10px -6px rgba(48, 124, 145, 0.1);
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       
-      /* Status Colors */
       --success: #10b981;
       --danger: #ef4444;
       --warning: #f59e0b;
@@ -51,7 +50,7 @@
 
     .app {
       width: 100%;
-      max-width: 1000px;
+      max-width: min(1000px, 100%);
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -153,33 +152,20 @@
       transition: transform 0.3s ease;
     }
 
-    .collapsed .chevron {
-      transform: rotate(-90deg);
-    }
-
-    .collapsed .section-content {
-      display: none;
-    }
+    .collapsed .chevron { transform: rotate(-90deg); }
+    .collapsed .section-content { display: none; }
 
     .section-content {
       padding: 0 20px 20px 20px;
     }
 
-    /* --- SLIDABLE TABLE SYSTEM --- */
+    /* --- TABLE --- */
     .table-container {
       width: 100%;
       overflow-x: auto;
       border-radius: 12px;
       border: 1px solid var(--primary-light);
       -webkit-overflow-scrolling: touch;
-    }
-
-    .table-container::-webkit-scrollbar {
-      height: 4px;
-    }
-    .table-container::-webkit-scrollbar-thumb {
-      background: var(--primary-light);
-      border-radius: 10px;
     }
 
     table {
@@ -189,20 +175,16 @@
       font-size: 0.85rem;
     }
 
-    th {
-      background: var(--primary-light);
-      color: var(--primary-dark);
-      text-align: left;
+    th, td {
       padding: 12px;
-      font-weight: 600;
+      border-bottom: 1px solid var(--primary-light);
       white-space: nowrap;
     }
 
-    td {
-      padding: 12px;
-      border-bottom: 1px solid var(--primary-light);
-      color: var(--text-main);
-      white-space: nowrap;
+    th {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 600;
     }
 
     tr:last-child td { border-bottom: none; }
@@ -217,64 +199,26 @@
     }
 
     .bg-present { background: #ecfdf5; color: #065f46; }
-    .bg-absent { background: #fef2f2; color: #991b1b; }
-    .bg-idle { background: #fffbeb; color: #92400e; }
+    .bg-absent  { background: #fef2f2; color: #991b1b; }
+    .bg-idle    { background: #fffbeb; color: #92400e; }
 
-    /* --- EMPTY STATES --- */
-    .empty-state {
-      padding: 30px;
-      text-align: center;
-      color: var(--text-sub);
-      font-size: 0.8rem;
-      font-style: italic;
-      background: var(--primary-light);
-      border-radius: 12px;
-      margin: 10px 0;
+    /* --- RESPONSIVE SYSTEM --- */
+    @media (max-width: 1024px) {
+      .app { max-width: 95%; }
     }
 
-    /* Sub-group Styling */
-    .sub-group-wrapper {
-      margin-top: 30px;
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      header { padding: 16px; }
+      .profile-pic { width: 42px; height: 42px; font-size: 1rem; }
+      .greeting h1 { font-size: 1rem; }
+      table { font-size: 0.75rem; min-width: 500px; }
+      th, td { padding: 10px 8px; }
     }
 
-    .sub-group-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-left: 5px;
-    }
-
-    .title-on-duty {
-      color: #10b981;
-      border-left: 4px solid #10b981;
-      padding-left: 10px;
-    }
-
-    .title-off-duty {
-      color: #64748b;
-      border-left: 4px solid #64748b;
-      padding-left: 10px;
-    }
-
-    #onDutyTable th {
-      background: #ecfdf5;
-      color: #065f46;
-      border-bottom: 2px solid #10b981;
-    }
-
-    #offDutyTable th {
-      background: #f1f5f9;
-      color: #475569;
-      border-bottom: 2px solid #64748b;
-    }
-
-    #offDutyTable tbody tr {
-      background-color: #fafafa;
-      opacity: 0.85;
+    @media (max-width: 480px) {
+      .profile-info { flex-direction: column; align-items: flex-start; }
+      table { min-width: 380px; }
     }
   </style>
 </head>
