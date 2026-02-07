@@ -486,10 +486,12 @@ function getActiveSessions(fNo) {
 
 
 function startTimerEngine() {
-    // Prevent multiple intervals if initApp is called twice
     if (window.timerInterval) clearInterval(window.timerInterval);
 
     window.timerInterval = setInterval(() => {
+        // Check if map is empty to avoid flickering (optional)
+        const hasMap = Object.keys(APP_STATE.userMap).length > 0;
+
         APP_STATE.findings.forEach(f => {
             const container = document.getElementById(`timers-${f.no}`);
             if (!container) return;
@@ -501,16 +503,20 @@ function startTimerEngine() {
                 const m = Math.floor((diff % 3600) / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
                 
-                const isOwner = (currentUser && String(a.employeeId).trim() === String(currentUser.userId).trim());
-                
-                // Lookup with Trimming
+                // CRITICAL: Ensure both are compared as trimmed strings
                 const cleanId = String(a.employeeId).trim();
-                const empName = APP_STATE.userMap[cleanId] || "Name not found";
+                const isOwner = (currentUser && String(currentUser.userId).trim() === cleanId);
+                
+                // Lookup
+                let empName = "Loading...";
+                if (hasMap) {
+                    empName = APP_STATE.userMap[cleanId] || `ID: ${cleanId} (No Name Found)`;
+                }
                 
                 return `
                     <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
                         <div class="timer-info-left">
-                            <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
+                            <span class="timer-emp">ID: ${cleanId} ${isOwner ? '(You)' : ''}</span>
                             <div class="timer-emp-name" style="font-size: 0.75rem; color: #555; font-weight: bold;">
                                 ${empName}
                             </div>
@@ -520,7 +526,7 @@ function startTimerEngine() {
                             <button 
                                 class="btn-stop-mini" 
                                 style="${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
-                                onclick="isOwner ? processStop('${f.no}', '${a.employeeId}') : null">
+                                onclick="${isOwner ? `processStop('${f.no}', '${cleanId}')` : 'void(0)'}">
                                 STOP
                             </button>
                         </div>
