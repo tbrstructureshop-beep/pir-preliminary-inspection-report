@@ -5,176 +5,210 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Attendance & Manpower Dashboard</title>
 
+<!-- Premium Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
-  /* Core Palette */
-  --primary: #259ba8;
-  --primary-soft: #e9f5f6;
-  --primary-dark: #1b747e;
+  /* Luxury Palette */
+  --brand-primary: #0f172a; /* Deep Midnight */
+  --brand-accent: #259ba8;  /* Original Teal but used as a jewel tone */
+  --brand-gold: #b89550;    /* For subtle highlights */
   
-  /* Neutral Palette - Professional Slates */
-  --bg: #f5f7f9;
-  --card-bg: #ffffff;
-  --text-main: #1a202c;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
+  /* Surfaces */
+  --bg-main: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.8);
+  
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  /* Status Colors (Muted Luxury tones) */
+  --color-success: #10b981;
+  --color-error: #e11d48;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
 
-  /* Status Colors - Sophisticated Tones */
-  --green: #10b981;
-  --red: #ef4444;
-  --amber: #f59e0b;
-  --slate: #94a3b8;
+  /* Shadows & Borders */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+  --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.04), 0 8px 10px -6px rgba(0,0,0,0.04);
+  --border-subtle: 1px solid rgba(226, 232, 240, 0.8);
+  --radius-lg: 16px;
+  --radius-md: 12px;
 }
 
 * { 
   box-sizing: border-box; 
-  -webkit-font-smoothing: antialiased; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   margin: 0;
-  background-color: var(--bg);
-  color: var(--text-main);
-  font-family: 'Inter', -apple-system, sans-serif;
-  padding: 24px 0; /* Reduced top/bottom spacing */
-  font-size: 13px; /* Smaller base font for professional look */
+  background: radial-gradient(at top right, #f1f5f9, #f8fafc);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.6;
+  padding: 40px 0;
+  -webkit-font-smoothing: antialiased;
 }
 
 .container {
-  max-width: 960px; /* Slimmer container for better focus */
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Tighter gap between cards */
+  gap: 24px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- Card Architecture --- */
 .card {
-  background: var(--card-bg);
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
-/* --- Compact Header --- */
+/* --- Profile Header --- */
 .header-card {
-  padding: 20px 24px; /* Significantly tighter padding */
+  padding: 32px;
   display: flex;
   align-items: center;
-  gap: 28px;
-  background: linear-gradient(135deg, #fff 0%, #fcfdfe 100%);
+  gap: 32px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  position: relative;
+}
+
+.header-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(37, 155, 168, 0.05) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .profile-pic {
-  width: 56px; /* Smaller avatar */
-  height: 56px;
-  border-radius: 12px;
-  background: var(--primary);
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: var(--brand-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(37, 155, 168, 0.2);
+  letter-spacing: -1px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 24px;
   width: 100%;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .info-item span:first-child {
   color: var(--text-muted);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 2px;
+  letter-spacing: 0.1em;
 }
 
 .info-item span:last-child {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--brand-primary);
 }
 
-/* --- Collapsible Logic --- */
+/* --- Collapsible Sections --- */
+.section {
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
 .section-header {
-  padding: 14px 20px; /* Compact header */
+  padding: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  background: #fff;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .section-header h2 {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   margin: 0;
-  color: var(--text-muted);
+  color: var(--brand-primary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-header h2::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  background: var(--brand-accent);
+  border-radius: 4px;
 }
 
 .chevron {
-  color: var(--primary);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-main);
+  border-radius: 50%;
   font-size: 10px;
-  transition: transform 0.2s;
+  color: var(--text-muted);
 }
 
 .section.collapsed .chevron { transform: rotate(-90deg); }
 
 .section-content { 
-  padding: 0 20px 20px 20px; /* Reduced from 32px */
+  padding: 0 24px 24px 24px;
 }
 
-/* --- THE DUTY DIFFERENTIATION --- */
-
+/* --- Luxury Tables --- */
 .sub-group-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  margin: 16px 0 8px 0;
+  margin: 24px 0 12px 0;
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* ON DUTY: High Contrast & Live */
-#onDutyTable.parentElement,
-#onDutyTable {
-  border-left: 3px solid var(--primary);
-}
-
-.sub-group-title:first-of-type { color: var(--primary); }
-
-/* OFF DUTY: Ghost / Muted Styling */
-#offDutyTable {
-  background: #f8fafb; /* Subtle grey background */
-  border-radius: 8px;
-}
-
-#offDutyTable td {
-  color: #64748b; /* Muted text */
-  background: transparent;
-}
-
-.sub-group-title:nth-of-type(2) { 
-  color: var(--text-muted); 
-  margin-top: 24px;
-}
-
-/* --- Compact Modern Tables --- */
 .table-wrapper {
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -185,152 +219,165 @@ table {
 
 th {
   background: #fcfdfe;
-  padding: 10px 16px;
+  padding: 14px 20px;
   text-align: left;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #f1f5f9;
 }
 
 td {
-  padding: 10px 16px; /* Tight rows */
-  font-size: 13px;
-  border-bottom: 1px solid #f1f5f9;
-  background: #fff;
+  padding: 16px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid #f8fafc;
+  color: var(--text-secondary);
 }
+
+tr:last-child td { border-bottom: none; }
 
 tr:hover td {
-  background-color: #f9fbfc;
+  background-color: #fbfcfd;
+  color: var(--brand-primary);
 }
 
-/* --- Status Badges (Compact) --- */
+/* --- Advanced Status Badges --- */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px; /* Tighter padding */
-  border-radius: 4px;
+  padding: 4px 12px;
+  border-radius: 30px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
-.badge::before {
+/* On Duty Glow */
+.status-green, .bg-present { 
+  background: #f0fdf4; 
+  color: #166534; 
+  border: 1px solid #dcfce7;
+}
+.bg-present::before {
   content: "";
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-success);
   border-radius: 50%;
-  margin-right: 6px;
+  margin-right: 8px;
+  box-shadow: 0 0 8px var(--color-success);
 }
 
-.status-green, .bg-present { background: #ecfdf5; color: #065f46; }
-.status-green::before, .bg-present::before { background: var(--green); }
+/* Absent / Off Duty */
+.status-red, .bg-absent { 
+  background: #fef2f2; 
+  color: #991b1b; 
+  border: 1px solid #fee2e2;
+}
 
-.status-red, .bg-absent { background: #fef2f2; color: #991b1b; }
-.status-red::before, .bg-absent::before { background: var(--red); }
+.bg-idle { 
+  background: #fffbeb; 
+  color: #92400e; 
+  border: 1px solid #fef3c7;
+}
 
-.bg-idle { background: #fffbeb; color: #92400e; }
-.bg-idle::before { background: var(--amber); }
+.bg-completed { 
+  background: #f8fafc; 
+  color: #475569; 
+  border: 1px solid #e2e8f0;
+}
 
-.bg-completed { background: #f1f5f9; color: #475569; }
-.bg-completed::before { background: var(--slate); }
-
-/* --- Log Specifics --- */
-#logTable td { font-size: 12px; }
-
-/* Empty States */
+/* --- Empty States --- */
 .empty-state {
-  padding: 20px;
+  padding: 40px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
+  font-style: italic;
   background: #fafbfc;
 }
 
 .section.collapsed .section-content { display: none; }
 
+/* Responsive Refinement */
 @media (max-width: 768px) {
-  .header-card { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .info-grid { grid-template-columns: 1fr 1fr; }
+  .header-card { flex-direction: column; text-align: center; }
+  .info-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .profile-pic { margin: 0 auto; }
 }
-  
 </style>
-  
 </head>
 <body>
-<div class="container">
 
-  <!-- SECTION 1 -->
+<div class="container">
+  <!-- HEADER -->
   <div class="card header-card">
     <div class="profile-pic" id="dhInitials">--</div>
     <div class="info-grid">
-      <div class="info-item"><span>Name:</span> <span id="dhName">Loading...</span></div>
-      <div class="info-item"><span>Employee ID:</span> <span id="dhId">...</span></div>
-      <div class="info-item"><span>Department Code:</span> <span id="dhUnit">...</span></div>
+      <div class="info-item"><span>Name</span><span id="dhName">Loading...</span></div>
+      <div class="info-item"><span>Employee ID</span><span id="dhId">...</span></div>
+      <div class="info-item"><span>Department</span><span id="dhUnit">...</span></div>
       <div class="info-item">
-        <span>Attended Status:</span>
-        <span id="dhStatus" class="badge">Checking...</span>
+        <span>Current Status</span>
+        <div><span id="dhStatus" class="badge">Checking...</span></div>
       </div>
     </div>
   </div>
 
-  <!-- SECTION 2: ATTENDANCE GROUPS -->
+  <!-- ATTENDANCE -->
   <div class="card section" id="attendanceSection">
     <div class="section-header">
-      <h2>Manpower Attendance Status</h2>
+      <h2>Manpower Attendance</h2>
       <div class="chevron">▼</div>
     </div>
     
     <div class="section-content">
-      <!-- Main Empty State: Shown if no records at all exist for the unit today -->
-      <div id="mainEmptyState" class="empty-state-main" style="display:none; text-align: center; padding: 20px; color: #666; font-weight: bold; border: 1px dashed #ccc; border-radius: 8px; margin: 10px;">
-        No Attendance Record For Today
+      <div id="mainEmptyState" class="empty-state" style="display:none;">
+        No active records for the current period.
       </div>
 
-      <!-- Container for the tables -->
       <div id="attendanceContent">
-        <!-- Group 1: ON DUTY -->
-        <div class="sub-group-title">ON DUTY PERSONNEL</div>
+        <div class="sub-group-title">Active Personnel</div>
         <div class="table-wrapper">
           <table id="onDutyTable">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Clock-In</th>
-                <th>Assignment Status</th>
+                <th>Identifier</th>
+                <th>Full Name</th>
+                <th>Check-in Time</th>
+                <th>Current Status</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
+          <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel currently on duty.</div>
         </div>
 
-        <!-- Group 2: OFF DUTY -->
-        <div class="sub-group-title">OFF DUTY PERSONNEL</div>
+        <div class="sub-group-title">Archived / Off Duty</div>
         <div class="table-wrapper">
           <table id="offDutyTable">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Clock-In</th>
-                <th>Clock-Out</th>
-                <th>Completion Status</th>
+                <th>Identifier</th>
+                <th>Full Name</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Final Status</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+          <div class="empty-state" id="offDutyEmpty" style="display:none;">No off-duty records today.</div>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- SECTION 3: ACTION LOG -->
+  <!-- ACTION LOG -->
   <div class="card section collapsed" id="logSection">
     <div class="section-header">
-      <h2>Manpower Action Log</h2>
+      <h2>Operational Activity Log</h2>
       <div class="chevron">▼</div>
     </div>
     <div class="section-content">
@@ -338,26 +385,21 @@ tr:hover td {
         <table id="logTable">
           <thead>
             <tr>
-              <th>Employee ID</th>
+              <th>ID</th>
               <th>Work Order</th>
-              <th>Task</th>
-              <th>Time</th>
+              <th>Activity Task</th>
+              <th>Timestamp</th>
               <th>Action</th>
-              <th>Status</th>
+              <th>State</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- JavaScript will inject rows here -->
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
-      <!-- Updated empty state message -->
-      <div class="empty-state" id="logEmpty" style="display:none;">No Action Log for today</div>
+      <div class="empty-state" id="logEmpty" style="display:none;">Activity log is currently clear.</div>
     </div>
   </div>
-
 </div>
-
 <script src="../../auth/script.js"></script>
 <script>
   
