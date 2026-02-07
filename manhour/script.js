@@ -352,10 +352,8 @@ function handleStart(fNo) {
 }
 
 async function executeStart(fNo, empId, taskCode) {
-    // 1. SECURITY CHECK: Is this user already active on ANY finding in the app?
+    // 1. SECURITY CHECK (Remains the same...)
     let alreadyWorkingFinding = null;
-    
-    // Check all findings for an active session with this empId
     APP_STATE.findings.forEach(f => {
         const actives = getActiveSessions(f.no);
         if (actives.some(a => String(a.employeeId) === String(empId))) {
@@ -367,14 +365,14 @@ async function executeStart(fNo, empId, taskCode) {
         Swal.fire({
             icon: 'warning',
             title: 'Already Working',
-            text: `You have an active timer running on Finding #${alreadyWorkingFinding}. Stop that first!`,
+            text: `You have an active timer running on Finding #${alreadyWorkingFinding}.`,
             confirmButtonColor: '#f39c12'
         });
-        return; // Block starting a second timer
+        return;
     }
 
-    // 2. If clear, proceed with starting the man-hour
-    showLoader(true);
+    // 2. Start Process
+    showLoader(true); // Show loader while waiting for network
     try {
         const payload = { 
             action: 'startManhour', 
@@ -392,7 +390,9 @@ async function executeStart(fNo, empId, taskCode) {
             body: JSON.stringify(payload) 
         });
 
-        // Show a small success toast
+        // --- CRITICAL CHANGE HERE ---
+        showLoader(false); // HIDE LOADER FIRST
+
         Swal.fire({
             icon: 'success',
             title: 'Timer Started',
@@ -400,9 +400,9 @@ async function executeStart(fNo, empId, taskCode) {
             showConfirmButton: false
         });
 
-        setTimeout(fetchInitialData, 2000);
+        setTimeout(fetchInitialData, 500); // Small delay to let GAS process
     } catch (e) { 
-        showLoader(false);
+        showLoader(false); // HIDE LOADER ON ERROR
         Swal.fire('Error', 'Could not connect to server', 'error');
     }
 }
