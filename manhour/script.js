@@ -19,23 +19,24 @@ let APP_STATE = {
 };
 
 function initApp() {
-    // Instead of google.script.run, use your API link
     fetch(`${API}?action=getUserMap`)
         .then(response => response.json())
         .then(data => {
-            APP_STATE.userMap = data;
-            console.log("User Map Loaded:", data);
+            // If your API returns {success: true, data: {...}}, use data.data
+            // If your API returns the map directly {}, use data
+            APP_STATE.userMap = data; 
+            console.log("User Map Loaded:", APP_STATE.userMap);
             startTimerEngine(); 
         })
         .catch(err => console.error("Failed to load user map:", err));
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    fetchInitialData();      // Initial load (shows loader)
+    initApp();           // ADD THIS: Fetch the User Map first
+    fetchInitialData();  
     setupGlobalEvents();
-    startTimerEngine();
-
-    // ADD THIS: Refresh data every 50 seconds without showing loader
+    // startTimerEngine(); // Remove from here, initApp calls it once data is ready
+    
     setInterval(() => {
         fetchInitialData(true); 
     }, 50000); 
@@ -497,23 +498,28 @@ function startTimerEngine() {
                 
                 const isOwner = (currentUser && String(a.employeeId) === String(currentUser.userId));
                 
-                // LOOKUP NAME HERE
-                const empName = APP_STATE.userMap[String(a.employeeId)] || "Unknown User";
+                // Lookup Name from the map loaded in initApp
+                const empIdKey = String(a.employeeId).trim();
+                const empName = APP_STATE.userMap[empIdKey] || "Unknown User";
                 
                 return `
-                    <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
-                        <div class="timer-info-left">
-                            <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
-                            <!-- Added the Name below the ID -->
-                            <div class="timer-emp-name" style="font-size: 0.75rem; color: #666; margin-top: -2px;">
+                    <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee;">
+                        <div class="timer-info-left" style="display: flex; flex-direction: column;">
+                            <span class="timer-emp" style="font-weight: bold; font-size: 0.9rem;">
+                                ID: ${a.employeeId} ${isOwner ? '<small>(You)</small>' : ''}
+                            </span>
+                            <!-- This is the employee name display -->
+                            <span class="timer-emp-name" style="font-size: 0.75rem; color: var(--primary); font-weight: 500; margin-top: 2px;">
                                 ${empName}
-                            </div>
+                            </span>
                         </div>
-                        <div class="timer-controls-right">
-                            <span class="timer-val">${h}:${m}:${s}</span>
+                        <div class="timer-controls-right" style="text-align: right;">
+                            <div class="timer-val" style="font-family: monospace; font-weight: bold; font-size: 1.1rem; color: #333;">
+                                ${h}:${m}:${s}
+                            </div>
                             <button 
                                 class="btn-stop-mini" 
-                                style="${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
+                                style="margin-top: 4px; padding: 2px 8px; font-size: 0.7rem; ${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
                                 onclick="processStop('${f.no}', '${a.employeeId}')">
                                 STOP
                             </button>
