@@ -403,25 +403,27 @@ function renderAttendance(data) {
 
   // Render Group 1: On Duty
   onDutyList.forEach(p => {
+    const statusClass = p.status === "On Task" ? "status-green" : "bg-idle"; // Green for working, Yellow for Idle
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${p.id}</td>
       <td>${p.name}</td>
       <td>${p.clockIn}</td>
-      <td><span class="badge status-green">${p.status}</span></td>
+      <td><span class="badge ${statusClass}">${p.status}</span></td>
     `;
     onDutyBody.appendChild(tr);
   });
 
   // Render Group 2: Off Duty
   offDutyList.forEach(p => {
+    const statusClass = p.status === "Required STOP" ? "status-red" : "bg-completed"; // Red for Error, Grey for Finished
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${p.id}</td>
       <td>${p.name}</td>
       <td>${p.clockIn}</td>
       <td>${p.clockOut}</td>
-      <td><span class="badge status-green">${p.status}</span></td>
+      <td><span class="badge ${statusClass}">${p.status}</span></td>
     `;
     offDutyBody.appendChild(tr);
   });
