@@ -19,11 +19,15 @@ let APP_STATE = {
 };
 
 function initApp() {
-    // Fetch users from GAS
-    google.script.run.withSuccessHandler(data => {
-        APP_STATE.userMap = data;
-        startTimerEngine(); // Start engine after names are loaded
-    }).getUserMap();
+    // Instead of google.script.run, use your API link
+    fetch(`${API}?action=getUserMap`)
+        .then(response => response.json())
+        .then(data => {
+            APP_STATE.userMap = data;
+            console.log("User Map Loaded:", data);
+            startTimerEngine(); 
+        })
+        .catch(err => console.error("Failed to load user map:", err));
 }
 
 window.addEventListener('DOMContentLoaded', () => {
