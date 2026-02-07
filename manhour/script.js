@@ -338,43 +338,114 @@ function handleStart(fNo) {
 }
 
 async function executeStart(fNo, empId, taskCode) {
+    // 1. SECURITY CHECK: Is this user already active on ANY finding in the app?
+    let alreadyWorkingFinding = null;
+    
+    // Check all findings for an active session with this empId
+    APP_STATE.findings.forEach(f => {
+        const actives = getActiveSessions(f.no);
+        if (actives.some(a => String(a.employeeId) === String(empId))) {
+            alreadyWorkingFinding = f.no;
+        }
+    });
+
+    if (alreadyWorkingFinding) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Already Working',
+            text: `You have an active timer running on Finding #${alreadyWorkingFinding}. Stop that first!`,
+            confirmButtonColor: '#f39c12'
+        });
+        return; // Block starting a second timer
+    }
+
+    // 2. If clear, proceed with starting the man-hour
     showLoader(true);
     try {
-        await fetch(API, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'startManhour', sheetId: SHEET_ID, woId: APP_STATE.woId, findingId: fNo, employeeId: empId, taskCode: taskCode, startTime: new Date().toISOString() }) });
+        const payload = { 
+            action: 'startManhour', 
+            sheetId: SHEET_ID, 
+            woId: APP_STATE.woId, 
+            findingId: fNo, 
+            employeeId: empId, 
+            taskCode: taskCode, 
+            startTime: new Date().toISOString() 
+        };
+
+        await fetch(API, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify(payload) 
+        });
+
+        // Show a small success toast
+        Swal.fire({
+            icon: 'success',
+            title: 'Timer Started',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
         setTimeout(fetchInitialData, 2000);
-    } catch (e) { showLoader(false); }
+    } catch (e) { 
+        showLoader(false);
+        Swal.fire('Error', 'Could not connect to server', 'error');
+    }
 }
 
+
 function processStop(fNo, empId) {
+    // 1. SECURITY CHECK: Compare logged-in user to the ID on the timer
+    const currentLoggedId = currentUser ? String(currentUser.userId) : "";
+    
+    if (String(empId) !== currentLoggedId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Unauthorized Action',
+            text: `This timer belongs to ID: ${empId}. You can only stop your own work.`,
+            confirmButtonColor: '#d33'
+        });
+        return; // Block execution
+    }
+
     const actives = getActiveSessions(fNo);
     
-    // Scenario A: More than 1 person working. Just stop this specific person.
+    // Scenario A: More than 1 person working. 
+    // Just stop this specific person, no need for the "Finalize" modal.
     if (actives.length > 1) {
-        if(confirm(`User ${empId}: Stop your timer? (Others are still working)`)) {
-            finalizeStop(fNo, empId, false);
-        }
+        Swal.fire({
+            title: 'Stop your timer?',
+            text: "Other mechanics are still working on this finding.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Yes, I am finished'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                finalizeStop(fNo, empId, false); // false = not the last person
+            }
+        });
     } 
-    // Scenario B: This is the last person. Show the "Finalize" modal.
+    // Scenario B: This is the last person. 
+    // We must show the "Finalize" modal to decide if the Finding is CLOSED or PROGRESS.
     else {
-        // CLEANUP: Reset the modal state before showing it
         const statusSelect = document.getElementById('final-status-select');
         const uploadBox = document.getElementById('evidence-upload-section');
         
         if (statusSelect) statusSelect.value = 'PROGRESS';
         if (uploadBox) uploadBox.classList.add('hidden');
         
-        // SHOW MODAL
         const finalModal = document.getElementById('final-modal');
         if (finalModal) {
             finalModal.style.display = 'block';
-            // Assign the click event for the submit button
+            // Attach the logic to the "Submit" button inside your modal
             document.getElementById('submit-finalize').onclick = () => finalizeStop(fNo, empId, true);
         } else {
             console.error("Error: final-modal element not found in HTML");
         }
     }
 }
-
 async function finalizeStop(fNo, empId, isLast) {
     const finalStatus = isLast ? document.getElementById('final-status-select').value : 'IN_PROGRESS';
     let evidenceBase64 = "";
@@ -411,13 +482,18 @@ function startTimerEngine() {
                 const m = Math.floor((diff % 3600) / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
                 
-                // ADDED: A wrapper for the right side and the small stop button
+                // NEW: Check if the timer belongs to the person logged in
+                const isOwner = (currentUser && String(a.employeeId) === String(currentUser.userId));
+                
                 return `
-                    <div class="timer-row">
-                        <span class="timer-emp">ID: ${a.employeeId}</span>
+                    <div class="timer-row ${!isOwner ? 'timer-readonly' : ''}">
+                        <span class="timer-emp">ID: ${a.employeeId} ${isOwner ? '(You)' : ''}</span>
                         <div class="timer-controls-right">
                             <span class="timer-val">${h}:${m}:${s}</span>
-                            <button class="btn-stop-mini" onclick="processStop('${f.no}', '${a.employeeId}')">
+                            <button 
+                                class="btn-stop-mini" 
+                                style="${!isOwner ? 'background: #ccc; cursor: not-allowed; opacity: 0.6;' : ''}"
+                                onclick="processStop('${f.no}', '${a.employeeId}')">
                                 STOP
                             </button>
                         </div>
