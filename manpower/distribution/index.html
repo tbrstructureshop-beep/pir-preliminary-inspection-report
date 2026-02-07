@@ -6,90 +6,78 @@
 <title>Attendance & Manpower Dashboard</title>
 
 <style>
-/* 
-  Refined Enterprise UI 
-  Theme: Visual Anchoring & Depth
-*/
+/* Import High-End Inter Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Brand Palette */
-  --primary: #259ba8;
-  --primary-light: #f0f9fa;
-  --primary-dark: #1b747e;
-  
-  /* Status Palette */
-  --on-duty-surface: #f0f9fa;
-  --on-duty-border: #b2dee3;
-  --off-duty-surface: #f1f5f9;
-  --off-duty-border: #e2e8f0;
-  
-  /* Neutral Palette */
-  --body-bg: #f4f7f9; /* Subtle grey-blue to make white cards pop */
+  --primary: #2b888f;         /* Theme Teal */
+  --primary-soft: #eaf3f4;    /* Background Tint */
+  --primary-dark: #1a565a;    /* Deep Teal */
+  --bg: #f4f7f8;              /* Soft Grey-Teal Canvas */
   --card-bg: #ffffff;
-  --text-main: #1e293b;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --border-subtle: #edf2f7;
-
-  /* Elevation */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --text-main: #1e292b;       /* High Contrast Slate */
+  --text-muted: #64748b;      /* Elegant Grey */
+  
+  /* Modern Status Palette */
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --slate: #64748b;
 }
 
-* { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
 body {
   margin: 0;
-  background-color: var(--body-bg);
-  /* Added a subtle texture to the background to reduce white glare */
-  background-image: radial-gradient(#259ba805 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-color: var(--bg);
   color: var(--text-main);
-  font-family: 'Inter', -apple-system, sans-serif;
-  padding: 40px 0;
-  line-height: 1.6;
+  padding: 32px 0;
 }
 
 .container {
-  max-width: 1080px;
+  max-width: 1000px; /* Tighter container = more professional look */
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
-/* --- Card Architecture --- */
+/* Card - The "Notion" Style */
 .card {
   background: var(--card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  border: 1px solid rgba(43, 136, 143, 0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(43, 136, 143, 0.04);
   overflow: hidden;
 }
 
-/* --- Header Section --- */
+/* Header / Profile Area */
 .header-card {
-  padding: 40px;
+  padding: 32px;
   display: flex;
   align-items: center;
-  gap: 48px;
-  background: linear-gradient(to right, #ffffff, var(--primary-light));
+  gap: 32px;
+  background: linear-gradient(135deg, #ffffff 0%, #f9fcfc 100%);
 }
 
 .profile-pic {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
+  width: 84px;
+  height: 84px;
+  border-radius: 20px; /* Modern "Squircle" */
   background: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
-  box-shadow: 0 10px 25px -5px rgba(37, 155, 168, 0.4);
+  box-shadow: 0 10px 20px rgba(43, 136, 143, 0.2);
+  flex-shrink: 0;
 }
 
 .info-grid {
@@ -99,14 +87,18 @@ body {
   width: 100%;
 }
 
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
 .info-item span:first-child {
-  display: block;
   color: var(--text-muted);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
 }
 
 .info-item span:last-child {
@@ -115,75 +107,67 @@ body {
   color: var(--text-main);
 }
 
-/* --- Section Styling --- */
+/* Collapsible Sections */
 .section-header {
-  padding: 24px 32px;
+  padding: 20px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   background: #fff;
-  transition: background 0.2s ease;
+  transition: background 0.2s;
+}
+
+.section-header:hover {
+  background: var(--primary-soft);
 }
 
 .section-header h2 {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 700;
   margin: 0;
-  color: var(--text-main);
+  color: var(--primary-dark);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 1px;
 }
 
 .chevron {
   color: var(--primary);
-  font-size: 12px;
+  font-size: 14px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.section.collapsed .chevron { transform: rotate(-90deg); }
-
-.section-content { padding: 0 32px 32px 32px; }
-
-/* --- THE KEY DISTINCTION: Duty Groups --- */
-
-/* 1. ON DUTY STYLE */
-#onDutyTable {
-  background: var(--on-duty-surface);
+.section.collapsed .chevron {
+  transform: rotate(-90deg);
 }
 
-#attendanceContent .sub-group-title:first-of-type {
-  color: var(--primary-dark);
+/* Content Area */
+.section-content {
+  padding: 0 28px 28px 28px;
 }
 
-#onDutyTable.parentElement, 
-#onDutyTable {
-  border-left: 4px solid var(--primary);
+.sub-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 24px 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* 2. OFF DUTY STYLE */
-#offDutyTable {
-  background: var(--off-duty-surface);
-  filter: grayscale(0.2);
+.sub-group-title::after {
+  content: "";
+  height: 1px;
+  flex-grow: 1;
+  background: linear-gradient(to right, rgba(43, 136, 143, 0.2), transparent);
 }
 
-#offDutyTable td {
-  color: var(--text-secondary);
-  background: transparent;
-}
-
-#attendanceContent .sub-group-title:nth-of-type(2) {
-  color: var(--text-secondary);
-  margin-top: 40px;
-}
-
-/* --- Table Refinement --- */
+/* Master-Class Table Design */
 .table-wrapper {
-  border-radius: 12px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid #eef2f3;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  background: #fff;
 }
 
 table {
@@ -192,86 +176,89 @@ table {
 }
 
 th {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 14px 20px;
+  background: #fcfdfe;
+  padding: 14px 18px;
   text-align: left;
   font-size: 11px;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--border-subtle);
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #eef2f3;
 }
 
 td {
-  padding: 16px 20px;
+  padding: 16px 18px;
   font-size: 14px;
-  border-bottom: 1px solid rgba(0,0,0,0.03);
+  border-bottom: 1px solid #f8fafb;
+  color: var(--text-main);
   background: #fff;
 }
 
-/* zebra stripe for On Duty only to keep it readable */
-#onDutyTable tr:nth-child(even) td {
-  background: rgba(37, 155, 168, 0.02);
+tr:hover td {
+  background-color: #f9fbfc;
 }
 
-/* --- Status Badges (Soft Palette) --- */
+/* Modern Status Pills (Winning Master Look) */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border-radius: 8px;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 99px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.3px;
 }
 
+/* Custom Status Dot */
 .badge::before {
   content: "";
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  margin-right: 8px;
 }
 
-.status-green, .bg-present { background: #dcfce7; color: #166534; }
-.status-green::before, .bg-present::before { background: #22c55e; }
-
-.status-red, .bg-absent { background: #fee2e2; color: #991b1b; }
-.status-red::before, .bg-absent::before { background: #ef4444; }
-
-.bg-idle { background: #fef3c7; color: #92400e; }
-.bg-idle::before { background: #f59e0b; }
-
-.bg-completed { background: #f1f5f9; color: #475569; }
-.bg-completed::before { background: #94a3b8; }
-
-/* --- Action Log Specifics --- */
-#logTable td {
-  font-family: 'Inter', monospace; /* Modern technical look for logs */
-  font-size: 13px;
+.status-green, .bg-present { 
+  background: #ecfdf5; color: #065f46; 
 }
+.status-green::before, .bg-present::before { background: var(--green); }
 
-/* --- Empty States --- */
+.status-red, .bg-absent { 
+  background: #fef2f2; color: #991b1b; 
+}
+.status-red::before, .bg-absent::before { background: var(--red); }
+
+.bg-idle { 
+  background: #fffbeb; color: #92400e; 
+}
+.bg-idle::before { background: var(--amber); }
+
+.bg-completed { 
+  background: #f8fafb; color: #475569; 
+}
+.bg-completed::before { background: var(--slate); }
+
+/* Empty States */
 .empty-state {
-  padding: 40px;
+  padding: 32px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 14px;
-  font-weight: 500;
-  background: #fbfcfd;
-  border: 1px dashed var(--border-subtle);
-  border-radius: 12px;
+  font-style: italic;
+  font-size: 13px;
+  background: #fafcfc;
 }
 
-/* Responsive Customization */
-@media (max-width: 768px) {
-  .header-card { padding: 32px 24px; gap: 32px; flex-direction: column; align-items: flex-start; }
-  .info-grid { grid-template-columns: 1fr 1fr; }
-  .section-content { padding: 0 16px 24px 16px; }
+/* Logic for Collapse */
+.section.collapsed .section-content {
+  display: none;
 }
-  
+
+@media (max-width: 768px) {
+  .header-card { flex-direction: column; text-align: center; padding: 24px; }
+  .info-grid { grid-template-columns: 1fr; gap: 16px; }
+}
 </style>
   
 </head>
