@@ -3,425 +3,380 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manpower Dashboard</title>
+  <title>Manpower Distribution</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    /* ================================
-      RENDERING STABILIZER (CRITICAL)
-   ================================ */
-
-   html {
-     -webkit-text-size-adjust: 100%;
-     text-size-adjust: 100%;
-     font-smoothing: antialiased;
-     -webkit-font-smoothing: antialiased;
-     -moz-osx-font-smoothing: grayscale;
-   }
-
-   body {
-     text-rendering: optimizeLegibility;
-   }
-
-   /* Normalize layout */
-   table {
-     border-spacing: 0;
-   }
-
-   img, svg {
-     display: block;
-     max-width: 100%;
-   }
-
-   *, *::before, *::after {
-     box-sizing: border-box;
-   }
-    
     :root {
-      --primary: #307c91;
-      --primary-dark: #245f6f;
-      --primary-light: #e6f1f4;
-      --bg: #f0f4f7;
-      --card: #ffffff;
-      --text-main: #0f2f36;
-      --text-sub: #5f7f88;
-      --accent: #3fa2b8;
-      --radius: 16px;
-      --shadow: 0 10px 25px -5px rgba(48, 124, 145, 0.1), 0 8px 10px -6px rgba(48, 124, 145, 0.1);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Modern Professional Palette */
+      --primary: #0f766e; /* Teal 700 */
+      --primary-light: #f0fdfa;
+      --primary-glow: rgba(15, 118, 110, 0.15);
+      --bg-gradient: radial-gradient(at 0% 0%, #f8fafc 0px, transparent 50%), 
+                     radial-gradient(at 100% 100%, #f1f5f9 0px, transparent 50%);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --border: #e2e8f0;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
       
       /* Status Colors */
       --success: #10b981;
+      --success-bg: #ecfdf5;
       --danger: #ef4444;
+      --danger-bg: #fef2f2;
       --warning: #f59e0b;
+      --warning-bg: #fffbeb;
+      --info: #3b82f6;
+      --info-bg: #eff6ff;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Inter', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(48, 124, 145, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(63, 162, 184, 0.05) 0px, transparent 50%);
+      background-color: #f8fafc;
+      background-image: var(--bg-gradient);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 20px;
-      line-height: 1.5;
+      padding: 40px 20px;
+      line-height: 1.6;
     }
 
     .app {
       width: 100%;
-      max-width: min(1000px, 100%);
+      max-width: 1100px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      animation: fadeIn 0.6s ease-out;
+      gap: 28px;
+      animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- HEADER SECTION --- */
+    /* --- ENHANCED HEADER --- */
     header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, #0d9488, #0f766e);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 10px 30px -10px rgba(15, 118, 110, 0.4);
       color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: relative;
       overflow: hidden;
     }
 
-    header::after {
+    header::before {
       content: '';
       position: absolute;
-      top: -20px;
-      right: -20px;
-      width: 100px;
-      height: 100px;
-      background: rgba(255,255,255,0.1);
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.05);
       border-radius: 50%;
+      top: -100px;
+      right: -50px;
     }
 
     .profile-info {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
+      gap: 20px;
+      z-index: 1;
     }
 
     .profile-pic {
-      width: 50px;
-      height: 50px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
+      width: 64px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-size: 1.4rem;
+      box-shadow: var(--shadow-sm);
     }
 
     .greeting h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
     .employee-meta {
-      font-size: 0.8rem;
-      opacity: 0.8;
-      font-weight: 300;
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
     }
 
-    /* --- DASHBOARD SECTIONS --- */
+    /* --- SECTION CARDS --- */
     .section-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: var(--transition);
-      border: 1px solid rgba(255,255,255,0.8);
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid white;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
     }
 
     .section-header {
-      padding: 18px 20px;
+      padding: 24px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      background: #fff;
     }
 
     .section-header h2 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .section-header i.fa-users-viewfinder, 
+    .section-header i.fa-list-check {
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 8px;
+      border-radius: 10px;
     }
 
     .chevron {
-      font-size: 0.8rem;
       color: var(--text-sub);
-      transition: transform 0.3s ease;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .collapsed .chevron {
-      transform: rotate(-90deg);
-    }
-
-    .collapsed .section-content {
-      display: none;
-    }
+    .collapsed .chevron { transform: rotate(-180deg); }
+    .collapsed .section-content { display: none; }
 
     .section-content {
-      padding: 0 20px 20px 20px;
+      padding: 0 28px 28px 28px;
     }
 
-    /* --- SLIDABLE TABLE SYSTEM --- */
+    /* --- MODERN TABLES --- */
     .table-container {
       width: 100%;
       overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid var(--primary-light);
-      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-md);
+      background: white;
+      border: 1px solid var(--border);
     }
 
     table {
       width: 100%;
-      min-width: 450px;
       border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid var(--primary-light);
-      white-space: nowrap;
+      font-size: 0.9rem;
     }
 
     th {
-      background: var(--primary-light);
-      color: var(--primary-dark);
+      background: #fcfcfd;
+      padding: 16px;
+      text-align: left;
       font-weight: 600;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
     }
 
     td {
+      padding: 16px;
+      border-bottom: 1px solid #f1f5f9;
       color: var(--text-main);
+      transition: background 0.2s ease;
     }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
 
     /* --- BADGES --- */
     .badge {
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.7rem;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.75rem;
       font-weight: 600;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .bg-present { background: #ecfdf5; color: #065f46; }
-    .bg-absent { background: #fef2f2; color: #991b1b; }
-    .bg-idle { background: #fffbeb; color: #92400e; }
+    .bg-present { background: var(--success-bg); color: var(--success); }
+    .bg-absent { background: var(--danger-bg); color: var(--danger); }
+    .bg-idle { background: var(--warning-bg); color: var(--warning); }
+    .bg-completed { background: #f1f5f9; color: #475569; }
 
-    /* --- EMPTY STATES --- */
+    /* Custom Status Icons via Badge:before (Optional) */
+    .bg-present::before { content: '●'; font-size: 8px; }
+
+    /* --- SUB-GROUP TITLES --- */
+    .sub-group-wrapper { margin-top: 32px; }
+    .sub-group-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-sub);
+    }
+
+    .title-on-duty i { color: var(--success); }
+    .title-off-duty i { color: var(--text-sub); }
+
+    /* --- EMPTY STATE --- */
     .empty-state {
-      padding: 30px;
+      padding: 40px;
       text-align: center;
       color: var(--text-sub);
-      font-size: 0.8rem;
-      font-style: italic;
-      background: var(--primary-light);
-      border-radius: 12px;
+      font-size: 0.85rem;
+      background: #f8fafc;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
       margin: 10px 0;
     }
 
-    /* Sub-group Styling */
-    .sub-group-wrapper { margin-top: 30px; }
-
-    .sub-group-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-left: 5px;
-    }
-
-    .title-on-duty { color: #10b981; border-left: 4px solid #10b981; padding-left: 10px; }
-    .title-off-duty { color: #64748b; border-left: 4px solid #64748b; padding-left: 10px; }
-
-    #onDutyTable th { background: #ecfdf5; color: #065f46; border-bottom: 2px solid #10b981; }
-    #offDutyTable th { background: #f1f5f9; color: #475569; border-bottom: 2px solid #64748b; }
-    #offDutyTable tbody tr { background-color: #fafafa; opacity: 0.85; }
-
-    /* ================================
-       RESPONSIVE SYSTEM
-    ================================ */
-
-    @media (max-width: 1024px) {
-      .app { max-width: 95%; }
-      header { padding: 20px; }
-      .section-content { padding: 0 16px 16px; }
-    }
-
+    /* --- RESPONSIVE --- */
     @media (max-width: 768px) {
-      body { padding: 12px; }
-
-      header { padding: 16px; }
-      .profile-pic { width: 42px; height: 42px; font-size: 1rem; }
-      .greeting h1 { font-size: 1rem; }
-      .employee-meta { font-size: 0.7rem; }
-
-      .section-header h2 { font-size: 0.75rem; }
-
-      table { font-size: 0.75rem; min-width: 500px; }
-      th, td { padding: 10px 8px; }
-
-      .badge { font-size: 0.65rem; padding: 3px 8px; }
-    }
-
-    @media (max-width: 480px) {
-      header { padding: 14px; }
-
-      .profile-info {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .section-content { padding: 0 14px 14px; }
-
-      table { min-width: 380px; }
+      body { padding: 20px 10px; }
+      header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
+      .profile-pic { width: 50px; height: 50px; }
+      .section-header { padding: 20px; }
+      .section-content { padding: 0 15px 20px; }
+      th, td { padding: 12px; font-size: 0.8rem; }
     }
   </style>
 </head>
 
-
 <body>
-
   <div class="app">
-    
     <!-- PROFILE HEADER -->
     <header>
       <div class="profile-info">
         <div class="profile-pic" id="dhInitials">--</div>
         <div class="greeting">
-          <h1 id="dhName">Loading...</h1>
+          <h1 id="dhName">Loading Dashboard...</h1>
           <div class="employee-meta">
-            ID: <span id="dhId">...</span> | Dept: <span id="dhUnit">...</span>
+            <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
+            <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
           </div>
         </div>
       </div>
-      <div id="dhStatus" class="badge bg-idle">Checking Status...</div>
+      <div id="dhStatus" class="badge bg-idle">Syncing...</div>
     </header>
 
     <!-- ATTENDANCE SECTION -->
     <div class="section-card" id="attendanceSection">
       <div class="section-header">
         <h2><i class="fas fa-users-viewfinder"></i> Manpower Attendance</h2>
-        <i class="fas fa-chevron-down chevron"></i>
+        <i class="fas fa-chevron-up chevron"></i>
       </div>
       
       <div class="section-content">
-        <div id="mainEmptyState" class="empty-state" style="display:none;">
-          No Attendance Record For Today
-        </div>
-
-        <!-- ON DUTY SUB-SECTION -->
-        <div class="sub-group-wrapper">
+        <!-- ON DUTY -->
+        <div class="sub-group-wrapper" style="margin-top: 0;">
           <div class="sub-group-title title-on-duty">
-            <i class="fas fa-circle-check"></i> ON DUTY PERSONNEL
+            <i class="fas fa-circle-check"></i> ACTIVE PERSONNEL
           </div>
           <div class="table-container">
             <table id="onDutyTable">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Clock-In</th>
+                  <th>Employee ID</th>
+                  <th>Full Name</th>
+                  <th>Clocked In</th>
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Rows injected here -->
-              </tbody>
+              <tbody></tbody>
             </table>
-            <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel on duty</div>
+            <div class="empty-state" id="onDutyEmpty" style="display:none;">No personnel currently active</div>
           </div>
         </div>
 
-        <!-- OFF DUTY SUB-SECTION -->
+        <!-- OFF DUTY -->
         <div class="sub-group-wrapper">
           <div class="sub-group-title title-off-duty">
-            <i class="fas fa-clock-rotate-left"></i> OFF DUTY PERSONNEL
+            <i class="fas fa-moon"></i> RECENTLY OFF DUTY
           </div>
           <div class="table-container">
             <table id="offDutyTable">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Name</th>
+                  <th>Employee ID</th>
+                  <th>Full Name</th>
                   <th>In</th>
                   <th>Out</th>
-                  <th>Status</th>
+                  <th>Final Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- Rows injected here -->
-              </tbody>
+              <tbody></tbody>
             </table>
-            <div class="empty-state" id="offDutyEmpty" style="display:none;">No personnel off duty</div>
+            <div class="empty-state" id="offDutyEmpty" style="display:none;">No off-duty records for today</div>
           </div>
         </div>
-      </div> <!-- End Section Content -->
-    </div> <!-- End Section Card -->
+      </div>
+    </div>
 
     <!-- ACTION LOG SECTION -->
     <div class="section-card collapsed" id="logSection">
       <div class="section-header">
-        <h2><i class="fas fa-list-check"></i> Action Log</h2>
-        <i class="fas fa-chevron-down chevron"></i>
+        <h2><i class="fas fa-list-check"></i> Operational Action Log</h2>
+        <i class="fas fa-chevron-up chevron"></i>
       </div>
       <div class="section-content">
         <div class="table-container">
           <table id="logTable">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Personnel</th>
                 <th>Work Order</th>
-                <th>Task</th>
-                <th>Time</th>
+                <th>Task Description</th>
+                <th>Timestamp</th>
                 <th>Action</th>
-                <th>Status</th>
+                <th>Current Status</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
-        <div class="empty-state" id="logEmpty" style="display:none;">No Action Log for today</div>
+        <div class="empty-state" id="logEmpty" style="display:none;">No activity logged for the selected period</div>
       </div>
     </div>
+  </div>
 
-  </div> <!-- End App -->
-  
 <script src="../../auth/script.js"></script>
 <script>
   
