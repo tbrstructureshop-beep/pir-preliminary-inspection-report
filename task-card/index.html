@@ -167,7 +167,6 @@
     <p style="margin-top:10px; font-weight:bold; color:var(--primary)">Syncing Database...</p>
 </div>
 
-<!-- Manual Doc Type Suggestions -->
 <datalist id="docTypes">
     <option value="AMM"><option value="CMM"><option value="SRM"><option value="SB"><option value="AD">
 </datalist>
@@ -226,7 +225,16 @@
 </div>
 
 <script>
+    // --- PART 1: Capture Dynamic ID from Dashboard ---
     const API_URL = "https://script.google.com/macros/s/AKfycbxVryoi5YzLOR-0AfgH458bfO6b5LP-ffBdGNAYILLQEfQC5U8gCLmRfCmZwCLukShbyg/exec";
+    const urlParams = new URLSearchParams(window.location.search);
+    const SHEET_ID = urlParams.get('id');
+
+    if (!SHEET_ID) {
+        alert("No Sheet ID detected. Redirecting to dashboard.");
+        window.location.href = "../"; 
+    }
+
     let FINDINGS_DATA = [], CURRENT_WO = "", START_TASK_NUM = 0, HISTORY_MH_SUM = 0, HISTORY_CACHE = [];
 
     function showSpinner(show) { document.getElementById("spinner").style.display = show ? "flex" : "none"; }
@@ -242,13 +250,15 @@
     function toggleVisibility(id, btn) {
         const el = document.getElementById(id);
         const isHidden = el.classList.toggle("hidden");
-        btn.innerText = isHidden ? `Show ${id.includes('History') ? 'List' : 'Details'}` : `Hide ${id.includes('History') ? 'List' : 'Details'}`;
+        const label = (id.includes('history')) ? 'List' : 'Details';
+        btn.innerText = isHidden ? `Show ${label}` : `Hide ${label}`;
     }
 
+    // --- PART 2: Initial Fetch using SHEET_ID ---
     window.onload = async () => {
         showSpinner(true);
         try {
-            const resp = await fetch(`${API_URL}?action=getInitialData`);
+            const resp = await fetch(`${API_URL}?action=getInitialData&id=${SHEET_ID}`);
             const data = await resp.json();
             FINDINGS_DATA = data.findings; CURRENT_WO = data.info.woNo;
             document.getElementById("infoGrid").innerHTML = `
@@ -276,13 +286,14 @@
         loadHistory(el.value);
     }
 
+    // --- PART 3: Load History using SHEET_ID ---
     async function loadHistory(fNo) {
         showSpinner(true);
         const container = document.getElementById("historyContainer");
         const section = document.getElementById("historySection");
         START_TASK_NUM = 0; HISTORY_MH_SUM = 0;
         try {
-            const resp = await fetch(`${API_URL}?action=getExistingTasks&findingNo=${fNo}`);
+            const resp = await fetch(`${API_URL}?action=getExistingTasks&findingNo=${fNo}&id=${SHEET_ID}`);
             HISTORY_CACHE = await resp.json();
             if (!HISTORY_CACHE || HISTORY_CACHE.length === 0) {
                 section.classList.add("hidden"); updateMHDisplays(); showSpinner(false); return;
@@ -351,7 +362,15 @@
         let fData = null;
         if(fIn.files[0]) fData = { name: fIn.files[0].name, mimeType: fIn.files[0].type, base64: await toBase64(fIn.files[0]) };
         try {
-            await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "updateTaskResult", findingNo: document.getElementById("findingSelect").value, taskNo, result: txt, fileData: fData }) });
+            await fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    action: "updateTaskResult", 
+                    sheetId: SHEET_ID,
+                    findingNo: document.getElementById("findingSelect").value, 
+                    taskNo, result: txt, fileData: fData 
+                }) 
+            });
             alert("Result Saved.");
         } catch (e) { alert("Error."); }
         showSpinner(false);
@@ -381,10 +400,8 @@
             <button class="btn-primary" style="width:100%; margin-top:15px;" onclick="submitModTask('${taskNo}')">Update Database Record</button>
         `;
 
-        // Pre-fill existing references
         const refBtn = card.querySelector(".btn-secondary");
         t.references.forEach(r => {
-            // Convert date format for HTML input (YYYY-MM-DD)
             let rawDate = "";
             if (r.date) {
                 const d = new Date(r.date);
@@ -413,14 +430,19 @@
         }
 
         try {
-            await fetch(API_URL, { method: "POST", body: JSON.stringify({ 
-                action: "saveTaskCards", wo: CURRENT_WO, 
-                tasks: [{
-                    findingNo: document.getElementById("findingSelect").value, taskNo: taskNo,
-                    category: card.querySelector(".field-cat").value, type: card.querySelector(".field-type").value,
-                    mh: mh, description: desc, notes: card.querySelector(".field-note").value, references: refs
-                }]
-            })});
+            await fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    action: "saveTaskCards", 
+                    sheetId: SHEET_ID,
+                    wo: CURRENT_WO, 
+                    tasks: [{
+                        findingNo: document.getElementById("findingSelect").value, taskNo: taskNo,
+                        category: card.querySelector(".field-cat").value, type: card.querySelector(".field-type").value,
+                        mh: mh, description: desc, notes: card.querySelector(".field-note").value, references: refs
+                    }]
+                })
+            });
             alert("Database Updated."); location.reload();
         } catch (e) { alert("Fail."); showSpinner(false); }
     }
@@ -430,7 +452,6 @@
         let sessionTotal = 0;
         document.querySelectorAll("#taskWorkspace .field-mh").forEach(i => sessionTotal += parseFloat(i.value || 0));
         let historyTotal = 0;
-        // Check for modified history cards first
         document.querySelectorAll(".history-card").forEach((c, idx) => {
             const modMH = c.querySelector(".field-mh");
             if (modMH) historyTotal += parseFloat(modMH.value || 0);
@@ -521,7 +542,15 @@
             payload.push({ findingNo: fNo, taskNo: c.querySelector(".task-no-label").innerText.split(" ")[1], category: c.querySelector(".field-cat").value, type: c.querySelector(".field-type").value, mh, description: desc, notes: c.querySelector(".field-note").value, references: refs });
         }
         try {
-            await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "saveTaskCards", wo: CURRENT_WO, tasks: payload }) });
+            await fetch(API_URL, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    action: "saveTaskCards", 
+                    sheetId: SHEET_ID,
+                    wo: CURRENT_WO, 
+                    tasks: payload 
+                }) 
+            });
             localStorage.removeItem("tc_draft"); alert("Success!"); location.reload();
         } catch (e) { alert("Error."); showSpinner(false); }
     }
