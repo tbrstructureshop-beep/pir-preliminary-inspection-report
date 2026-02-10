@@ -105,6 +105,7 @@ function toggleActionMenu(btn, sheetId, sheetUrl, index) {
   menu.innerHTML = `
     <a href="${sheetUrl}" target="_blank" rel="noopener" onclick="closeActiveMenu()">📄 Open Spreadsheet</a>
     <button type="button" onclick="editPIR('${sheetId}')">✏️ Edit in Web App</button>
+    <button type="button" onclick="createTaskCard('${sheetId}')">📝 Create Task Card</button>
     <button type="button" onclick="openMRM('${sheetId}')">📦 Material Listing (MRM)</button>
     <button type="button" onclick="openManhour('${sheetId}')" style="color: #666;"> 🕒 Manhour</button>
     <button type="button" onclick="deletePIR('${sheetId}', ${index})">🗑️ Delete PIR</button>
@@ -348,6 +349,7 @@ if (currentUser) {
   console.log("Welcome,", currentUser.name);
   loadDashboard();
 }
+
 
 
 
