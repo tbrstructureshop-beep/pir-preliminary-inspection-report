@@ -178,6 +178,17 @@ function editPIR(sheetId) {
   window.location.href = `/editor/?id=${sheetId}`;
 }
 
+function createTaskCard(sheetId) {
+  console.log("Create Task Card sheetId:", sheetId);
+  if (!sheetId) {
+    alert("No sheet ID found!");
+    return;
+  }
+
+  closeActiveMenu();
+  window.location.href = `/task-card/?id=${sheetId}`;
+}
+
 
 /*===== ACTION BUTTON BEHAVIOR =====*/
 
@@ -349,6 +360,7 @@ if (currentUser) {
   console.log("Welcome,", currentUser.name);
   loadDashboard();
 }
+
 
 
 
