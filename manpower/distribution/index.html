@@ -403,7 +403,8 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7
 
   
 /**
- * Fetch and Fill Department Head Data */
+ * Fetch and Fill Department Head Data 
+ */
 async function loadDHHeader() {
   if (!user || !user.userId) {
     console.warn("User not logged in yet...");
@@ -415,32 +416,32 @@ async function loadDHHeader() {
     const data = await response.json();
 
     if (data.success) {
-      // Fill Text Data
+      // 1. Fill Text Data
       document.getElementById("dhName").textContent = data.name;
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       
-      // --- PROFILE IMAGE LOGIC ---
+      // 2. --- PROFILE IMAGE LOGIC ---
       const imgTag = document.getElementById("dhImage");
       const initialTag = document.getElementById("dhInitials");
 
-      // Check if user has a profile URL in session or data
-      const profileUrl = user.profile || data.profile; 
+      // Use the profile returned from the DH Data fetch (not the logged-in user's photo)
+      const profileUrl = data.profile; 
 
       if (profileUrl) {
         imgTag.src = profileUrl;
         imgTag.style.display = "block";
         initialTag.style.display = "none";
       } else {
-        // --- YOUR ORIGINAL INITIALS LOGIC ---
-        const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
+        // Fallback: Use the DH name from the API to create initials
+        const initials = (data.name || "--").split(" ").map(n => n[0]).join("").toUpperCase();
         initialTag.textContent = initials.substring(0, 2);
         
         imgTag.style.display = "none";
         initialTag.style.display = "block";
       }
 
-      // --- SYNC STATUS & CSS ---
+      // 3. --- SYNC STATUS & CSS ---
       const statusBadge = document.getElementById("dhStatus");
       let displayText = "";
       let cssClass = "";
@@ -472,7 +473,8 @@ async function loadDHHeader() {
       statusBadge.className = `badge ${cssClass}`;
       
     } else {
-      document.getElementById("dhName").textContent = "Data Not Found";
+      document.getElementById("dhName").textContent = "DH Not Found";
+      console.error("API Error:", data.error);
     }
   } catch (err) {
     console.error("Fetch error:", err);
