@@ -224,8 +224,17 @@
     </div>
     <button class="btn-primary" id="submitBtn" onclick="submitWork()">Submit Task Cards</button>
 </div>
-
+    
+<script src="../auth/script.js"></script>
 <script>
+    
+    const currentUser = protectPage(); 
+    
+    // 2. Stop execution if no user (protectPage will handle the redirect)
+    if (!currentUser) {
+        throw new Error("Unauthorized"); 
+    }
+    
     // --- PART 1: Capture Dynamic ID from Dashboard ---
     const API_URL = "https://script.google.com/macros/s/AKfycbx9cfDwi_UtADQFeb2_q9j-46gzlTvH3uDpl4X1pc0f63spfqkHKoq8UkXI2s-055eIBg/exec";
     const urlParams = new URLSearchParams(window.location.search);
