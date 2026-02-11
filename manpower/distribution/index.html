@@ -297,8 +297,12 @@
     <!-- PROFILE HEADER -->
     <header>
       <div class="profile-info">
-        <img id="dhImage" src="" alt="Profile">
-        <div class="profile-pic" id="dhInitials">--</div>
+        <div class="profile-pic">
+          <!-- Image is hidden by default -->
+          <img id="dhImage" src="" style="display:none;">
+          <!-- Your original initials span -->
+          <span id="dhInitials">--</span>
+        </div>
         <div class="greeting">
           <h1 id="dhName">Loading Dashboard...</h1>
           <div class="employee-meta">
@@ -400,7 +404,6 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4MAK0BJYSFKhx70R7
   
 /**
  * Fetch and Fill Department Head Data */
-  
 async function loadDHHeader() {
   if (!user || !user.userId) {
     console.warn("User not logged in yet...");
@@ -417,21 +420,26 @@ async function loadDHHeader() {
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       
-      // 2. Handle Profile Picture / Initials Fallback
-      const imgElement = document.getElementById("dhImage");
-      const initialsElement = document.getElementById("dhInitials");
-      
-      if (user.profile) {
-        imgElement.src = user.profile;
-        imgElement.style.display = "block";
-        initialsElement.style.display = "none";
+      // --- PROFILE IMAGE LOGIC ---
+      const imgTag = document.getElementById("dhImage");
+      const initialTag = document.getElementById("dhInitials");
+
+      // Check if user has a profile URL in session or data
+      const profileUrl = user.profile || data.profile; 
+
+      if (profileUrl) {
+        imgTag.src = profileUrl;
+        imgTag.style.display = "block";
+        initialTag.style.display = "none";
       } else {
-        const initials = user.name.split(" ").map(n => n[0]).join("").toUpperCase();
-        initialsElement.textContent = initials.substring(0, 2);
-        imgElement.style.display = "none";
-        initialsElement.style.display = "block";
+        // --- YOUR ORIGINAL INITIALS LOGIC ---
+        const initials = data.name.split(" ").map(n => n[0]).join("").toUpperCase();
+        initialTag.textContent = initials.substring(0, 2);
+        
+        imgTag.style.display = "none";
+        initialTag.style.display = "block";
       }
-      
+
       // --- SYNC STATUS & CSS ---
       const statusBadge = document.getElementById("dhStatus");
       let displayText = "";
@@ -440,20 +448,20 @@ async function loadDHHeader() {
       switch (data.attendanceStatus) {
         case "On Duty":
           displayText = "On Duty";
-          cssClass = "bg-present"; // Green
+          cssClass = "bg-present";
           break;
         case "Not Yet Present":
         case "Absent":
           displayText = data.attendanceStatus;
-          cssClass = "bg-absent";  // Red
+          cssClass = "bg-absent";
           break;
         case "On Leave":
           displayText = "On Leave";
-          cssClass = "bg-idle";    // Yellow
+          cssClass = "bg-idle";
           break;
         case "Shift Completed":
           displayText = "Off Duty";
-          cssClass = "bg-completed"; // Grey
+          cssClass = "bg-completed";
           break;
         default:
           displayText = data.attendanceStatus || "Unknown";
@@ -461,7 +469,6 @@ async function loadDHHeader() {
       }
 
       statusBadge.textContent = displayText;
-      // IMPORTANT: Reset classes and apply 'badge' + the specific color class
       statusBadge.className = `badge ${cssClass}`;
       
     } else {
@@ -472,7 +479,7 @@ async function loadDHHeader() {
     document.getElementById("dhName").textContent = "Connection Error";
   }
 }
-
+  
 async function fetchAndRenderAttendance() {
   const user = protectPage();
   if (!user || !user.unit) return;
