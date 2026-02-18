@@ -178,6 +178,41 @@ body{
         <button onclick="openDistribution()">Open Distribution</button>
       </div>
     </div>
+
+    <!-- NEW: My Current Job -->
+    <div class="menu-card">
+      <div>
+        <div class="menu-top">
+          <div class="menu-icon">📋</div>
+          <div class="menu-title">My Current Job</div>
+        </div>
+        <div class="menu-desc">
+          View your currently assigned tasks, project locations, and specific 
+          responsibilities for today's shift.
+        </div>
+      </div>
+      <div class="menu-action">
+        <button onclick="openCurrentJob()">View My Job</button>
+      </div>
+    </div>
+
+    <!-- NEW: My Log Book -->
+    <div class="menu-card">
+      <div>
+        <div class="menu-top">
+          <div class="menu-icon">📓</div>
+          <div class="menu-title">My Log Book</div>
+        </div>
+        <div class="menu-desc">
+          Maintain a daily record of your activities, completed milestones, 
+          and report any incidents or observations.
+        </div>
+      </div>
+      <div class="menu-action">
+        <button onclick="openLogBook()">Open Log Book</button>
+      </div>
+    </div>
+    
   </div>
 </div>
 
@@ -192,6 +227,17 @@ function openDistribution(){
   // Use a forward slash at the start to navigate from the root of your website
   window.location.href = "/manpower/distribution/index.html";
 }
+
+// New function for My Current Job
+function openCurrentJob() {
+  window.location.href = "/manpower/current-job/index.html";
+}
+
+// New function for My Log Book
+function openLogBook() {
+  window.location.href = "/manpower/log-book/index.html";
+}
+  
 </script>
 </body>
 </html>
