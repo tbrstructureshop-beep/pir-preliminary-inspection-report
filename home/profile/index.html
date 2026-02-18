@@ -3,400 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Profile | MRO Systems</title>
-    <!-- Premium Fonts & Icons -->
+    <title>User Profile | MRO Systems</title>
+    <!-- Premium UI Assets -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
-            --mro-primary: #27838f;
-            --mro-dark: #1a565e;
-            --mro-bg: #f0f2f5;
-            --mro-card: #ffffff;
-            --mro-text: #2c3e50;
-            --mro-grey: #64748b;
-            --mro-border: #e2e8f0;
-            --mro-yellow: #f59e0b;
-            --mro-green: #10b981;
-            --mro-red: #ef4444;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --primary: #27838f;
+            --primary-dark: #1b5d66;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent-yellow: #facc15;
+            --accent-green: #22c55e;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--mro-bg); color: var(--mro-text); min-height: 100vh; display: flex; flex-direction: column; }
-
-        /* Navigation Header */
-        header {
-            background: var(--mro-primary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            box-shadow: var(--shadow);
-        }
-        .logo { font-weight: 700; letter-spacing: -1px; font-size: 1.25rem; }
-
-        /* Profile Layout */
-        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 2rem; }
         
-        .profile-card {
-            background: var(--mro-card);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--mro-border);
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
         }
 
-        .card-banner {
-            height: 100px;
-            background: linear-gradient(135deg, var(--mro-primary) 0%, var(--mro-dark) 100%);
+        /* Responsive Container */
+        .profile-wrapper {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Header / Banner */
+        .profile-header {
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             position: relative;
         }
 
-        .avatar-section {
+        /* Avatar Section */
+        .avatar-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: -60px;
-            padding: 0 2rem;
+            margin-top: -70px;
+            padding-bottom: 20px;
             position: relative;
         }
 
-        .image-container {
+        .avatar-frame {
             position: relative;
-            width: 120px;
-            height: 120px;
-        }
-
-        .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
+            background: white;
+            padding: 5px;
             border-radius: 50%;
-            border: 5px solid var(--mro-card);
-            background: #e5e7eb;
+            box-shadow: var(--shadow-md);
+        }
+
+        .avatar-frame img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             object-fit: cover;
-            box-shadow: var(--shadow);
+            background: #f8fafc;
         }
 
-        .pencil-overlay {
+        .pencil-btn {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: var(--mro-yellow);
-            width: 34px;
-            height: 34px;
+            bottom: 8px;
+            right: 8px;
+            background: var(--accent-yellow);
+            color: #000;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            display: none; /* Only in edit mode */
+            display: none; /* Only visible in Edit Mode */
             align-items: center;
             justify-content: center;
-            color: white;
             cursor: pointer;
-            border: 3px solid var(--mro-card);
-            transition: transform 0.2s;
+            border: 3px solid #fff;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
         }
-        .pencil-overlay:hover { transform: scale(1.1); }
+        .pencil-btn:hover { transform: scale(1.1); background: #eab308; }
 
-        /* Content Area */
-        .profile-content { padding: 1.5rem 2rem 2.5rem 2rem; }
-        .user-identity { text-align: center; margin-bottom: 2rem; }
-        .user-identity h1 { font-size: 1.5rem; color: var(--mro-text); font-weight: 700; }
-        .user-identity p { color: var(--mro-grey); font-size: 0.9rem; margin-top: 4px; }
+        /* Form Content */
+        .profile-body { padding: 0 40px 40px 40px; }
 
-        .form-grid { display: grid; gap: 1.25rem; }
-        .field-box { position: relative; }
-        
-        .label {
+        .user-title-block { text-align: center; margin-bottom: 30px; }
+        .user-title-block h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .user-title-block p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+
+        .field-group { position: relative; }
+        .field-label {
             font-size: 0.75rem;
             font-weight: 700;
-            color: var(--mro-grey);
+            color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
             display: block;
         }
 
-        .read-only-text {
+        .field-value {
             font-size: 1rem;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
             font-weight: 500;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--mro-border);
-            color: var(--mro-text);
+            color: var(--text-main);
+            min-height: 40px;
         }
 
         .input-control {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--mro-border);
-            border-radius: 8px;
+            padding: 12px 16px;
             font-size: 1rem;
-            color: var(--mro-text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             background: #f8fafc;
-            display: none; /* Hidden by default */
+            color: var(--text-main);
+            display: none; /* Toggle state */
+            transition: border-color 0.2s;
         }
-        .input-control:focus {
-            outline: none;
-            border-color: var(--mro-primary);
-            box-shadow: 0 0 0 3px rgba(39, 131, 143, 0.1);
-        }
+        .input-control:focus { outline: none; border-color: var(--primary); background: #fff; }
 
-        /* Action Buttons */
-        .actions {
-            margin-top: 2.5rem;
+        /* Actions */
+        .action-footer {
+            margin-top: 40px;
             display: flex;
-            gap: 1rem;
+            gap: 12px;
         }
 
         .btn {
             flex: 1;
-            padding: 0.8rem;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 0.95rem;
+            border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 8px;
             transition: all 0.2s;
-            border: none;
         }
 
-        .btn-edit { background: var(--mro-primary); color: white; }
-        .btn-edit:hover { background: var(--mro-dark); }
-        
-        .btn-save { background: var(--mro-green); color: white; display: none; }
+        .btn-edit { background: var(--primary); color: white; }
+        .btn-edit:hover { background: var(--primary-dark); }
+
+        .btn-save { background: var(--accent-green); color: white; display: none; }
         .btn-save:hover { opacity: 0.9; }
 
-        .btn-cancel { background: #f1f5f9; color: var(--mro-grey); display: none; }
-        .btn-cancel:hover { background: #e2e8f0; }
+        .btn-cancel { background: #f1f5f9; color: var(--text-muted); display: none; }
+        .btn-cancel:hover { background: #e2e8f0; color: var(--text-main); }
 
-        /* Hidden Inputs */
-        #fileInput { display: none; }
-
-        @media (max-width: 480px) {
-            main { padding: 1rem; }
-            .profile-card { border-radius: 12px; }
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            body { padding: 0; background: #fff; }
+            .profile-wrapper { border-radius: 0; box-shadow: none; border: none; }
+            .profile-body { padding: 0 24px 30px 24px; }
         }
+
+        #fileInput { display: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo"><i class="fas fa-tools"></i> MRO ENTERPRISE</div>
-        <button class="btn" style="background:transparent; color:white; width:auto;" onclick="logout()">
-            <i class="fas fa-power-off"></i>
-        </button>
-    </header>
-
-    <main>
-        <div class="profile-card">
-            <div class="card-banner"></div>
-            
-            <div class="avatar-section">
-                <div class="image-container">
-                    <img id="profilePic" src="" alt="User Profile" class="profile-img">
-                    <label for="fileInput" class="pencil-overlay" id="editIcon">
-                        <i class="fas fa-pencil-alt"></i>
-                    </label>
-                    <input type="file" id="fileInput" accept="image/*">
-                </div>
-                <div class="user-identity">
-                    <h1 id="userName">---</h1>
-                    <p id="userUnit">---</p>
-                </div>
+    <div class="profile-wrapper">
+        <div class="profile-header"></div>
+        
+        <div class="avatar-container">
+            <div class="avatar-frame">
+                <img id="profilePic" src="" alt="User">
+                <label for="fileInput" class="pencil-btn" id="pencilIcon">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="fileInput" accept="image/*">
             </div>
-
-            <div class="profile-content">
-                <div class="form-grid">
-                    <div class="field-box">
-                        <span class="label">User ID</span>
-                        <div class="read-only-text" id="view_userId">---</div>
-                    </div>
-                    
-                    <div class="field-box">
-                        <span class="label">Job Title</span>
-                        <div class="read-only-text" id="view_jobTitle">---</div>
-                        <input type="text" id="edit_jobTitle" class="input-control" placeholder="Update job title">
-                    </div>
-
-                    <div id="passwordField" class="field-box" style="display:none;">
-                        <span class="label">New Password</span>
-                        <input type="password" id="edit_password" class="input-control" placeholder="Enter new password">
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <button id="btnEdit" class="btn btn-edit" onclick="toggleMode(true)">
-                        <i class="fas fa-user-edit"></i> Edit Profile
-                    </button>
-                    <button id="btnCancel" class="btn btn-cancel" onclick="toggleMode(false)">
-                        Cancel
-                    </button>
-                    <button id="btnSave" class="btn btn-save" onclick="saveProfile()">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                </div>
+            <div class="user-title-block">
+                <h2 id="disp_name">---</h2>
+                <p id="disp_unit">---</p>
             </div>
         </div>
-    </main>
+
+        <div class="profile-body">
+            <div class="info-grid">
+                <div class="field-group">
+                    <span class="field-label">Employee ID</span>
+                    <div class="field-value" id="disp_userId">---</div>
+                </div>
+
+                <div class="field-group">
+                    <span class="field-label">Job Title</span>
+                    <div class="field-value" id="val_jobTitle">---</div>
+                    <input type="text" id="edit_jobTitle" class="input-control">
+                </div>
+
+                <div class="field-group" id="passContainer" style="display:none;">
+                    <span class="field-label">Access Password</span>
+                    <input type="password" id="edit_password" class="input-control" placeholder="Update only if changing">
+                </div>
+            </div>
+
+            <div class="action-footer">
+                <button id="btnEdit" class="btn btn-edit" onclick="toggleEdit(true)">
+                    <i class="fas fa-user-gear"></i> Edit Profile
+                </button>
+                <button id="btnCancel" class="btn btn-cancel" onclick="toggleEdit(false)">
+                    Cancel
+                </button>
+                <button id="btnSave" class="btn btn-save" onclick="handleSave()">
+                    <i class="fas fa-cloud-upload-alt"></i> Save Profile
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec"; // MANDATORY: Replace after GAS Deploy
-        let currentUser = protectPage();
+        const API_URL = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec"; // REPLACE THIS
+        let currentUser = null;
 
-        // 1. Initial Page Load
+        // --- AUTH & LOAD ---
+        function protectPage() {
+            const data = sessionStorage.getItem("user");
+            if (!data) return window.location.replace("../index.html");
+            return JSON.parse(data);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            if (currentUser) {
-                refreshUI();
-            }
-            document.getElementById('fileInput').addEventListener('change', handleImageUpload);
+            currentUser = protectPage();
+            renderUI();
+            document.getElementById('fileInput').addEventListener('change', onImageSelect);
         });
 
-        function protectPage() {
-            const userData = sessionStorage.getItem("user");
-            if (!userData) { window.location.replace("../index.html"); return null; }
-            const user = JSON.parse(userData);
-            if (!user?.userId) { window.location.replace("../index.html"); return null; }
-            return user;
-        }
-
-        // 2. Refresh Display Logic
-        function refreshUI() {
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('userUnit').textContent = currentUser.unit;
-            document.getElementById('view_userId').textContent = currentUser.userId;
-            document.getElementById('view_jobTitle').textContent = currentUser.jobTitle;
+        // --- DRIVE URL TO THUMBNAIL LOGIC ---
+        function getThumbnail(url) {
+            if (!url || url === "") return `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=27838f&color=fff`;
             
-            // Set input values for edit mode
-            document.getElementById('edit_jobTitle').value = currentUser.jobTitle;
-
-            // Handle Drive Image Logic (The requested Thumbnail Format)
-            const imgEl = document.getElementById('profilePic');
-            if (currentUser.profile && currentUser.profile !== "") {
-                // Using specific requested format: drive.google.com/thumbnail?id={ID}
-                // Added sz=w400 for better resolution thumbnail
-                imgEl.src = `https://drive.google.com/thumbnail?id=${currentUser.profile}&sz=w400`;
-            } else {
-                imgEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=27838f&color=fff`;
-            }
+            // Extract ID from URL like .../d/ID/view...
+            const match = url.match(/\/d\/(.+?)\/(view|edit|usp)/);
+            const id = match ? match[1] : url; // fallback to raw string if regex fails
+            return `https://drive.google.com/thumbnail?id=${id}&sz=w400`;
         }
 
-        // 3. Toggle View/Edit State
-        function toggleMode(isEdit) {
-            const views = document.querySelectorAll('.read-only-text');
-            const inputs = document.querySelectorAll('.input-control');
-            const editIcon = document.getElementById('editIcon');
-            const passField = document.getElementById('passwordField');
+        function renderUI() {
+            document.getElementById('disp_name').textContent = currentUser.name;
+            document.getElementById('disp_unit').textContent = currentUser.unit;
+            document.getElementById('disp_userId').textContent = currentUser.userId;
+            document.getElementById('val_jobTitle').textContent = currentUser.jobTitle;
+            document.getElementById('edit_jobTitle').value = currentUser.jobTitle;
+            document.getElementById('profilePic').src = getThumbnail(currentUser.profile);
+        }
 
+        function toggleEdit(isEdit) {
+            const views = [document.getElementById('val_jobTitle')];
+            const inputs = document.querySelectorAll('.input-control');
+            
             views.forEach(v => v.style.display = isEdit ? 'none' : 'block');
             inputs.forEach(i => i.style.display = isEdit ? 'block' : 'none');
             
-            document.getElementById('view_userId').style.display = 'block'; // Always visible
-            editIcon.style.display = isEdit ? 'flex' : 'none';
-            passField.style.display = isEdit ? 'block' : 'none';
-
+            document.getElementById('passContainer').style.display = isEdit ? 'block' : 'none';
+            document.getElementById('pencilIcon').style.display = isEdit ? 'flex' : 'none';
+            
             document.getElementById('btnEdit').style.display = isEdit ? 'none' : 'flex';
             document.getElementById('btnSave').style.display = isEdit ? 'flex' : 'none';
             document.getElementById('btnCancel').style.display = isEdit ? 'flex' : 'none';
-
-            if (!isEdit) refreshUI();
         }
 
-        // 4. Update Profile Data
-        async function saveProfile() {
-            const jobTitle = document.getElementById('edit_jobTitle').value;
-            const password = document.getElementById('edit_password').value;
-
-            const confirm = await Swal.fire({
-                title: 'Confirm Update',
-                text: "Update profile information?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                confirmButtonText: 'Yes, Save'
-            });
-
-            if (!confirm.isConfirmed) return;
-
-            loading();
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'updateProfile',
-                        payload: { userId: currentUser.userId, jobTitle, password }
-                    })
-                });
-                const res = await response.json();
-
-                if (res.status === 'success') {
-                    currentUser.jobTitle = jobTitle;
-                    sessionStorage.setItem("user", JSON.stringify(currentUser));
-                    await Swal.fire('Success', 'Profile updated successfully', 'success');
-                    toggleMode(false);
-                } else { throw new Error(res.message); }
-            } catch (err) {
-                Swal.fire('Error', err.message, 'error');
-            }
-        }
-
-        // 5. Profile Picture Flow
-        async function handleImageUpload(e) {
+        // --- PROFILE PICTURE UPDATE ---
+        async function onImageSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
 
+            // Simple Preview
+            const reader = new FileReader();
+            reader.onload = (ev) => document.getElementById('profilePic').src = ev.target.result;
+            reader.readAsDataURL(file);
+
             const confirm = await Swal.fire({
-                title: 'Change Picture?',
-                text: "Would you like to upload a new profile image?",
-                icon: 'info',
+                title: 'Update Photo?',
+                text: "Replace current profile picture?",
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#27838f'
             });
 
-            if (!confirm.isConfirmed) return;
+            if (!confirm.isConfirmed) return renderUI();
 
-            loading('Uploading Image...');
+            showLoading('Uploading image...');
 
-            const reader = new FileReader();
-            reader.onload = async () => {
-                const base64 = reader.result.split(',')[1];
+            const uploadReader = new FileReader();
+            uploadReader.onload = async () => {
+                const base64 = uploadReader.result.split(',')[1];
                 try {
-                    const response = await fetch(API_URL, {
+                    const res = await fetch(API_URL, {
                         method: 'POST',
                         body: JSON.stringify({
                             action: 'updatePicture',
                             payload: {
                                 userId: currentUser.userId,
-                                oldFileId: currentUser.profile,
+                                oldUrl: currentUser.profile,
                                 filename: `p_${currentUser.userId}_${Date.now()}`,
                                 mimeType: file.type,
                                 base64: base64
                             }
                         })
                     });
-                    const res = await response.json();
-                    if (res.status === 'success') {
-                        currentUser.profile = res.fileId;
+                    const data = await res.json();
+                    if(data.status === 'success') {
+                        currentUser.profile = data.newUrl;
                         sessionStorage.setItem("user", JSON.stringify(currentUser));
-                        await Swal.fire('Uploaded!', 'Your profile image is now updated.', 'success');
-                        refreshUI();
-                    } else { throw new Error(res.message); }
-                } catch (err) { Swal.fire('Error', err.message, 'error'); }
+                        Swal.fire('Success', 'Photo updated!', 'success');
+                        renderUI();
+                    } else { throw new Error(data.message); }
+                } catch (err) { Swal.fire('Error', err.message, 'error'); renderUI(); }
             };
-            reader.readAsDataURL(file);
+            uploadReader.readAsDataURL(file);
         }
 
-        function loading(text = 'Processing...') {
-            Swal.fire({ title: text, allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        // --- DATA UPDATE ---
+        async function handleSave() {
+            const newJob = document.getElementById('edit_jobTitle').value;
+            const newPass = document.getElementById('edit_password').value;
+
+            showLoading('Saving profile data...');
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateProfile',
+                        payload: { userId: currentUser.userId, jobTitle: newJob, password: newPass }
+                    })
+                });
+                const data = await res.json();
+                if(data.status === 'success') {
+                    currentUser.jobTitle = newJob;
+                    sessionStorage.setItem("user", JSON.stringify(currentUser));
+                    await Swal.fire('Success', 'Profile saved.', 'success');
+                    toggleEdit(false);
+                    renderUI();
+                } else { throw new Error(data.message); }
+            } catch (err) { Swal.fire('Error', err.message, 'error'); }
         }
 
-        function logout() {
-            sessionStorage.clear();
-            window.location.replace("../index.html");
+        function showLoading(msg) {
+            Swal.fire({ title: msg, allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         }
     </script>
 </body>
