@@ -23,7 +23,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--mro-bg); color: var(--mro-slate); overflow-x: hidden; }
 
-        /* Navbar with Hamburger */
+        /* Navbar */
         .navbar {
             background: var(--mro-teal);
             height: 60px;
@@ -40,13 +40,7 @@
         .nav-brand { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
         
         .hamburger-menu { position: relative; }
-        .hamburger-icon { 
-            font-size: 1.4rem; 
-            cursor: pointer; 
-            padding: 10px; 
-            border-radius: 6px; 
-            transition: 0.2s; 
-        }
+        .hamburger-icon { font-size: 1.4rem; cursor: pointer; padding: 10px; border-radius: 6px; transition: 0.2s; }
         .hamburger-icon:hover { background: rgba(255,255,255,0.15); }
 
         .dropdown {
@@ -60,46 +54,21 @@
             border: 1px solid var(--mro-border);
             display: none;
             overflow: hidden;
-            animation: slideDown 0.2s ease;
+            z-index: 1001;
         }
         .dropdown.show { display: block; }
-        @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-
-        .dropdown-item {
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--mro-slate);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-        }
+        .dropdown-item { padding: 14px 20px; display: flex; align-items: center; gap: 12px; color: var(--mro-slate); text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
         .dropdown-item:hover { background: #f1f5f9; color: var(--mro-teal); }
         .dropdown-item.logout { color: #ef4444; border-top: 1px solid var(--mro-border); }
 
         /* Layout */
         .container { max-width: 900px; margin: 30px auto; padding: 0 15px; display: grid; grid-template-columns: 300px 1fr; gap: 25px; }
 
-        /* Sidebar */
-        .profile-side {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 30px 20px;
-            text-align: center;
-            border: 1px solid var(--mro-border);
-            height: fit-content;
-        }
+        .profile-side { background: var(--white); border-radius: 12px; padding: 30px 20px; text-align: center; border: 1px solid var(--mro-border); height: fit-content; }
         .avatar-container { position: relative; width: 140px; height: 140px; margin: 0 auto 20px; }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--white); box-shadow: 0 0 0 1px var(--mro-border); }
         .edit-photo-btn { position: absolute; bottom: 5px; right: 5px; background: var(--accent); color: white; width: 34px; height: 34px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--white); }
 
-        /* Main Profile Card */
         .profile-main { background: var(--white); border-radius: 12px; border: 1px solid var(--mro-border); overflow: hidden; }
         .card-header { padding: 20px 30px; border-bottom: 1px solid var(--mro-border); background: #fcfcfc; }
         .card-header h3 { font-size: 0.8rem; color: var(--mro-grey); text-transform: uppercase; letter-spacing: 1px; }
@@ -116,9 +85,10 @@
         .input-el:focus { outline: none; border-color: var(--mro-teal); }
         
         .eye-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--mro-grey); cursor: pointer; display: none; }
-        .change-link { color: var(--mro-teal); cursor: pointer; font-size: 0.8rem; font-weight: 700; }
+        
+        /* The Password Pencil/Change Link - Initially Hidden */
+        .change-link { color: var(--accent); cursor: pointer; font-size: 0.8rem; font-weight: 700; display: none; }
 
-        /* Actions */
         .btn-row { padding: 0 30px 30px; display: flex; gap: 10px; }
         .btn { flex: 1; padding: 12px; border-radius: 6px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; }
         .btn-edit { background: var(--mro-teal); color: white; }
@@ -146,7 +116,6 @@
     </nav>
 
     <div class="container">
-        <!-- Photo Sidebar -->
         <div class="profile-side">
             <div class="avatar-container">
                 <img id="img_avatar" src="" class="profile-img">
@@ -159,7 +128,6 @@
             <p id="txt_unit" style="color: var(--mro-teal); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">---</p>
         </div>
 
-        <!-- Details Card -->
         <div class="profile-main">
             <div class="card-header">
                 <h3>System Identity</h3>
@@ -179,9 +147,10 @@
 
                 <div class="field">
                     <div class="label-row">
-                        <span class="label">System Password</span>
+                        <span class="label">Current Password</span>
+                        <!-- Password Pencil: Only shows when Edit Profile is clicked -->
                         <span class="change-link" id="link_pass" onclick="startPassChange()">
-                            <i class="fas fa-lock"></i> Change
+                            <i class="fas fa-pencil-alt"></i> Change
                         </span>
                     </div>
                     
@@ -190,18 +159,19 @@
                         <i class="fas fa-eye eye-toggle" style="display:block" onclick="toggleView('in_curr_pass')"></i>
                     </div>
 
-                    <div id="pass_edit_fields" style="display:none; margin-top:15px;">
+                    <!-- Hidden unless Change is clicked -->
+                    <div id="pass_edit_fields" style="display:none; margin-top:15px; border-top: 1px dashed var(--mro-border); padding-top: 15px;">
                         <div class="field">
                             <span class="label">New Password</span>
                             <div class="input-box">
-                                <input type="password" id="in_new_pass" class="input-el" style="display:block" placeholder="New Password">
+                                <input type="password" id="in_new_pass" class="input-el" style="display:block" placeholder="Enter new password">
                                 <i class="fas fa-eye eye-toggle" style="display:block" onclick="toggleView('in_new_pass')"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <span class="label">Confirm Password</span>
+                            <span class="label">Confirm New Password</span>
                             <div class="input-box">
-                                <input type="password" id="in_conf_pass" class="input-el" style="display:block" placeholder="Confirm Password">
+                                <input type="password" id="in_conf_pass" class="input-el" style="display:block" placeholder="Confirm new password">
                                 <i class="fas fa-eye eye-toggle" style="display:block" onclick="toggleView('in_conf_pass')"></i>
                             </div>
                         </div>
@@ -211,7 +181,7 @@
 
             <div class="btn-row">
                 <button id="btn_edit" class="btn btn-edit" onclick="setEditMode(true)">
-                    <i class="fas fa-user-edit"></i> Edit Details
+                    <i class="fas fa-user-edit"></i> Edit Profile
                 </button>
                 <button id="btn_cancel" class="btn btn-cancel" onclick="location.reload()">
                     Cancel
@@ -232,12 +202,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
-            // Dropdown logic
             const mBtn = document.getElementById('menuBtn');
             const mDrop = document.getElementById('navDropdown');
             mBtn.onclick = (e) => { e.stopPropagation(); mDrop.classList.toggle('show'); };
             window.onclick = () => mDrop.classList.remove('show');
-
             document.getElementById('fileInput').addEventListener('change', uploadPhoto);
         });
 
@@ -251,6 +219,7 @@
             document.getElementById('txt_id').textContent = user.userId;
             document.getElementById('txt_job').textContent = user.jobTitle;
             document.getElementById('in_job').value = user.jobTitle;
+            // The current password from backend/session is loaded here
             document.getElementById('in_curr_pass').value = user.password || "";
         }
 
@@ -260,19 +229,31 @@
         }
 
         function setEditMode(on) {
+            // Toggle Display of Job inputs
             document.getElementById('txt_job').style.display = on ? 'none' : 'block';
             document.getElementById('in_job').style.display = on ? 'block' : 'none';
+            
+            // Toggle Photo Pencil
             document.getElementById('photoPencil').style.display = on ? 'flex' : 'none';
+            
+            // Toggle Password "Change" pencil button - Only visible in edit mode
+            document.getElementById('link_pass').style.display = on ? 'inline-block' : 'none';
+            
+            // Toggle Buttons
             document.getElementById('btn_edit').style.display = on ? 'none' : 'flex';
             document.getElementById('btn_save').style.display = on ? 'flex' : 'none';
             document.getElementById('btn_cancel').style.display = on ? 'flex' : 'none';
+
+            if(!on) {
+                document.getElementById('pass_edit_fields').style.display = 'none';
+                passMode = false;
+            }
         }
 
         function startPassChange() {
-            setEditMode(true);
             passMode = true;
             document.getElementById('pass_edit_fields').style.display = 'block';
-            document.getElementById('link_pass').style.display = 'none';
+            document.getElementById('link_pass').style.display = 'none'; // Hide "Change" after clicked
         }
 
         async function uploadPhoto(e) {
@@ -305,27 +286,37 @@
 
         async function saveProfile() {
             const job = document.getElementById('in_job').value;
-            let pass = user.password;
+            let finalPassword = user.password; // Default to existing
 
             if (passMode) {
                 const n1 = document.getElementById('in_new_pass').value;
                 const n2 = document.getElementById('in_conf_pass').value;
-                if (!n1 || n1 !== n2) return Swal.fire('Error', 'Passwords must match.', 'error');
-                pass = n1;
+                
+                if (!n1) return Swal.fire('Error', 'New password cannot be empty.', 'error');
+                if (n1 !== n2) return Swal.fire('Error', 'Passwords do not match.', 'error');
+                
+                finalPassword = n1;
             }
 
             Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading() });
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'updateProfile', payload: { userId: user.userId, jobTitle: job, password: pass } })
+                    body: JSON.stringify({ 
+                        action: 'updateProfile', 
+                        payload: { 
+                            userId: user.userId, 
+                            jobTitle: job, 
+                            password: finalPassword 
+                        } 
+                    })
                 });
                 const d = await res.json();
                 if (d.status === 'success') {
                     user.jobTitle = job;
-                    user.password = pass;
+                    user.password = finalPassword;
                     sessionStorage.setItem("user", JSON.stringify(user));
-                    await Swal.fire('Saved', 'Profile updated.', 'success');
+                    await Swal.fire('Saved', 'Profile updated successfully.', 'success');
                     location.reload();
                 }
             } catch (e) { Swal.fire('Error', 'Save failed.', 'error'); }
