@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile | MRO Enterprise</title>
+    <title>Enterprise Profile | MRO Systems</title>
     <!-- Assets -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,14 +17,13 @@
             --mro-border: #e2e8f0;
             --mro-bg: #f8fafc;
             --white: #ffffff;
-            --accent-yellow: #f59e0b;
-            --danger: #ef4444;
+            --accent: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--mro-bg); color: var(--mro-slate); line-height: 1.6; }
+        body { background-color: var(--mro-bg); color: var(--mro-slate); line-height: 1.5; }
 
-        /* Navigation & Dropdown */
+        /* Navigation Bar */
         .navbar {
             background: var(--mro-teal);
             height: 64px;
@@ -33,33 +32,33 @@
             justify-content: space-between;
             padding: 0 5%;
             color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .nav-brand { font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .nav-brand { font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
         
         .user-menu { position: relative; cursor: pointer; }
-        .user-trigger { display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 30px; transition: 0.2s; }
-        .user-trigger:hover { background: rgba(255,255,255,0.1); }
+        .user-trigger { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 30px; transition: 0.2s; }
+        .user-trigger:hover { background: rgba(255,255,255,0.15); }
         .nav-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
-        
+
         .dropdown {
             position: absolute;
             top: 120%;
             right: 0;
             background: var(--white);
-            width: 200px;
+            width: 220px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border: 1px solid var(--mro-border);
             display: none;
             overflow: hidden;
-            animation: slideIn 0.2s ease-out;
+            animation: fadeIn 0.2s ease;
         }
         .dropdown.show { display: block; }
-        @keyframes slideIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
         .dropdown-item {
             padding: 12px 20px;
@@ -73,12 +72,12 @@
             transition: 0.2s;
         }
         .dropdown-item:hover { background: #f1f5f9; color: var(--mro-teal); }
-        .dropdown-item.logout { color: var(--danger); border-top: 1px solid var(--mro-border); }
+        .dropdown-item.logout { color: #ef4444; border-top: 1px solid var(--mro-border); }
 
-        /* Main Profile Layout */
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
+        /* Content Layout */
+        .container { max-width: 950px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
 
-        /* Profile Side */
+        /* Sidebar */
         .profile-side {
             background: var(--white);
             border-radius: 16px;
@@ -87,68 +86,58 @@
             border: 1px solid var(--mro-border);
             height: fit-content;
         }
-        .avatar-frame { position: relative; width: 160px; height: 160px; margin: 0 auto 20px; }
+        .avatar-box { position: relative; width: 160px; height: 160px; margin: 0 auto 24px; }
         .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--white); box-shadow: 0 0 0 1px var(--mro-border); }
-        .btn-photo-edit { position: absolute; bottom: 8px; right: 8px; background: var(--accent-yellow); color: white; width: 38px; height: 38px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 3px solid var(--white); cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .photo-pencil { position: absolute; bottom: 8px; right: 8px; background: var(--accent); color: white; width: 38px; height: 38px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 3px solid var(--white); box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
+        .photo-pencil:hover { transform: scale(1.1); }
 
         /* Form Card */
-        .profile-main { background: var(--white); border-radius: 16px; border: 1px solid var(--mro-border); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .profile-main { background: var(--white); border-radius: 16px; border: 1px solid var(--mro-border); overflow: hidden; }
         .card-header { padding: 25px 35px; border-bottom: 1px solid var(--mro-border); background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
-        .card-header h3 { font-size: 0.85rem; color: var(--mro-grey); text-transform: uppercase; letter-spacing: 1.5px; }
+        .card-header h3 { font-size: 0.8rem; color: var(--mro-grey); text-transform: uppercase; letter-spacing: 1.2px; }
 
         .form-content { padding: 35px; }
-        .field-group { margin-bottom: 28px; }
-        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .field-group { margin-bottom: 25px; }
+        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .label { font-size: 0.75rem; font-weight: 700; color: var(--mro-grey); text-transform: uppercase; }
         
         .static-val { font-size: 1rem; font-weight: 500; color: var(--mro-slate); padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
         
-        .input-wrapper { position: relative; }
-        .form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--mro-border); border-radius: 8px; font-size: 1rem; background: #fcfcfc; display: none; }
+        .input-wrap { position: relative; }
+        .form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--mro-border); border-radius: 8px; font-size: 1rem; display: none; background: #fcfcfc; }
         .form-input:focus { outline: none; border-color: var(--mro-teal); box-shadow: 0 0 0 3px rgba(39, 131, 143, 0.1); }
         
-        .eye-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--mro-grey); cursor: pointer; display: none; }
-        .pencil-btn { color: var(--mro-teal); cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
-        .pencil-btn:hover { color: var(--mro-dark); }
+        .eye-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--mro-grey); cursor: pointer; display: none; }
+        .pencil-action { color: var(--mro-teal); cursor: pointer; font-size: 0.85rem; font-weight: 600; }
 
-        /* Action Buttons */
-        .footer-btns { padding: 0 35px 35px; display: flex; gap: 12px; }
-        .btn { flex: 1; padding: 14px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.95rem; }
-        .btn-primary { background: var(--mro-teal); color: white; }
-        .btn-success { background: #10b981; color: white; display: none; }
-        .btn-ghost { background: #f1f5f9; color: var(--mro-grey); display: none; }
+        /* Buttons */
+        .btn-footer { padding: 0 35px 35px; display: flex; gap: 12px; }
+        .btn { flex: 1; padding: 14px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn-edit { background: var(--mro-teal); color: white; }
+        .btn-save { background: #10b981; color: white; display: none; }
+        .btn-cancel { background: #f1f5f9; color: var(--mro-grey); display: none; }
 
-        /* Mobile View */
         @media (max-width: 850px) {
             .container { grid-template-columns: 1fr; margin: 0; }
             .profile-side, .profile-main { border-radius: 0; border: none; }
         }
-
         #fileInput { display: none; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand"><i class="fas fa-microchip"></i> MRO SYSTEMS</div>
-        
+        <div class="nav-brand"><i class="fas fa-tools"></i> MRO ENTERPRISE</div>
         <div class="user-menu" id="menuToggle">
             <div class="user-trigger">
-                <span id="navName" style="font-weight: 500; font-size: 0.9rem;">---</span>
+                <span id="navName" style="font-weight: 500;">---</span>
                 <img id="navAvatar" src="" class="nav-avatar">
-                <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                <i class="fas fa-caret-down"></i>
             </div>
-            
             <div class="dropdown" id="userDropdown">
-                <a href="../home/index.html" class="dropdown-item">
-                    <i class="fas fa-home"></i> Back to Main Menu
-                </a>
-                <a href="#" class="dropdown-item" onclick="location.reload()">
-                    <i class="fas fa-user-circle"></i> My Profile
-                </a>
-                <div class="dropdown-item logout" onclick="logout()">
-                    <i class="fas fa-power-off"></i> Logout System
-                </div>
+                <a href="../home/index.html" class="dropdown-item"><i class="fas fa-home"></i> Home Menu</a>
+                <a href="#" class="dropdown-item" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh Profile</a>
+                <div class="dropdown-item logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
             </div>
         </div>
     </nav>
@@ -156,161 +145,149 @@
     <div class="container">
         <!-- Sidebar -->
         <div class="profile-side">
-            <div class="avatar-frame">
+            <div class="avatar-box">
                 <img id="mainAvatar" src="" class="profile-img">
-                <label for="fileInput" class="btn-photo-edit" id="photoEditBtn">
+                <label for="fileInput" class="photo-pencil" id="photoPencil">
                     <i class="fas fa-camera"></i>
                 </label>
                 <input type="file" id="fileInput" accept="image/*">
             </div>
-            <h2 id="sideName" style="margin-bottom: 5px;">---</h2>
-            <p id="sideUnit" style="color: var(--mro-grey); font-weight: 600; text-transform: uppercase; font-size: 0.8rem;">---</p>
+            <h2 id="sideName">---</h2>
+            <p id="sideUnit" style="color:var(--mro-teal); font-weight:700; margin-top:5px; text-transform:uppercase; font-size:0.8rem">---</p>
         </div>
 
         <!-- Main Form -->
         <div class="profile-main">
             <div class="card-header">
-                <h3>Identity & Security</h3>
-                <span id="editBadge" style="font-size: 0.7rem; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 20px; font-weight: 800; display: none;">EDITING MODE</span>
+                <h3>User Information</h3>
+                <span id="editBadge" style="display:none; color:#ef4444; font-weight:800; font-size:0.7rem;">EDIT MODE ACTIVE</span>
             </div>
 
             <div class="form-content">
                 <div class="field-group">
-                    <span class="label">Employee Registration ID</span>
+                    <span class="label">Employee ID</span>
                     <div class="static-val" id="disp_id">---</div>
                 </div>
 
                 <div class="field-group">
-                    <span class="label">Current Job Title</span>
+                    <span class="label">Job Title</span>
                     <div class="static-val" id="disp_job">---</div>
                     <input type="text" id="input_job" class="form-input">
                 </div>
 
-                <!-- Password Section -->
                 <div class="field-group">
                     <div class="label-row">
-                        <span class="label">System Access Password</span>
-                        <span class="pencil-btn" id="passPencil" onclick="enablePasswordEdit()">
+                        <span class="label">Account Password</span>
+                        <span class="pencil-action" id="passEditTrigger" onclick="enablePasswordChange()">
                             <i class="fas fa-key"></i> Change Password
                         </span>
                     </div>
                     
-                    <!-- View Current -->
-                    <div class="input-wrapper">
-                        <input type="password" id="curr_pass" class="form-input" style="display:block; background: #f8fafc;" readonly>
-                        <i class="fas fa-eye eye-icon" style="display:block" onclick="togglePass('curr_pass')"></i>
+                    <!-- Current Password Display -->
+                    <div class="input-wrap">
+                        <input type="password" id="curr_pass" class="form-input" style="display:block; background:#f8fafc" readonly>
+                        <i class="fas fa-eye eye-btn" style="display:block" onclick="toggleEye('curr_pass')"></i>
                     </div>
 
-                    <!-- New Password Entry (Hidden initially) -->
-                    <div id="newPassFields" style="display: none; margin-top: 15px;">
-                        <span class="label" style="display:block; margin-bottom:8px;">New Password</span>
-                        <div class="input-wrapper" style="margin-bottom: 15px;">
-                            <input type="password" id="new_pass" class="form-input" style="display:block" placeholder="Min. 6 characters">
-                            <i class="fas fa-eye eye-icon" style="display:block" onclick="togglePass('new_pass')"></i>
+                    <!-- New Password Section (Hidden) -->
+                    <div id="newPassGroup" style="display:none; margin-top:15px; border-top:1px dashed var(--mro-border); padding-top:15px;">
+                        <div class="field-group">
+                            <span class="label">New Password</span>
+                            <div class="input-wrap">
+                                <input type="password" id="new_pass" class="form-input" style="display:block" placeholder="Enter new password">
+                                <i class="fas fa-eye eye-btn" style="display:block" onclick="toggleEye('new_pass')"></i>
+                            </div>
                         </div>
-                        
-                        <span class="label" style="display:block; margin-bottom:8px;">Confirm New Password</span>
-                        <div class="input-wrapper">
-                            <input type="password" id="confirm_pass" class="form-input" style="display:block" placeholder="Re-type new password">
-                            <i class="fas fa-eye eye-icon" style="display:block" onclick="togglePass('confirm_pass')"></i>
+                        <div class="field-group">
+                            <span class="label">Confirm New Password</span>
+                            <div class="input-wrap">
+                                <input type="password" id="conf_pass" class="form-input" style="display:block" placeholder="Re-type password">
+                                <i class="fas fa-eye eye-btn" style="display:block" onclick="toggleEye('conf_pass')"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="footer-btns">
-                <button id="btnEdit" class="btn btn-primary" onclick="toggleGeneralEdit(true)">
-                    <i class="fas fa-user-edit"></i> Edit Profile Data
+            <div class="btn-footer">
+                <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode(true)">
+                    <i class="fas fa-user-edit"></i> Edit Profile
                 </button>
-                <button id="btnCancel" class="btn btn-ghost" onclick="location.reload()">
-                    Cancel Changes
+                <button id="btnCancel" class="btn btn-cancel" onclick="location.reload()">
+                    Cancel
                 </button>
-                <button id="btnSave" class="btn btn-success" onclick="handleFinalSave()">
-                    <i class="fas fa-save"></i> Commit Changes
+                <button id="btnSave" class="btn btn-save" onclick="processSave()">
+                    <i class="fas fa-save"></i> Save Changes
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "YOUR_GAS_DEPLOYMENT_URL"; 
-        let user = JSON.parse(sessionStorage.getItem("user"));
-        let passEditingActive = false;
+        const API_URL = "YOUR_GAS_URL_HERE"; 
+        let currentUser = JSON.parse(sessionStorage.getItem("user"));
+        let isPassEdit = false;
 
-        if (!user || !user.userId) window.location.replace("../index.html");
+        if (!currentUser) window.location.replace("../index.html");
 
-        // UI Initialization
         document.addEventListener('DOMContentLoaded', () => {
-            renderUI();
-            setupMenu();
-            document.getElementById('fileInput').addEventListener('change', handleImageUpload);
+            initUI();
+            setupDropdown();
+            document.getElementById('fileInput').addEventListener('change', handleImgSelect);
         });
 
-        function resolveProfileImg(src) {
-            if (!src) return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=27838f&color=fff`;
-            if (src.includes("thumbnail")) return src;
-            const id = src.match(/[-\w]{25,}/);
-            return id ? `https://drive.google.com/thumbnail?id=${id[0]}&sz=w800` : src;
+        function setupDropdown() {
+            const trigger = document.getElementById('menuToggle');
+            const menu = document.getElementById('userDropdown');
+            trigger.onclick = (e) => { e.stopPropagation(); menu.classList.toggle('show'); };
+            window.onclick = () => menu.classList.remove('show');
         }
 
-        function renderUI() {
-            const img = resolveProfileImg(user.profile);
-            document.getElementById('navAvatar').src = img;
-            document.getElementById('mainAvatar').src = img;
-            document.getElementById('navName').textContent = user.name;
-            document.getElementById('sideName').textContent = user.name;
-            document.getElementById('sideUnit').textContent = user.unit;
-            document.getElementById('disp_id').textContent = user.userId;
-            document.getElementById('disp_job').textContent = user.jobTitle;
-            document.getElementById('input_job').value = user.jobTitle;
+        function initUI() {
+            const pId = currentUser.profile?.match(/[-\w]{25,}/)?.[0];
+            const pSrc = pId ? `https://drive.google.com/thumbnail?id=${pId}&sz=w800` : `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=27838f&color=fff`;
             
-            // Current password display (Note: In a real app, only show hashed or blank, 
-            // but per requirement we show current stored password)
-            document.getElementById('curr_pass').value = user.password || "********";
+            document.getElementById('navAvatar').src = pSrc;
+            document.getElementById('mainAvatar').src = pSrc;
+            document.getElementById('navName').textContent = currentUser.name;
+            document.getElementById('sideName').textContent = currentUser.name;
+            document.getElementById('sideUnit').textContent = currentUser.unit;
+            document.getElementById('disp_id').textContent = currentUser.userId;
+            document.getElementById('disp_job').textContent = currentUser.jobTitle;
+            document.getElementById('input_job').value = currentUser.jobTitle;
+            document.getElementById('curr_pass').value = currentUser.password || "********";
         }
 
-        function setupMenu() {
-            const toggle = document.getElementById('menuToggle');
-            const dropdown = document.getElementById('userDropdown');
-            toggle.onclick = (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle('show');
-            };
-            window.onclick = () => dropdown.classList.remove('show');
-        }
-
-        function togglePass(id) {
+        function toggleEye(id) {
             const el = document.getElementById(id);
             el.type = el.type === 'password' ? 'text' : 'password';
         }
 
-        function toggleGeneralEdit(isEdit) {
-            document.getElementById('disp_job').style.display = isEdit ? 'none' : 'block';
-            document.getElementById('input_job').style.display = isEdit ? 'block' : 'none';
-            document.getElementById('photoEditBtn').style.display = isEdit ? 'flex' : 'none';
-            document.getElementById('editBadge').style.display = isEdit ? 'block' : 'none';
-            
-            document.getElementById('btnEdit').style.display = isEdit ? 'none' : 'flex';
-            document.getElementById('btnSave').style.display = isEdit ? 'flex' : 'none';
-            document.getElementById('btnCancel').style.display = isEdit ? 'flex' : 'none';
+        function toggleEditMode(enable) {
+            document.getElementById('disp_job').style.display = enable ? 'none' : 'block';
+            document.getElementById('input_job').style.display = enable ? 'block' : 'none';
+            document.getElementById('photoPencil').style.display = enable ? 'flex' : 'none';
+            document.getElementById('editBadge').style.display = enable ? 'block' : 'none';
+            document.getElementById('btnEdit').style.display = enable ? 'none' : 'flex';
+            document.getElementById('btnSave').style.display = enable ? 'flex' : 'none';
+            document.getElementById('btnCancel').style.display = enable ? 'flex' : 'none';
         }
 
-        function enablePasswordEdit() {
-            toggleGeneralEdit(true);
-            passEditingActive = true;
-            document.getElementById('newPassFields').style.display = 'block';
-            document.getElementById('passPencil').style.display = 'none';
+        function enablePasswordChange() {
+            toggleEditMode(true);
+            isPassEdit = true;
+            document.getElementById('newPassGroup').style.display = 'block';
+            document.getElementById('passEditTrigger').style.display = 'none';
         }
 
-        async function handleImageUpload(e) {
+        async function handleImgSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             const res = await Swal.fire({
-                title: 'Update Profile Picture?',
-                imageUrl: URL.createObjectURL(file),
-                imageHeight: 150,
-                imageAlt: 'Preview',
+                title: 'Update Photo?',
+                text: 'Replace your current profile picture?',
+                icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#27838f'
             });
@@ -318,7 +295,7 @@
             if (!res.isConfirmed) return;
 
             Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
+            
             const reader = new FileReader();
             reader.onload = async () => {
                 const base64 = reader.result.split(',')[1];
@@ -328,9 +305,9 @@
                         body: JSON.stringify({
                             action: 'updatePicture',
                             payload: {
-                                userId: user.userId,
-                                oldUrl: user.profile,
-                                filename: `img_${user.userId}_${Date.now()}`,
+                                userId: currentUser.userId,
+                                oldUrl: currentUser.profile,
+                                filename: `p_${currentUser.userId}_${Date.now()}`,
                                 mimeType: file.type,
                                 base64: base64
                             }
@@ -338,52 +315,47 @@
                     });
                     const data = await resp.json();
                     if (data.status === 'success') {
-                        user.profile = data.newUrl;
-                        sessionStorage.setItem("user", JSON.stringify(user));
-                        Swal.fire('Updated!', 'Photo changed successfully.', 'success');
-                        renderUI();
+                        currentUser.profile = data.newUrl;
+                        sessionStorage.setItem("user", JSON.stringify(currentUser));
+                        Swal.fire('Success', 'Profile photo updated.', 'success');
+                        initUI();
                     }
-                } catch (err) { Swal.fire('Error', 'Upload failed', 'error'); }
+                } catch (err) { Swal.fire('Error', 'Image upload failed.', 'error'); }
             };
             reader.readAsDataURL(file);
         }
 
-        async function handleFinalSave() {
-            const newJob = document.getElementById('input_job').value;
-            let finalPass = user.password;
+        async function processSave() {
+            const job = document.getElementById('input_job').value;
+            let finalPass = currentUser.password;
 
-            if (passEditingActive) {
-                const p1 = document.getElementById('new_pass').value;
-                const p2 = document.getElementById('confirm_pass').value;
-
-                if (!p1 || p1.length < 4) {
-                    return Swal.fire('Validation Error', 'Password too short.', 'error');
-                }
-                if (p1 !== p2) {
-                    return Swal.fire('Sync Error', 'New passwords do not match.', 'error');
-                }
-                finalPass = p1;
+            if (isPassEdit) {
+                const n1 = document.getElementById('new_pass').value;
+                const n2 = document.getElementById('conf_pass').value;
+                if (!n1 || n1.length < 4) return Swal.fire('Error', 'Password must be at least 4 chars.', 'warning');
+                if (n1 !== n2) return Swal.fire('Error', 'New passwords do not match.', 'warning');
+                finalPass = n1;
             }
 
-            Swal.fire({ title: 'Committing Changes...', didOpen: () => Swal.showLoading() });
+            Swal.fire({ title: 'Saving...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             try {
                 const resp = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'updateProfile',
-                        payload: { userId: user.userId, jobTitle: newJob, password: finalPass }
+                        payload: { userId: currentUser.userId, jobTitle: job, password: finalPass }
                     })
                 });
                 const data = await resp.json();
                 if (data.status === 'success') {
-                    user.jobTitle = newJob;
-                    user.password = finalPass;
-                    sessionStorage.setItem("user", JSON.stringify(user));
-                    await Swal.fire('Saved', 'Profile successfully updated.', 'success');
+                    currentUser.jobTitle = job;
+                    currentUser.password = finalPass;
+                    sessionStorage.setItem("user", JSON.stringify(currentUser));
+                    await Swal.fire('Saved', 'Profile updated successfully.', 'success');
                     location.reload();
                 }
-            } catch (err) { Swal.fire('Error', 'Save failed', 'error'); }
+            } catch (err) { Swal.fire('Error', 'Save failed.', 'error'); }
         }
 
         function logout() {
