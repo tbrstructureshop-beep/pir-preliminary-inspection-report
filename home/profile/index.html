@@ -197,21 +197,9 @@
 <body>
 
     <div class="profile-container">
-        <!-- User Menu Dropdown -->
-        <div class="user-menu-wrapper">
-            <button class="menu-trigger" onclick="toggleUserMenu(event)">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <div class="dropdown-menu" id="userDropdown">
-                <a href="javascript:void(0)" onclick="triggerEditFromMenu()">
-                    <i class="fas fa-user-edit"></i> Edit Profile
-                </a>
-                <div class="menu-divider"></div>
-                <a href="javascript:void(0)" onclick="handleLogout()" class="logout-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
+        <button class="btn-logout" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
 
         <div class="profile-header"></div>
 
