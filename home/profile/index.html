@@ -210,17 +210,37 @@
         document.getElementById('fileInput').addEventListener('change', uploadPhoto);
     });
 
-    function loadData() {
+    async function loadData() {
+        // 1. Load basic info from session
         const pId = user.profile?.match(/[-\w]{25,}/)?.[0];
         const src = pId ? `https://drive.google.com/thumbnail?id=${pId}&sz=w800` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=27838f&color=fff`;
-        
+    
         document.getElementById('img_avatar').src = src;
         document.getElementById('txt_name').textContent = user.name;
         document.getElementById('txt_unit').textContent = user.unit;
         document.getElementById('txt_id').textContent = user.userId;
         document.getElementById('txt_job').textContent = user.jobTitle;
         document.getElementById('in_job').value = user.jobTitle;
-        document.getElementById('in_curr_pass').value = user.password || "";
+
+       // 2. FETCH PASSWORD SECURELY FROM API (Not from session)
+       try {
+           const res = await fetch(API, {
+               method: 'POST',
+               body: JSON.stringify({ 
+                   action: 'getUser', 
+                   payload: { userId: user.userId } 
+               })
+           });
+           const data = await res.json();
+           if (data.status === 'success') {
+               // Put it in the input field, but don't save it to user object
+               document.getElementById('in_curr_pass').value = data.password;
+               // Update the local 'user' variable for the "Save" function to use
+               user.password = data.password; 
+           }
+       } catch (e) {
+           console.error("Failed to fetch password");
+       }
     }
 
     function toggleView(id) {
