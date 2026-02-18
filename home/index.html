@@ -19,12 +19,16 @@
         return;
       }
       
-      // 3. Inject user data using the CORRECT IDs from your HTML
-      // Note: We added "Hi, " back to the name string
+      // 3. Inject user data
       document.getElementById("user-display-name").textContent = "Hi, " + (user.name || "User");
       document.getElementById("user-id").textContent = user.userId || "-";
       document.getElementById("user-job").textContent = user.jobTitle || "-";
       document.getElementById("user-unit").textContent = user.unit || "-";
+
+      // 4. Set the Edit Profile URL with the current User ID
+      const baseUrl = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec";
+      const editProfileUrl = `${baseUrl}?userId=${encodeURIComponent(user.userId)}`;
+      document.getElementById("edit-profile-btn").href = editProfileUrl;
 
       console.log("Logged in as:", user.name);
     });
@@ -43,6 +47,7 @@
       --card: #ffffff;
       --text: #1f2933;
       --muted: #6b7280;
+      --danger: #dc2626;
     }
 
     /* Top Bar Styling */
@@ -82,11 +87,11 @@
     }
 
     .dropdown-content {
-      display: none; /* Hidden by default */
+      display: none; 
       position: absolute;
       left: 0;
       background-color: white;
-      min-width: 220px;
+      min-width: 240px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
       z-index: 1;
       border-radius: 12px;
@@ -95,7 +100,6 @@
       border: 1px solid #eee;
     }
 
-    /* Show dropdown on hover */
     .user-info-dropdown:hover .dropdown-content {
       display: block;
     }
@@ -107,160 +111,76 @@
       color: var(--text);
     }
     
-    .user-detail-row:last-child { border-bottom: none; }
-
-    /* Right Side Logout Button */
-    .logout-btn {
-      background: #fee2e2;
-      color: #dc2626;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .logout-btn:hover {
-      background: #fecaca;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 48px 24px;
-    }
-
-    header {
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-size: 32px;
-      margin: 0 0 8px;
-      letter-spacing: 0.3px;
-    }
-
-    header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
-    }
-
-    .card .icon {
-      font-size: 40px;
-      margin-bottom: 16px;
-    }
-
-    .card h2 {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-
-    .card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-
-    .card a {
-      align-self: flex-start;
+    /* Menu Item Styling */
+    .menu-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      margin-top: 5px;
       text-decoration: none;
       font-size: 14px;
-      font-weight: 600;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: var(--primary);
-      color: #fff;
-      transition: background 0.2s ease;
+      font-weight: 500;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: none;
+      transition: background 0.2s;
     }
 
-    .card a:hover {
-      background: var(--primary-dark);
+    .edit-btn {
+      color: var(--primary);
+      background: #f0f9fa;
     }
 
-    footer {
-      margin-top: 56px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-    }
-/* The Mascot Container */
-    .mascot-container {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      pointer-events: none; /* Allows clicking "through" the GIF if needed */
+    .edit-btn:hover {
+      background: #e0f2f1;
     }
 
-    .mascot-container img {
-      width: 200px; /* Adjust size here */
-      height: auto;
-      /* Optional: subtle float animation */
-      animation: float 3s ease-in-out infinite;
+    .logout-link-inner {
+      color: var(--danger);
+      background: #fff1f1;
+      margin-top: 8px;
     }
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+    .logout-link-inner:hover {
+      background: #fee2e2;
     }
 
-    /* Smaller size for mobile phones */
-    @media (max-width: 600px) {
-      .mascot-container img {
-        width: 125px;
-      }
-      .mascot-container {
-        bottom: 10px;
-        right: 10px;
-      }
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 8px 0;
     }
+
+    /* Existing Styles */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+    header { margin-bottom: 40px; }
+    header h1 { font-size: 32px; margin: 0 0 8px; }
+    header p { color: var(--muted); font-size: 15px; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .card { background: var(--card); border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card .icon { font-size: 40px; margin-bottom: 16px; }
+    .card h2 { font-size: 20px; margin: 0 0 8px; }
+    .card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+    .card a { align-self: flex-start; text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: var(--primary); color: #fff; }
+    footer { margin-top: 56px; font-size: 12px; color: var(--muted); text-align: center; }
+    .mascot-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+    .mascot-container img { width: 200px; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   </style>
 </head>
 
-<div class="mascot-container">
-    <img src="/assets/batikBoy.gif" alt="Greeting Mascot">
-  </div>
-  
 <body>
 
-  <!-- New Top Bar -->
+  <div class="mascot-container">
+    <img src="/assets/batikBoy.gif" alt="Greeting Mascot">
+  </div>
+
+  <!-- Updated Top Bar -->
   <nav class="top-bar">
     <div class="user-info-dropdown">
       <button class="dropbtn" id="user-display-name">Hi, Loading...</button>
@@ -268,31 +188,33 @@
         <div class="user-detail-row"><strong>ID:</strong> <span id="user-id"></span></div>
         <div class="user-detail-row"><strong>Title:</strong> <span id="user-job"></span></div>
         <div class="user-detail-row"><strong>Unit:</strong> <span id="user-unit"></span></div>
+        
+        <div class="divider"></div>
+        
+        <!-- New Edit Profile Button -->
+        <a href="#" id="edit-profile-btn" class="menu-item edit-btn">👤 Edit Profile</a>
+        
+        <!-- Moved Logout Button -->
+        <button class="menu-item logout-link-inner" onclick="handleLogout()">Logout</button>
       </div>
     </div>
-
-    <div class="nav-right">
-      <button class="logout-btn" onclick="handleLogout()">Logout</button>
-    </div>
+    
+    <!-- Empty div to maintain spacing if needed, or remove completely -->
+    <div class="nav-right"></div>
   </nav>
 
   <div class="container">
-
     <header>
       <h1>PIR System</h1>
       <p>Preliminary Inspection Report management portal</p>
     </header>
 
     <section class="card-grid">
-
       <div class="card">
         <div>
           <div class="icon">➕</div>
           <h2>Create New PIR</h2>
-          <p>
-            Start a new Preliminary Inspection Report by submitting inspection
-            details, findings, and supporting data.
-          </p>
+          <p>Start a new Preliminary Inspection Report by submitting inspection details.</p>
         </div>
         <a href="/form/">New PIR</a>
       </div>
@@ -301,10 +223,7 @@
         <div>
           <div class="icon">📊</div>
           <h2>Dashboard</h2>
-          <p>
-            View, track, and manage all submitted PIRs with status overview,
-            filtering, and reporting tools.
-          </p>
+          <p>View, track, and manage all submitted PIRs with reporting tools.</p>
         </div>
         <a href="/dashboard/">Open Dashboard</a>
       </div>
@@ -313,10 +232,7 @@
         <div>
          <div class="icon">📄</div>
          <h2>Generated Docs</h2>
-         <p>
-           View and manage all generated PIR documents. Open, download, or delete
-           completed reports from this section.
-         </p>
+         <p>View and manage all generated PIR documents.</p>
        </div>
        <a href="/generated/index.html">Open Generated Docs</a>
      </div>
@@ -325,20 +241,15 @@
       <div>
         <div class="icon">👥</div>
          <h2>OUR MANPOWER</h2>
-        <p>
-          Access and manage personnel information, view qualifications, 
-          and track team assignments within the system.
-         </p>
+        <p>Access and manage personnel information and qualifications.</p>
        </div>
       <a href="/manpower/index.html">View Manpower</a>
     </div>
-
     </section>
 
     <footer>
       © PIR System · Internal Use Only
     </footer>
-
   </div>
 
 </body>
