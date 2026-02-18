@@ -22,10 +22,8 @@
       document.getElementById("display-id").textContent = user.userId || "-";
       document.getElementById("display-job").textContent = user.jobTitle || "-";
 
-      // Set the Edit Profile URL with the current User ID
-      const baseUrl = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec";
-      const editProfileUrl = `${baseUrl}?userId=${encodeURIComponent(user.userId)}`;
-      document.getElementById("edit-profile-link").href = editProfileUrl;
+      // FIXED: Point to your local profile folder instead of the Google URL
+      document.getElementById("edit-profile-link").href = "profile/index.html";
     });
     
     function handleLogout() {
