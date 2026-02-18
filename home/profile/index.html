@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | MRO Enterprise</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #27838f;
+            --primary-dark: #1e6670;
+            --accent-yellow: #f1c40f;
+            --accent-green: #27ae60;
+            --accent-red: #e74c3c;
+            --bg-light: #f4f7f6;
+            --text-dark: #2c3e50;
+            --text-muted: #7f8c8d;
+            --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Profile Card */
+        .profile-container {
+            background: var(--white);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-header {
+            background: var(--primary-color);
+            height: 120px;
+            position: relative;
+        }
+
+        .profile-body {
+            padding: 80px 30px 30px 30px;
+            text-align: center;
+        }
+
+        /* Avatar Section */
+        .avatar-wrapper {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            background-color: #eee;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .edit-photo-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--accent-yellow);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid var(--white);
+            transition: var(--transition);
+            color: var(--text-dark);
+        }
+
+        .edit-photo-btn:hover { transform: scale(1.1); background: #dbc00e; }
+
+        /* Form Styling */
+        .user-info-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .value-display {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: none;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #f0f7f8;
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-edit { background: var(--primary-color); color: white; }
+        .btn-edit:hover { background: var(--primary-dark); }
+
+        .btn-save { background: var(--accent-green); color: white; display: none; }
+        .btn-save:hover { background: #219150; }
+
+        .btn-cancel { background: #e0e0e0; color: var(--text-dark); display: none; }
+        .btn-cancel:hover { background: #d0d0d0; }
+
+        .btn-logout { 
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Hidden File Input */
+        #fileInput { display: none; }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .profile-container { border-radius: 0; min-height: 100vh; }
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <button class="btn-logout" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+
+        <div class="profile-header"></div>
+
+        <div class="avatar-wrapper">
+            <img id="profilePic" src="https://via.placeholder.com/120" alt="Profile" class="avatar-circle">
+            <label for="fileInput" class="edit-photo-btn" id="pencilIcon" style="display: none;">
+                <i class="fas fa-pencil-alt"></i>
+            </label>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="profile-body">
+            <div class="user-info-group">
+                <span class="label">User ID</span>
+                <div id="disp_userId" class="value-display">---</div>
+            </div>
+
+            <div class="user-info-group">
+                <span class="label">Full Name</span>
+                <div id="disp_name" class="value-display">---</div>
+            </div>
+
+            <div class="user-info-group">
+                <span class="label">Unit</span>
+                <div id="disp_unit" class="value-display">---</div>
+            </div>
+
+            <div class="user-info-group">
+                <span class="label">Job Title</span>
+                <div id="disp_jobTitle" class="value-display">---</div>
+                <input type="text" id="edit_jobTitle" class="input-field" placeholder="Enter Job Title">
+            </div>
+
+            <div class="user-info-group" id="passwordGroup" style="display: none;">
+                <span class="label">Password</span>
+                <input type="password" id="edit_password" class="input-field" placeholder="Change Password">
+            </div>
+
+            <div class="btn-group">
+                <button id="btnEdit" class="btn btn-edit" onclick="toggleEditMode(true)">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </button>
+                <button id="btnCancel" class="btn btn-cancel" onclick="toggleEditMode(false)">
+                    Cancel
+                </button>
+                <button id="btnSave" class="btn btn-save" onclick="handleSaveProfile()">
+                    <i class="fas fa-check"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "YOUR_GAS_WEB_APP_URL_HERE"; // Replace after GAS deployment
+        let currentUser = null;
+        let isEditMode = false;
+
+        // --- AUTH PROTECTION ---
+        function protectPage() {
+            const userData = sessionStorage.getItem("user");
+            if (!userData) {
+                window.location.replace("../index.html");
+                return null;
+            }
+            try {
+                const user = JSON.parse(userData);
+                if (!user || !user.userId) {
+                    window.location.replace("../index.html");
+                    return null;
+                }
+                return user;
+            } catch (e) {
+                window.location.replace("../index.html");
+                return null;
+            }
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            currentUser = protectPage();
+            if (currentUser) {
+                renderProfileData();
+            }
+
+            // Handle Image Upload
+            document.getElementById('fileInput').addEventListener('change', handleImageSelect);
+        });
+
+        function renderProfileData() {
+            document.getElementById('disp_userId').textContent = currentUser.userId;
+            document.getElementById('disp_name').textContent = currentUser.name;
+            document.getElementById('disp_unit').textContent = currentUser.unit;
+            document.getElementById('disp_jobTitle').textContent = currentUser.jobTitle;
+            
+            // Set input values for edit mode
+            document.getElementById('edit_jobTitle').value = currentUser.jobTitle;
+            
+            // Image handling
+            const imgEl = document.getElementById('profilePic');
+            if (currentUser.profile && currentUser.profile !== "") {
+                imgEl.src = `https://drive.google.com/thumbnail?id=${currentUser.profile}&sz=w300`;
+            } else {
+                imgEl.src = "https://ui-avatars.com/api/?name=" + encodeURIComponent(currentUser.name) + "&background=27838f&color=fff";
+            }
+        }
+
+        function toggleEditMode(enable) {
+            isEditMode = enable;
+            
+            // UI Toggles
+            document.getElementById('disp_jobTitle').style.display = enable ? 'none' : 'block';
+            document.getElementById('edit_jobTitle').style.display = enable ? 'block' : 'none';
+            document.getElementById('passwordGroup').style.display = enable ? 'block' : 'none';
+            document.getElementById('edit_password').style.display = enable ? 'block' : 'none';
+            document.getElementById('pencilIcon').style.display = enable ? 'flex' : 'none';
+            
+            document.getElementById('btnEdit').style.display = enable ? 'none' : 'flex';
+            document.getElementById('btnSave').style.display = enable ? 'flex' : 'none';
+            document.getElementById('btnCancel').style.display = enable ? 'flex' : 'none';
+            
+            if(!enable) renderProfileData(); // Reset values if cancel
+        }
+
+        // --- IMAGE HANDLING ---
+        async function handleImageSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Preview instantly
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.getElementById('profilePic').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            const result = await Swal.fire({
+                title: 'Change Profile Picture?',
+                text: "Your current picture will be replaced.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#27838f',
+                confirmButtonText: 'Yes, upload it'
+            });
+
+            if (result.isConfirmed) {
+                uploadImage(file);
+            } else {
+                renderProfileData(); // Revert preview
+            }
+        }
+
+        async function uploadImage(file) {
+            Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            const reader = new FileReader();
+            reader.onload = async () => {
+                const base64Data = reader.result.split(',')[1];
+                
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'updatePicture',
+                            payload: {
+                                userId: currentUser.userId,
+                                oldFileId: currentUser.profile,
+                                filename: `${currentUser.userId}_profile_${Date.now()}`,
+                                mimeType: file.type,
+                                base64: base64Data
+                            }
+                        })
+                    });
+                    
+                    const res = await response.json();
+                    if (res.status === 'success') {
+                        currentUser.profile = res.fileId;
+                        sessionStorage.setItem("user", JSON.stringify(currentUser));
+                        Swal.fire('Success', 'Profile picture updated!', 'success');
+                        renderProfileData();
+                    } else {
+                        throw new Error(res.message);
+                    }
+                } catch (error) {
+                    Swal.fire('Error', 'Upload failed: ' + error.message, 'error');
+                    renderProfileData();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- PROFILE DATA UPDATE ---
+        async function handleSaveProfile() {
+            const newJobTitle = document.getElementById('edit_jobTitle').value;
+            const newPassword = document.getElementById('edit_password').value;
+
+            const confirm = await Swal.fire({
+                title: 'Save Changes?',
+                text: "Are you sure you want to update your profile?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#27ae60',
+                confirmButtonText: 'Yes, Save'
+            });
+
+            if (!confirm.isConfirmed) return;
+
+            Swal.fire({ title: 'Saving...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateProfile',
+                        payload: {
+                            userId: currentUser.userId,
+                            jobTitle: newJobTitle,
+                            password: newPassword // Backend handles logic if empty
+                        }
+                    })
+                });
+
+                const res = await response.json();
+                if (res.status === 'success') {
+                    // Update local session
+                    currentUser.jobTitle = newJobTitle;
+                    sessionStorage.setItem("user", JSON.stringify(currentUser));
+                    
+                    await Swal.fire('Updated!', 'Your profile has been updated successfully.', 'success');
+                    toggleEditMode(false);
+                    renderProfileData();
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Update failed: ' + error.message, 'error');
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.clear();
+            window.location.replace("../index.html");
+        }
+    </script>
+</body>
+</html>
