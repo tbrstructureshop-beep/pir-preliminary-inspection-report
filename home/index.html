@@ -21,6 +21,7 @@
       document.getElementById("display-name").textContent = user.name || "User";
       document.getElementById("display-id").textContent = user.userId || "-";
       document.getElementById("display-job").textContent = user.jobTitle || "-";
+      document.getElementById("display-unit").textContent = user.unit || "-";
 
       // FIXED: Point to your local profile folder instead of the Google URL
       document.getElementById("edit-profile-link").href = "profile/index.html";
@@ -175,7 +176,7 @@
     <div class="profile-summary">
       <div class="welcome">Hi, <span id="display-name">Loading...</span></div>
       <div class="sub-details">
-        ID: <span id="display-id">...</span> | <span id="display-job">...</span>
+        ID: <span id="display-id">...</span> | <span id="display-job">...</span> | <span id="display-unit">...</span>
       </div>
     </div>
 
