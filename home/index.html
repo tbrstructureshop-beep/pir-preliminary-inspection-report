@@ -10,27 +10,22 @@
 
 <script>
     window.addEventListener("DOMContentLoaded", () => {
-      // 1. Get data from sessionStorage
       const user = JSON.parse(sessionStorage.getItem("user"));
       
-      // 2. Security check
       if (!user || !user.userId) {
         window.location.replace("../index.html");
         return;
       }
       
-      // 3. Inject user data
-      document.getElementById("user-display-name").textContent = "Hi, " + (user.name || "User");
-      document.getElementById("user-id").textContent = user.userId || "-";
-      document.getElementById("user-job").textContent = user.jobTitle || "-";
-      document.getElementById("user-unit").textContent = user.unit || "-";
+      // Inject user data into the top-left display
+      document.getElementById("display-name").textContent = user.name || "User";
+      document.getElementById("display-id").textContent = user.userId || "-";
+      document.getElementById("display-job").textContent = user.jobTitle || "-";
 
-      // 4. Set the Edit Profile URL with the current User ID
+      // Set the Edit Profile URL with the current User ID
       const baseUrl = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec";
       const editProfileUrl = `${baseUrl}?userId=${encodeURIComponent(user.userId)}`;
-      document.getElementById("edit-profile-btn").href = editProfileUrl;
-
-      console.log("Logged in as:", user.name);
+      document.getElementById("edit-profile-link").href = editProfileUrl;
     });
     
     function handleLogout() {
@@ -50,12 +45,12 @@
       --danger: #dc2626;
     }
 
-    /* Top Bar Styling */
+    /* Top Bar Layout */
     .top-bar {
       background: #fff;
-      height: 60px;
+      height: 70px;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-between; /* Pushes content to far left and far right */
       align-items: center;
       padding: 0 24px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -64,110 +59,111 @@
       z-index: 1100;
     }
 
-    /* Dropdown Logic */
-    .user-info-dropdown {
+    /* Left Side: Profile Details */
+    .profile-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .profile-summary .welcome {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 15px;
+    }
+
+    .profile-summary .sub-details {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Right Side: Action Menu Toggle */
+    .menu-dropdown {
       position: relative;
       display: inline-block;
     }
 
-    .dropbtn {
-      background: none;
-      border: 1px solid #e2e8f0;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--primary);
-      transition: all 0.2s;
-    }
-
-    .dropbtn:hover {
-      background: #f8fafc;
-    }
-
-    .dropdown-content {
-      display: none; 
-      position: absolute;
-      left: 0;
-      background-color: white;
-      min-width: 240px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
-      z-index: 1;
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 8px;
-      border: 1px solid #eee;
-    }
-
-    .user-info-dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .user-detail-row {
-      font-size: 13px;
-      padding: 6px 0;
-      border-bottom: 1px solid #f0f0f0;
-      color: var(--text);
-    }
-    
-    /* Menu Item Styling */
-    .menu-item {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 10px 12px;
-      margin-top: 5px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 6px;
+    .menu-toggle-btn {
+      background: #f1f5f9;
       border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       cursor: pointer;
-      background: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
       transition: background 0.2s;
     }
 
-    .edit-btn {
+    .menu-toggle-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0; /* Menu opens to the left so it stays on screen */
+      top: 50px;
+      background-color: white;
+      min-width: 180px;
+      box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
+      z-index: 1;
+      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #eee;
+    }
+
+    /* Show dropdown on hover */
+    .menu-dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .menu-item {
+      display: block;
+      padding: 12px 16px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      border-radius: 8px;
+      transition: background 0.2s;
+      border: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      background: none;
+    }
+
+    .menu-item:hover {
+      background: #f8fafc;
+    }
+
+    .menu-item.edit-link {
       color: var(--primary);
-      background: #f0f9fa;
     }
 
-    .edit-btn:hover {
-      background: #e0f2f1;
-    }
-
-    .logout-link-inner {
+    .menu-item.logout-link {
       color: var(--danger);
-      background: #fff1f1;
-      margin-top: 8px;
+      border-top: 1px solid #f1f5f9;
+      margin-top: 4px;
+      border-radius: 0 0 8px 8px;
     }
 
-    .logout-link-inner:hover {
-      background: #fee2e2;
-    }
-
-    .divider {
-      height: 1px;
-      background: #eee;
-      margin: 8px 0;
-    }
-
-    /* Existing Styles */
+    /* Existing Page Styles */
     * { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
     .container { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
     header { margin-bottom: 40px; }
-    header h1 { font-size: 32px; margin: 0 0 8px; }
-    header p { color: var(--muted); font-size: 15px; }
+    header h1 { font-size: 32px; margin: 0; }
     .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
     .card { background: var(--card); border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
     .card:hover { transform: translateY(-4px); }
     .card .icon { font-size: 40px; margin-bottom: 16px; }
-    .card h2 { font-size: 20px; margin: 0 0 8px; }
-    .card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
     .card a { align-self: flex-start; text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: var(--primary); color: #fff; }
-    footer { margin-top: 56px; font-size: 12px; color: var(--muted); text-align: center; }
     .mascot-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
     .mascot-container img { width: 200px; animation: float 3s ease-in-out infinite; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -176,34 +172,32 @@
 
 <body>
 
-  <div class="mascot-container">
-    <img src="/assets/batikBoy.gif" alt="Greeting Mascot">
-  </div>
-
-  <!-- Updated Top Bar -->
   <nav class="top-bar">
-    <div class="user-info-dropdown">
-      <button class="dropbtn" id="user-display-name">Hi, Loading...</button>
-      <div class="dropdown-content">
-        <div class="user-detail-row"><strong>ID:</strong> <span id="user-id"></span></div>
-        <div class="user-detail-row"><strong>Title:</strong> <span id="user-job"></span></div>
-        <div class="user-detail-row"><strong>Unit:</strong> <span id="user-unit"></span></div>
-        
-        <div class="divider"></div>
-        
-        <!-- New Edit Profile Button -->
-        <a href="#" id="edit-profile-btn" class="menu-item edit-btn">👤 Edit Profile</a>
-        
-        <!-- Moved Logout Button -->
-        <button class="menu-item logout-link-inner" onclick="handleLogout()">Logout</button>
+    <!-- LEFT SIDE: Profile details (Static display) -->
+    <div class="profile-summary">
+      <div class="welcome">Hi, <span id="display-name">Loading...</span></div>
+      <div class="sub-details">
+        ID: <span id="display-id">...</span> | <span id="display-job">...</span>
       </div>
     </div>
-    
-    <!-- Empty div to maintain spacing if needed, or remove completely -->
-    <div class="nav-right"></div>
+
+    <!-- RIGHT SIDE: Toggle Menu -->
+    <div class="menu-dropdown">
+      <button class="menu-toggle-btn" aria-label="Menu">
+        ☰ <!-- Hamburger Icon -->
+      </button>
+      <div class="dropdown-content">
+        <a href="#" id="edit-profile-link" class="menu-item edit-link">👤 Edit Profile</a>
+        <button class="menu-item logout-link" onclick="handleLogout()">🚪 Logout</button>
+      </div>
+    </div>
   </nav>
 
   <div class="container">
+    <div class="mascot-container">
+      <img src="/assets/batikBoy.gif" alt="Greeting Mascot">
+    </div>
+
     <header>
       <h1>PIR System</h1>
       <p>Preliminary Inspection Report management portal</p>
@@ -237,17 +231,17 @@
        <a href="/generated/index.html">Open Generated Docs</a>
      </div>
 
-    <div class="card">
-      <div>
-        <div class="icon">👥</div>
-         <h2>OUR MANPOWER</h2>
-        <p>Access and manage personnel information and qualifications.</p>
-       </div>
-      <a href="/manpower/index.html">View Manpower</a>
-    </div>
+      <div class="card">
+        <div>
+          <div class="icon">👥</div>
+          <h2>OUR MANPOWER</h2>
+          <p>Access and manage personnel information and qualifications.</p>
+        </div>
+        <a href="/manpower/index.html">View Manpower</a>
+      </div>
     </section>
 
-    <footer>
+    <footer style="margin-top: 56px; font-size: 12px; color: var(--muted); text-align: center;">
       © PIR System · Internal Use Only
     </footer>
   </div>
