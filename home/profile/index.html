@@ -198,7 +198,7 @@
         let user = JSON.parse(sessionStorage.getItem("user"));
         let passMode = false;
 
-        if (!user) window.location.replace("../index.html");
+        if (!user) window.location.replace("/index.html");
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
@@ -321,10 +321,10 @@
                 }
             } catch (e) { Swal.fire('Error', 'Save failed.', 'error'); }
         }
-
+        
         function logout() {
             sessionStorage.clear();
-            window.location.replace("../index.html");
+            window.location.replace("/index.html");
         }
     </script>
 </body>
