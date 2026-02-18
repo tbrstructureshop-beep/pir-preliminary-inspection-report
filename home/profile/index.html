@@ -194,138 +194,123 @@
     </div>
 
     <script>
-        const API = "YOUR_GAS_WEB_APP_URL"; 
-        let user = JSON.parse(sessionStorage.getItem("user"));
-        let passMode = false;
+    const API = "https://script.google.com/macros/s/AKfycbxhnwu87pxmfzM5Bf8MLjldf-SG0TrFkTLkiYh31yp_QIJzX0fhto0H-93iO4DOk4pr/exec"; 
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let passMode = false;
 
-        if (!user) window.location.replace("/index.html");
+    // Fixed: Root-relative path
+    if (!user) window.location.replace("/index.html");
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            const mBtn = document.getElementById('menuBtn');
-            const mDrop = document.getElementById('navDropdown');
-            mBtn.onclick = (e) => { e.stopPropagation(); mDrop.classList.toggle('show'); };
-            window.onclick = () => mDrop.classList.remove('show');
-            document.getElementById('fileInput').addEventListener('change', uploadPhoto);
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        const mBtn = document.getElementById('menuBtn');
+        const mDrop = document.getElementById('navDropdown');
+        mBtn.onclick = (e) => { e.stopPropagation(); mDrop.classList.toggle('show'); };
+        window.onclick = () => mDrop.classList.remove('show');
+        document.getElementById('fileInput').addEventListener('change', uploadPhoto);
+    });
 
-        function loadData() {
-            const pId = user.profile?.match(/[-\w]{25,}/)?.[0];
-            const src = pId ? `https://drive.google.com/thumbnail?id=${pId}&sz=w800` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=27838f&color=fff`;
-            
-            document.getElementById('img_avatar').src = src;
-            document.getElementById('txt_name').textContent = user.name;
-            document.getElementById('txt_unit').textContent = user.unit;
-            document.getElementById('txt_id').textContent = user.userId;
-            document.getElementById('txt_job').textContent = user.jobTitle;
-            document.getElementById('in_job').value = user.jobTitle;
-            // The current password from backend/session is loaded here
-            document.getElementById('in_curr_pass').value = user.password || "";
+    function loadData() {
+        const pId = user.profile?.match(/[-\w]{25,}/)?.[0];
+        const src = pId ? `https://drive.google.com/thumbnail?id=${pId}&sz=w800` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=27838f&color=fff`;
+        
+        document.getElementById('img_avatar').src = src;
+        document.getElementById('txt_name').textContent = user.name;
+        document.getElementById('txt_unit').textContent = user.unit;
+        document.getElementById('txt_id').textContent = user.userId;
+        document.getElementById('txt_job').textContent = user.jobTitle;
+        document.getElementById('in_job').value = user.jobTitle;
+        document.getElementById('in_curr_pass').value = user.password || "";
+    }
+
+    function toggleView(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function setEditMode(on) {
+        document.getElementById('txt_job').style.display = on ? 'none' : 'block';
+        document.getElementById('in_job').style.display = on ? 'block' : 'none';
+        document.getElementById('photoPencil').style.display = on ? 'flex' : 'none';
+        document.getElementById('link_pass').style.display = on ? 'inline-block' : 'none';
+        document.getElementById('btn_edit').style.display = on ? 'none' : 'flex';
+        document.getElementById('btn_save').style.display = on ? 'flex' : 'none';
+        document.getElementById('btn_cancel').style.display = on ? 'flex' : 'none';
+
+        if(!on) {
+            document.getElementById('pass_edit_fields').style.display = 'none';
+            passMode = false;
         }
+    }
 
-        function toggleView(id) {
-            const el = document.getElementById(id);
-            el.type = el.type === 'password' ? 'text' : 'password';
-        }
+    function startPassChange() {
+        passMode = true;
+        document.getElementById('pass_edit_fields').style.display = 'block';
+        document.getElementById('link_pass').style.display = 'none';
+    }
 
-        function setEditMode(on) {
-            // Toggle Display of Job inputs
-            document.getElementById('txt_job').style.display = on ? 'none' : 'block';
-            document.getElementById('in_job').style.display = on ? 'block' : 'none';
-            
-            // Toggle Photo Pencil
-            document.getElementById('photoPencil').style.display = on ? 'flex' : 'none';
-            
-            // Toggle Password "Change" pencil button - Only visible in edit mode
-            document.getElementById('link_pass').style.display = on ? 'inline-block' : 'none';
-            
-            // Toggle Buttons
-            document.getElementById('btn_edit').style.display = on ? 'none' : 'flex';
-            document.getElementById('btn_save').style.display = on ? 'flex' : 'none';
-            document.getElementById('btn_cancel').style.display = on ? 'flex' : 'none';
+    async function uploadPhoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-            if(!on) {
-                document.getElementById('pass_edit_fields').style.display = 'none';
-                passMode = false;
-            }
-        }
+        const confirm = await Swal.fire({ title: 'Change Photo?', icon: 'question', showCancelButton: true });
+        if (!confirm.isConfirmed) return;
 
-        function startPassChange() {
-            passMode = true;
-            document.getElementById('pass_edit_fields').style.display = 'block';
-            document.getElementById('link_pass').style.display = 'none'; // Hide "Change" after clicked
-        }
-
-        async function uploadPhoto(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const confirm = await Swal.fire({ title: 'Change Photo?', icon: 'question', showCancelButton: true });
-            if (!confirm.isConfirmed) return;
-
-            Swal.fire({ title: 'Uploading...', didOpen: () => Swal.showLoading() });
-            const reader = new FileReader();
-            reader.onload = async () => {
-                const base64 = reader.result.split(',')[1];
-                try {
-                    const res = await fetch(API, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'updatePicture', payload: { userId: user.userId, oldUrl: user.profile, base64: base64, mimeType: file.type, filename: `p_${user.userId}` } })
-                    });
-                    const d = await res.json();
-                    if (d.status === 'success') {
-                        user.profile = d.newUrl;
-                        sessionStorage.setItem("user", JSON.stringify(user));
-                        await Swal.fire('Success', 'Photo updated.', 'success');
-                        loadData();
-                    }
-                } catch (e) { Swal.fire('Error', 'Upload failed.', 'error'); }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function saveProfile() {
-            const job = document.getElementById('in_job').value;
-            let finalPassword = user.password; // Default to existing
-
-            if (passMode) {
-                const n1 = document.getElementById('in_new_pass').value;
-                const n2 = document.getElementById('in_conf_pass').value;
-                
-                if (!n1) return Swal.fire('Error', 'New password cannot be empty.', 'error');
-                if (n1 !== n2) return Swal.fire('Error', 'Passwords do not match.', 'error');
-                
-                finalPassword = n1;
-            }
-
-            Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading() });
+        Swal.fire({ title: 'Uploading...', didOpen: () => Swal.showLoading() });
+        const reader = new FileReader();
+        reader.onload = async () => {
+            const base64 = reader.result.split(',')[1];
             try {
                 const res = await fetch(API, {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        action: 'updateProfile', 
-                        payload: { 
-                            userId: user.userId, 
-                            jobTitle: job, 
-                            password: finalPassword 
-                        } 
-                    })
+                    body: JSON.stringify({ action: 'updatePicture', payload: { userId: user.userId, oldUrl: user.profile, base64: base64, mimeType: file.type, filename: `p_${user.userId}` } })
                 });
                 const d = await res.json();
                 if (d.status === 'success') {
-                    user.jobTitle = job;
-                    user.password = finalPassword;
+                    user.profile = d.newUrl;
                     sessionStorage.setItem("user", JSON.stringify(user));
-                    await Swal.fire('Saved', 'Profile updated successfully.', 'success');
-                    location.reload();
+                    await Swal.fire('Success', 'Photo updated.', 'success');
+                    location.reload(); // Refresh to show new photo
                 }
-            } catch (e) { Swal.fire('Error', 'Save failed.', 'error'); }
+            } catch (e) { Swal.fire('Error', 'Upload failed.', 'error'); }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function saveProfile() {
+        const job = document.getElementById('in_job').value;
+        let finalPassword = user.password;
+
+        if (passMode) {
+            const n1 = document.getElementById('in_new_pass').value;
+            const n2 = document.getElementById('in_conf_pass').value;
+            if (!n1) return Swal.fire('Error', 'New password cannot be empty.', 'error');
+            if (n1 !== n2) return Swal.fire('Error', 'Passwords do not match.', 'error');
+            finalPassword = n1;
         }
-        
-        function logout() {
-            sessionStorage.clear();
-            window.location.replace("/index.html");
-        }
-    </script>
+
+        Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading() });
+        try {
+            const res = await fetch(API, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateProfile', payload: { userId: user.userId, jobTitle: job, password: finalPassword } })
+            });
+            const d = await res.json();
+            if (d.status === 'success') {
+                user.jobTitle = job;
+                user.password = finalPassword;
+                sessionStorage.setItem("user", JSON.stringify(user));
+                await Swal.fire('Saved', 'Profile updated.', 'success');
+                location.reload();
+            }
+        } catch (e) { Swal.fire('Error', 'Save failed.', 'error'); }
+    }
+
+    // Fixed: Root-relative path
+    function logout() {
+        sessionStorage.clear();
+        window.location.replace("/index.html");
+    }
+</script>
 </body>
 </html>
