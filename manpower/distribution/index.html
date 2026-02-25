@@ -412,7 +412,7 @@ async function loadDHHeader() {
   }
 
   try {
-    const response = await fetch(`${WEB_APP_URL}?userId=${user.userId}&action=getDHData`);
+    const response = await fetch(`${WEB_APP_URL}?userId=${user.userId}&userSheetId=${user.userSheetId}&action=getDHData`);
     const data = await response.json();
 
     if (data.success) {
