@@ -485,12 +485,16 @@ async function loadDHHeader() {
 async function fetchAndRenderAttendance() {
   const user = protectPage();
   if (!user || !user.unit) return;
+
   try {
+    // We send the unit so the backend knows WHICH employees to look for
     const response = await fetch(`${WEB_APP_URL}?action=getAttendanceData&unit=${encodeURIComponent(user.unit)}`);
     const data = await response.json();
-    renderAttendance(data);
+    
+    // The rendering logic stays exactly the same as before!
+    renderAttendance(data); 
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error fetching attendance:", error);
     renderAttendance([]);
   }
 }
