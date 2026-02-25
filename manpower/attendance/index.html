@@ -315,6 +315,7 @@ async function initializeApp() {
   const user = protectPage();
   const employeeName = user.name;
   const employeeId = user.userId;
+  const userSheetId = user.userSheetId;
   const department = user.unit;
   const jobTitle = user.jobTitle;
 
@@ -330,7 +331,7 @@ async function initializeApp() {
 
   // --- 1. FETCH STATUS & POPULATE UI ---
   try {
-    const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}`);
+    const resp = await fetch(`${WEB_APP_URL}?userId=${employeeId}&userSheetId=${userSheetId}`);
     const status = await resp.json();
 
     // Map the backend data to your UI
@@ -365,6 +366,7 @@ async function initializeApp() {
 
       const payload = {
         userId: employeeId,
+        userSheetId: userSheetId,
         name: employeeName,
         title: jobTitle,
         unit: department,
