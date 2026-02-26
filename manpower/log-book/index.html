@@ -651,7 +651,24 @@ function updateUI() {
     renderCards(paginatedItems);
 }
 
-        
+
+function formatDateDisplay(dateStr) {
+    if (!dateStr) return 'No Date';
+    
+    // Attempt to create a date object
+    const date = new Date(dateStr);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) return dateStr; 
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+}
+
 function renderCards(data) {
     cardContainer.innerHTML = '';
     
@@ -676,7 +693,7 @@ function renderCards(data) {
                 </div>
                 <span class="card-ref">${row.maintRef || 'No Ref'}</span>
             </div>
-            <div class="card-date">${row.date || 'No Date'}</div>
+            <div class="card-date">${formatDateDisplay(row.date)}</div>
             <div style="font-size: 0.9rem; font-weight: 500;">${row.acType || ''} | ${row.acReg || ''}</div>
             <div style="font-size: 0.85rem; color: var(--text-muted);">${row.operation?.substring(0, 60)}...</div>
             <div class="card-tags">
