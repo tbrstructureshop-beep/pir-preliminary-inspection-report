@@ -123,6 +123,7 @@
             padding: 1.5rem; border-top: 1px solid var(--border);
             display: flex; justify-content: flex-end; gap: 1rem;
         }
+
         button {
             padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition); border: none;
         }
@@ -273,6 +274,22 @@
         
         .btn-create:hover {
             background: #0284c7;
+        }
+
+        /* When inputs are disabled in the modal (View Mode) */
+        input:disabled, select:disabled, textarea:disabled {
+            color: var(--text-main);
+            border-color: transparent;
+            padding-left: 0; /* Align text to the left margin */
+            font-weight: 500;
+            opacity: 1; /* Override default browser opacity */
+            -webkit-text-fill-color: var(--text-main); /* For Safari */
+        }
+        
+        /* Hide the "Cancel" button in View Mode and rename it to "Close" */
+        body:not(.action-mode) .modal-footer .btn-ghost {
+            width: 100%;
+            background: #f1f5f9;
         }
 
         /* Loading & Toasts */
@@ -858,39 +875,66 @@ function formatToInputDate(dateStr) {
 
 // Function to open modal for a NEW record
 function openAddModal() {
+    // Force inputs to be enabled since we are adding a new record
+    const formInputs = document.querySelectorAll('#logForm input, #logForm select, #logForm textarea');
+    formInputs.forEach(input => {
+        input.disabled = false;
+        input.style.backgroundColor = "#fff";
+    });
+    document.querySelector('#logForm .btn-primary').style.display = "block";
+
     document.getElementById('modalTitle').innerText = "Add New Record";
-    document.getElementById('edit-index').value = "NEW"; // Set a flag
+    document.getElementById('edit-index').value = "NEW";
     
-    // Clear all fields
     logForm.reset(); 
-    
-    // Set default date to today
     document.getElementById('field-date').value = new Date().toISOString().split('T')[0];
     
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
-        function openModal(row, index) {
-            document.getElementById('modalTitle').innerText = "Edit Record";
-            document.getElementById('edit-index').value = row.no; 
-            document.getElementById('field-date').value = formatToInputDate(row.date);
-            document.getElementById('field-location').value = row.location || '';
-            document.getElementById('field-ac-type').value = row.acType || '';
-            document.getElementById('field-reg').value = row.acReg || '';
-            document.getElementById('field-rating').value = row.rating || '';
-            document.getElementById('field-privilege').value = row.privilege || '';
-            document.getElementById('field-ata').value = row.ata || '';
-            document.getElementById('field-task-type').value = row.taskType || 'FOT';
-            document.getElementById('field-activity-type').value = row.activityType || 'Training';
-            document.getElementById('field-duration').value = row.duration || '';
-            document.getElementById('field-ref').value = row.maintRef || '';
-            document.getElementById('field-operation').value = row.operation || '';
-            document.getElementById('field-remarks').value = row.remarks || '';
-    
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+function openModal(row) {
+    const isEditMode = actionMode; // Checks the global variable you already have
+    const modalTitle = document.getElementById('modalTitle');
+    const saveBtn = document.querySelector('#logForm .btn-primary');
+    const formInputs = document.querySelectorAll('#logForm input, #logForm select, #logForm textarea');
+
+    // 1. Set Title
+    modalTitle.innerText = isEditMode ? "Edit Record" : "Record Details";
+
+    // 2. Toggle Save Button Visibility
+    saveBtn.style.display = isEditMode ? "block" : "none";
+
+    // 3. Enable or Disable all form fields
+    formInputs.forEach(input => {
+        // We don't want to disable the 'edit-index' hidden field
+        if (input.id !== 'edit-index') {
+            input.disabled = !isEditMode;
+            // Optional: add a class for styling disabled fields to look cleaner
+            input.style.backgroundColor = isEditMode ? "#fff" : "#f8fafc";
+            input.style.cursor = isEditMode ? "text" : "default";
         }
+    });
+
+    // 4. Fill the fields with data
+    document.getElementById('edit-index').value = row.no; 
+    document.getElementById('field-date').value = formatToInputDate(row.date);
+    document.getElementById('field-location').value = row.location || '';
+    document.getElementById('field-ac-type').value = row.acType || '';
+    document.getElementById('field-reg').value = row.acReg || '';
+    document.getElementById('field-rating').value = row.rating || '';
+    document.getElementById('field-privilege').value = row.privilege || '';
+    document.getElementById('field-ata').value = row.ata || '';
+    document.getElementById('field-task-type').value = row.taskType || 'FOT';
+    document.getElementById('field-activity-type').value = row.activityType || 'Training';
+    document.getElementById('field-duration').value = row.duration || '';
+    document.getElementById('field-ref').value = row.maintRef || '';
+    document.getElementById('field-operation').value = row.operation || '';
+    document.getElementById('field-remarks').value = row.remarks || '';
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
 
         function closeModal() {
             modal.style.display = 'none';
