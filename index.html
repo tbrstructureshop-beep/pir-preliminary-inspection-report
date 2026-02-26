@@ -23,11 +23,19 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f5361, #0a3f49);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      /* Updated lines below */
+      background-image: url('/assets/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      /* Optional: Keep a fallback color in case the image fails to load */
+      background-color: #0f5361; 
+  
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 16px;
     }
 
     .login-card {
@@ -112,7 +120,8 @@
     .loading-overlay {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, #0f5361, #0a3f49);
+      background: rgba(15, 83, 97, 0.9); /* Semi-transparent color */
+      backdrop-filter: blur(8px); /* Adds a modern frosted glass effect over the image */
       display: none;
       align-items: center;
       justify-content: center;
