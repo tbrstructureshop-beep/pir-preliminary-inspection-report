@@ -116,6 +116,49 @@
       margin-top: 8px;
     }
 
+    /* --- ADD THESE LINES FOR FLOATING BUTTON --- */
+    .fab-install {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #1b6f7a; /* Matches your theme-color */
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: none; /* Hidden until browser allows install */
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 9999;
+      border: 2px solid white;
+      font-size: 24px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    #iosTooltip {
+      display: none;
+      position: fixed;
+      bottom: 95px;
+      right: 25px;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      width: 240px;
+      z-index: 10000;
+      font-size: 13px;
+      color: #333;
+      border: 1px solid #ccc;
+    }
+
     /* ===== LOADING OVERLAY ===== */
     .loading-overlay {
       position: fixed;
@@ -191,6 +234,47 @@
   </div>
 
   <script>
+
+    // --- ADD THESE LINES FOR INSTALL LOGIC ---
+    // 1. Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    const iosTooltip = document.getElementById('iosTooltip');
+
+    // Detect if already installed
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    if (!isStandalone) {
+      // Logic for Android / Chrome
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'flex';
+      });
+
+      // Logic for iOS Safari
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        installBtn.style.display = 'flex';
+      }
+    }
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') installBtn.style.display = 'none';
+        deferredPrompt = null;
+      } else {
+        // Toggle iOS Tooltip
+        iosTooltip.style.display = (iosTooltip.style.display === 'block') ? 'none' : 'block';
+      }
+    });
+    // --- END OF INSTALL LOGIC ---
+    
     const API_URL = "https://script.google.com/macros/s/AKfycbyQnjhtbnMsKen2UJp7oxhJuJ8B9-rHUjhGY4DcgWr_KrqR7ZDdDPlJKvSvwTrDVlu4/exec";
 
     function togglePassword() {
@@ -249,6 +333,13 @@
       }
     }
   </script>
+<!-- ADD THESE LINES -->
+  <button id="installBtn" class="fab-install" title="Install App">📲</button>
 
+  <div id="iosTooltip">
+    <strong>Install App:</strong><br>
+    1. Tap the <strong>Share</strong> icon (bottom).<br>
+    2. Tap <strong>'Add to Home Screen'</strong>.
+  </div>
 </body>
 </html>
