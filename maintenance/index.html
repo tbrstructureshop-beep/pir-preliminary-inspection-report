@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Development | Mobile PIR Creator</title>
+    <style>
+        :root {
+            --brand-color: #2897a1;
+            --bg-color: #0d1112; /* Deep dark teal-tinted background */
+            --text-main: #ffffff;
+            --text-muted: #7da1a4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        /* Subtle animated ambient glow */
+        .ambient-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(40, 151, 161, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: breath 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes breath {
+            from { opacity: 0.4; transform: scale(1); }
+            to { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .content {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .brand-logo {
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--brand-color);
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 10vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .divider {
+            height: 2px;
+            width: 40px;
+            background-color: var(--brand-color);
+            margin: 0 auto 32px;
+            border-radius: 2px;
+        }
+
+        p {
+            font-size: clamp(1.1rem, 5vw, 1.25rem);
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .status-tag {
+            margin-top: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--brand-color);
+            border: 1px solid rgba(40, 151, 161, 0.3);
+            padding: 8px 20px;
+            border-radius: 100px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--brand-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--brand-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 480px) {
+            .content {
+                padding: 0 10px;
+            }
+            h1 {
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <main class="content">
+        <span class="brand-logo">Mobile PIR Creator</span>
+        
+        <h1>System Update<br>in Progress</h1>
+        
+        <div class="divider"></div>
+        
+        <p>Our digital workspace is currently being refined to enhance your creative experience. We look forward to seeing you here soon.</p>
+
+        <div class="status-tag">
+            <div class="pulse-dot"></div>
+            Development Active
+        </div>
+    </main>
+
+</body>
+</html>
