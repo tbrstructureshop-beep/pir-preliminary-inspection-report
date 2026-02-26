@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    script src="../../auth/script.js"></script>
+    <script src="../../auth/script.js"></script>
     <script>
         // Protect the page and get user data
         const user = protectPage();
@@ -451,7 +451,7 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxqWrXeBN_SXsRUGX-bwCT6QxHvbj85BZpHH2VLUbdm9JHZYdNIyhDk4TXhrYGk6Ssk5A/exec';
+        const BASE_API_URL = 'https://script.google.com/macros/s/AKfycbxqWrXeBN_SXsRUGX-bwCT6QxHvbj85BZpHH2VLUbdm9JHZYdNIyhDk4TXhrYGk6Ssk5A/exec';
         
         // PAGINATION STATE
         let allData = [];
@@ -461,29 +461,27 @@
         let selectedIds = new Set(); 
 
         
-// --- ACTION TOGGLE LOGIC ---
-// --- 1. ACTION TOGGLE LOGIC ---
-const actionToggleBtn = document.getElementById('actionToggleBtn');
-let actionMode = false;
+    // --- ACTION TOGGLE LOGIC ---
+    const actionToggleBtn = document.getElementById('actionToggleBtn');
+    let actionMode = false;
 
-actionToggleBtn.onclick = () => {
-    actionMode = !actionMode;
-    // Toggles the class that shows/hides Add Record and Checkboxes
-    document.body.classList.toggle('action-mode', actionMode);
-    
-    if (actionMode) {
-        actionToggleBtn.classList.add('active');
-        actionToggleBtn.innerText = "Hide Actions";
-        showToast("Management Mode Enabled");
-    } else {
-        actionToggleBtn.classList.remove('active');
-        actionToggleBtn.innerText = "⚙️ Actions";
-        selectedIds.clear();
-        updateSelectionUI();
-    }
-    updateUI(); 
-};
-
+    actionToggleBtn.onclick = () => {
+        actionMode = !actionMode;
+        document.body.classList.toggle('action-mode', actionMode);
+        
+        if (actionMode) {
+            actionToggleBtn.classList.add('active');
+            actionToggleBtn.innerText = "Hide Actions";
+            showToast("Management Mode Enabled");
+        } else {
+            actionToggleBtn.classList.remove('active');
+            actionToggleBtn.innerText = "⚙️ Actions";
+            selectedIds.clear();
+            updateSelectionUI();
+        }
+        updateUI(); 
+    };
+        
 // FIND THIS SECTION IN YOUR CODE AND ENSURE IT'S THE ONLY ONE
 document.getElementById('openAddModalBtn').onclick = () => {
     Swal.fire({
@@ -511,55 +509,52 @@ document.getElementById('openAddModalBtn').onclick = () => {
 };
 
 
-// --- UPDATED CREATE PEL LOGIC ---
-document.getElementById('createPelBtn').onclick = () => {
-    Swal.fire({
-        title: 'Generate PEL Report',
-        text: 'This will create a new Google Doc based on all records currently in the PEL sheet. Continue?',
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#0ea5e9',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: '🚀 Generate Now',
-        heightAuto: false 
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            toggleLoader(true); // Show spinner
-            
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'generatePEL' })
-                });
-                
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Your PEL report has been generated.',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonText: '📂 Open Document',
-                        cancelButtonText: 'Close',
-                        confirmButtonColor: '#318b91'
-                    }).then((res) => {
-                        if (res.isConfirmed) {
-                            window.open(data.url, '_blank');
+// --- CREATE PEL LOGIC ---
+        document.getElementById('createPelBtn').onclick = () => {
+            Swal.fire({
+                title: 'Generate PEL Report',
+                text: 'This will create a new Google Doc based on your records. Continue?',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#0ea5e9',
+                confirmButtonText: '🚀 Generate Now',
+                heightAuto: false 
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    toggleLoader(true);
+                    try {
+                        // FIX: Changed API_URL to BASE_API_URL
+                        const response = await fetch(BASE_API_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({ 
+                                action: 'generatePEL',
+                                sheetId: user.userSheetId // Sent to Apps Script
+                                })
+                        });
+                        
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Your PEL report has been generated.',
+                                icon: 'success',
+                                showCancelButton: true,
+                                confirmButtonText: '📂 Open Document',
+                                confirmButtonColor: '#318b91'
+                            }).then((res) => {
+                                if (res.isConfirmed) window.open(data.url, '_blank');
+                            });
+                        } else {
+                            showToast('Generation failed: ' + data.message, 'error');
                         }
-                    });
-                } else {
-                    showToast('Generation failed: ' + data.message, 'error');
+                    } catch (err) {
+                        showToast('Network error', 'error');
+                    } finally {
+                        toggleLoader(false);
+                    }
                 }
-            } catch (err) {
-                console.error(err);
-                showToast('Network error during generation', 'error');
-            } finally {
-                toggleLoader(false); // Hide spinner
-            }
-        }
-    });
-};
+            });
+        };
 
 // DOM Elements
 const cardContainer = document.getElementById('cardContainer');
@@ -577,24 +572,33 @@ const totalPagesSpan = document.getElementById('totalPages');
 
 window.addEventListener('load', fetchData);
 
-async function fetchData() {
-    toggleLoader(true);
-    try {
-        const response = await fetch(API_URL);
-        const result = await response.json();
-        allData = result.data;
-        filteredData = [...allData]; // Initialize filtered data
-
-        // --- ADD THIS LINE ---
-        selectedIds.clear(); // Resets the "Selected" count after reload
-        
-        updateUI();
-    } catch (err) {
-        showToast('Error loading data', 'error');
-    } finally {
-        toggleLoader(false);
-    }
+// 2. Create a helper to always attach the sheetId to requests
+function getAuthUrl() {
+    return `${BASE_API_URL}?sheetId=${user.userSheetId}`;
 }
+
+async function fetchData() {
+        toggleLoader(true);
+        try {
+            const response = await fetch(getAuthUrl());
+            const result = await response.json();
+            allData = result.data || [];
+            filteredData = [...allData];
+            selectedIds.clear();
+            
+            // Update UI Logo with user's name
+            if (user && user.name) {
+                document.querySelector('.logo').innerText = `PEL | ${user.name}`;
+            }
+            
+            updateUI();
+        } catch (err) {
+            showToast('Error loading data', 'error');
+        } finally {
+            toggleLoader(false);
+        }
+    }
+
 
 // THE CORE LOGIC: Update UI based on current state
 function updateUI() {
@@ -757,32 +761,26 @@ document.getElementById('selectAll').onchange = (e) => {
 // --- DELETE FUNCTIONALITY ---
 document.getElementById('deleteBtn').onclick = async () => {
     if (selectedIds.size === 0) return;
+    if (!confirm(`Delete ${selectedIds.size} record(s)?`)) return;
     
-    const confirmMsg = `Are you sure you want to delete ${selectedIds.size} record(s)?\nThis will re-number all remaining records in the sheet.`;
-    if (!confirm(confirmMsg)) return;
-
     toggleLoader(true);
-    
     try {
-        const response = await fetch(API_URL, {
+        // FIX: Changed API_URL to BASE_API_URL
+        const response = await fetch(BASE_API_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: 'delete',
+                sheetId: user.userSheetId,
                 ids: Array.from(selectedIds)
             })
         });
-        
         const result = await response.json();
-        
         if (result.status === 'success') {
-            showToast(`Deleted and Renumbered Successfully`);
+            showToast(`Deleted Successfully`);
             selectedIds.clear();
-            document.getElementById('selectAll').checked = false;
-            updateSelectionUI();
             await fetchData(); 
-            
         } else {
-            showToast('Delete failed: ' + result.message, 'error');
+            showToast('Delete failed', 'error');
         }
     } catch (err) {
         showToast('Network error', 'error');
@@ -791,7 +789,6 @@ document.getElementById('deleteBtn').onclick = async () => {
     }
 };
 
-// EVENT LISTENERS
 
 // Search resets to page 1
 searchBox.addEventListener('input', (e) => {
@@ -883,58 +880,50 @@ function openAddModal() {
             document.body.style.overflow = 'auto';
         }
 
-        logForm.onsubmit = async (e) => {
-            e.preventDefault();
-            toggleLoader(true);
-            
-            const id = document.getElementById('edit-index').value; // 'id' is defined here
-            const payload = {
-                action: id === "NEW" ? "create" : "update",
-                no: id,
-                date: document.getElementById('field-date').value,
-                location: document.getElementById('field-location').value,
-                acType: document.getElementById('field-ac-type').value,
-                acReg: document.getElementById('field-reg').value,
-                rating: document.getElementById('field-rating').value,
-                privilege: document.getElementById('field-privilege').value,
-                ata: document.getElementById('field-ata').value,
-                taskType: document.getElementById('field-task-type').value,
-                activityType: document.getElementById('field-activity-type').value,
-                duration: document.getElementById('field-duration').value,
-                maintRef: document.getElementById('field-ref').value,
-                operation: document.getElementById('field-operation').value,
-                remarks: document.getElementById('field-remarks').value
-            };
-            
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    showToast(id === "NEW" ? 'Record added' : 'Updated');
-                    closeModal();
-                    await fetchData(); 
-            
-                    if (id === "NEW") {
-                        const totalItems = filteredData.length;
-                        const itemsPerPage = rowsPerPage === 'all' ? totalItems : parseInt(rowsPerPage);
-                        currentPage = Math.ceil(totalItems / itemsPerPage);
-                        updateUI();
-                    }
-                } else {
-                    showToast('Error: ' + result.message, 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('Network error: ' + err.message, 'error');
-            } finally {
-                toggleLoader(false);
-            }
-        };
+         logForm.onsubmit = async (e) => {
+             e.preventDefault();
+             toggleLoader(true);
+             
+             const id = document.getElementById('edit-index').value;
+             const payload = {
+                 action: id === "NEW" ? "create" : "update",
+                 sheetId: user.userSheetId, // Added
+                 no: id,
+                 date: document.getElementById('field-date').value,
+                 location: document.getElementById('field-location').value,
+                 acType: document.getElementById('field-ac-type').value,
+                 acReg: document.getElementById('field-reg').value,
+                 rating: document.getElementById('field-rating').value,
+                 privilege: document.getElementById('field-privilege').value,
+                 ata: document.getElementById('field-ata').value,
+                 taskType: document.getElementById('field-task-type').value,
+                 activityType: document.getElementById('field-activity-type').value,
+                 duration: document.getElementById('field-duration').value,
+                 maintRef: document.getElementById('field-ref').value,
+                 operation: document.getElementById('field-operation').value,
+                 remarks: document.getElementById('field-remarks').value
+             };
+        
+             try {
+                 // FIX: Using BASE_API_URL
+                 const response = await fetch(BASE_API_URL, {
+                     method: 'POST',
+                     body: JSON.stringify(payload)
+                 });
+                 const result = await response.json();
+                 if (result.status === 'success') {
+                     showToast(id === "NEW" ? 'Record added' : 'Updated');
+                     closeModal();
+                     await fetchData(); 
+                 } else {
+                     showToast('Error: ' + result.message, 'error');
+                 }
+             } catch (err) {
+                 showToast('Network error', 'error');
+             } finally {
+                 toggleLoader(false);
+             }
+         };
 
         function toggleLoader(show) {
             loader.style.display = show ? 'flex' : 'none';
