@@ -233,6 +233,12 @@
 </head>
 
 <body>
+  
+  <!-- STARTUP SPLASH SCREEN -->
+  <div id="startup-splash">
+    <img src="/icons/animatelogi.gif" alt="PIR Logo" class="splash-logo">
+    <div class="splash-text">PIR - Preliminary Inspection Report</div>
+  </div>
 
   <!-- LOGIN CARD -->
   <div class="login-card">
@@ -279,6 +285,18 @@
   </div>
 
   <script>
+
+    // --- HIDE SPLASH SCREEN ON LOAD ---
+    window.addEventListener('load', () => {
+      const splash = document.getElementById('startup-splash');
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 600);
+      }, 2000); // 2000ms = 2 seconds (time for your GIF to play)
+    });
+
+    // --- YOUR EXISTING INSTALL LOGIC BELOW ---
+    if ('serviceWorker' in navigator) {
 
     // --- ADD THESE LINES FOR INSTALL LOGIC ---
     // 1. Register Service Worker
