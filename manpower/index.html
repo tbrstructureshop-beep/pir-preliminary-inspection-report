@@ -9,253 +9,143 @@
 
 <script src="../../auth/script.js"></script>
 <script>
-  // EXECUTE THE PROTECTION FUNCTION IMMEDIATELY
+  // 2. EXECUTE THE PROTECTION FUNCTION IMMEDIATELY
   const user = protectPage(); 
 </script>
   
 <title>Main Manpower Menu</title>
 
 <style>
-:root {
-  --primary: #1f535c;
-  --primary-dark: #163d44; /* Added for menu hover */
-  --primary-soft: #2f6f78;
-  --primary-light: #4f8f97;
-  --bg: #0f2f36;
-  --card: #ffffff;
-  --text: #0e2a30;
-  --muted: #6b8b91;
-  --danger: #e74c3c; /* Added for logout */
+:root{
+  --primary:#1f535c;
+  --primary-soft:#2f6f78;
+  --primary-light:#4f8f97;
+  --bg:#0f2f36;
+  --card:#ffffff;
+  --text:#0e2a30;
+  --muted:#6b8b91;
 }
 
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
   font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--bg), var(--primary));
-  /* Changed from flex to block to allow top-bar to sit at top */
-  display: block; 
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--bg),var(--primary));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
 }
 
-/* --- Top Bar Styles --- */
-.top-bar {
-  background: white;
-  padding: 10px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+.container{
+  max-width:960px;
+  width:100%;
 }
 
-.profile-summary {
-  display: flex;
-  flex-direction: column;
+.header{
+  text-align:center;
+  color:#fff;
+  margin-bottom:32px;
 }
 
-.welcome {
-  font-weight: 700;
-  color: var(--text);
-  font-size: 1.1rem;
+.header h1{
+  margin:0;
+  font-size:1.8rem;
+  letter-spacing:.5px;
 }
 
-.sub-details {
-  font-size: 0.75rem;
-  color: var(--muted);
+.header p{
+  margin-top:8px;
+  opacity:.85;
+  font-size:.95rem;
 }
 
-/* Menu Specific Styles */
-.menu-dropdown {
-  position: relative;
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
 }
 
-.menu-toggle-btn {
-  background: var(--primary);
-  border: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s, background 0.2s;
-  padding: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.menu-card{
+  background:var(--card);
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform .25s ease, box-shadow .25s ease;
 }
 
-.menu-toggle-btn:hover {
-  background: var(--primary-dark);
-  transform: scale(1.05);
+.menu-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 28px 55px rgba(0,0,0,.35);
 }
 
-.avatar-circle {
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
+.menu-top{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
-.dropdown-content {
-  display: none; 
-  position: absolute;
-  right: 0;
-  top: 55px;
-  background-color: white;
-  min-width: 200px;
-  box-shadow: 0px 10px 25px rgba(0,0,0,0.15);
-  z-index: 1000;
-  border-radius: 12px;
-  padding: 8px;
-  border: 1px solid rgba(0,0,0,0.05);
-  animation: fadeIn 0.2s ease-out;
+.menu-icon{
+  width:54px;
+  height:54px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary-soft),var(--primary-light));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
 }
 
-.dropdown-content.show {
-  display: block;
+.menu-title{
+  font-size:1.15rem;
+  font-weight:600;
+  color:var(--text);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+.menu-desc{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:.9rem;
+  line-height:1.5;
 }
 
-.dropdown-header {
-  padding: 8px 16px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.menu-action{
+  margin-top:22px;
 }
 
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  border-radius: 8px;
-  transition: background 0.2s;
-  border: none;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  background: none;
+.menu-action button{
+  width:100%;
+  border:none;
+  border-radius:14px;
+  padding:12px 14px;
+  background:var(--primary);
+  color:#fff;
+  font-size:.95rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:background .25s ease;
 }
 
-.menu-item:hover {
-  background: #f1f5f9;
+.menu-action button:hover{
+  background:var(--primary-soft);
 }
 
-.divider {
-  height: 1px;
-  background: #eee;
-  margin: 4px 0;
-}
-
-.menu-item.logout-link {
-  color: var(--danger);
-}
-
-/* --- Existing Page Content Layout --- */
-.container {
-  max-width: 960px;
-  margin: 40px auto; /* Centers the grid with spacing from top bar */
-  padding: 0 24px 40px 24px;
-}
-
-.header {
-  text-align: center;
-  color: #fff;
-  margin-bottom: 32px;
-}
-
-.header h1 { margin: 0; font-size: 1.8rem; letter-spacing: .5px; }
-.header p { margin-top: 8px; opacity: .85; font-size: .95rem; }
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.menu-card {
-  background: var(--card);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.menu-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 28px 55px rgba(0,0,0,.35);
-}
-
-.menu-top { display: flex; align-items: center; gap: 14px; }
-.menu-icon {
-  width: 54px; height: 54px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--primary-soft), var(--primary-light));
-  display: flex; align-items: center; justify-content: center; font-size: 26px;
-}
-.menu-title { font-size: 1.15rem; font-weight: 600; color: var(--text); }
-.menu-desc { margin-top: 14px; color: var(--muted); font-size: .9rem; line-height: 1.5; }
-.menu-action { margin-top: 22px; }
-.menu-action button {
-  width: 100%; border: none; border-radius: 14px; padding: 12px 14px;
-  background: var(--primary); color: #fff; font-size: .95rem; font-weight: 500;
-  cursor: pointer; transition: background .25s ease;
-}
-.menu-action button:hover { background: var(--primary-soft); }
-
-@media (max-width:480px) {
-  .header h1 { font-size: 1.5rem; }
-  .top-bar { padding: 10px 15px; }
-  .sub-details { font-size: 0.65rem; }
+@media (max-width:480px){
+  .header h1{
+    font-size:1.5rem;
+  }
 }
 </style>
 </head>
 
 <body>
-
-<nav class="top-bar">
-  <div class="profile-summary">
-    <div class="welcome">Hi, <span id="display-name">User</span></div>
-    <div class="sub-details">
-      ID: <span id="display-id">---</span> | <span id="display-unit">Unit</span>
-    </div>
-  </div>
-
-  <div class="menu-dropdown" id="profileDropdown">
-    <button class="menu-toggle-btn" onclick="toggleMenu()" aria-label="Toggle Menu">
-      <div class="avatar-circle" id="avatar-letter">U</div>
-    </button>
-    
-    <div class="dropdown-content" id="dropdownContent">
-      <div class="dropdown-header">Account Settings</div>
-      <a href="profile/index.html" class="menu-item">
-        <span class="icon">👤</span> Edit Profile
-      </a>
-      <div class="divider"></div>
-      <button class="menu-item logout-link" onclick="handleLogout()">
-        <span class="icon">🚪</span> Logout
-      </button>
-    </div>
-  </div>
-</nav>
-
 <div class="container">
   <div class="header">
     <h1>Manpower Management</h1>
@@ -269,9 +159,14 @@ body {
           <div class="menu-icon">🕒</div>
           <div class="menu-title">Attendance</div>
         </div>
-        <div class="menu-desc">Record daily clock-in/out and monitor shift durations.</div>
+        <div class="menu-desc">
+          Record daily clock-in and clock-out activities with precise timestamps,
+          ensuring accurate attendance tracking and work duration monitoring.
+        </div>
       </div>
-      <div class="menu-action"><button onclick="location.href='attendance.html'">Open Attendance</button></div>
+      <div class="menu-action">
+        <button onclick="openAttendance()">Open Attendance</button>
+      </div>
     </div>
 
     <div class="menu-card">
@@ -280,82 +175,75 @@ body {
           <div class="menu-icon">🧑‍✈️</div>
           <div class="menu-title">Personnel Distribution</div>
         </div>
-        <div class="menu-desc">Manage manpower allocation across units and tasks.</div>
+        <div class="menu-desc">
+          Manage manpower allocation across units and tasks, providing clear
+          visibility of personnel deployment and operational readiness.
+        </div>
       </div>
-      <div class="menu-action"><button onclick="location.href='distribution.html'">Open Distribution</button></div>
+      <div class="menu-action">
+        <button onclick="openDistribution()">Open Distribution</button>
+      </div>
     </div>
 
+    <!-- NEW: My Current Job -->
     <div class="menu-card">
       <div>
         <div class="menu-top">
           <div class="menu-icon">📋</div>
           <div class="menu-title">My Current Job</div>
         </div>
-        <div class="menu-desc">View currently assigned tasks and responsibilities.</div>
+        <div class="menu-desc">
+          View your currently assigned tasks, project locations, and specific 
+          responsibilities for today's shift.
+        </div>
       </div>
-      <div class="menu-action"><button onclick="location.href='job.html'">View My Job</button></div>
+      <div class="menu-action">
+        <button onclick="openCurrentJob()">View My Job</button>
+      </div>
     </div>
 
+    <!-- NEW: My Log Book -->
     <div class="menu-card">
       <div>
         <div class="menu-top">
           <div class="menu-icon">📓</div>
           <div class="menu-title">My Log Book</div>
         </div>
-        <div class="menu-desc">Maintain a daily record of activities and milestones.</div>
+        <div class="menu-desc">
+          Maintain a daily record of your activities, completed milestones, 
+          and report any incidents or observations.
+        </div>
       </div>
-      <div class="menu-action"><button onclick="location.href='logbook.html'">Open Log Book</button></div>
+      <div class="menu-action">
+        <button onclick="openLogBook()">Open Log Book</button>
+      </div>
     </div>
+    
   </div>
 </div>
 
 <script>
-// 1. POPULATE PROFILE DATA
-if (user) {
-  document.getElementById('display-name').textContent = user.displayName || user.username || 'User';
-  document.getElementById('display-id').textContent = user.employeeId || 'N/A';
-  document.getElementById('display-unit').textContent = user.unit || 'General';
+
+function openAttendance() {
+  // Use a forward slash at the start to navigate from the root of your website
+  window.location.href = "/manpower/attendance/index.html";
+}
+
+function openDistribution(){
+  // Use a forward slash at the start to navigate from the root of your website
+  window.location.href = "/manpower/distribution/index.html";
+}
+
+// New function for My Current Job
+function openCurrentJob() {
+  window.location.href = "/maintenance/index.html";
+}
+
+// New function for My Log Book
+function openLogBook() {
+  window.location.href = "/manpower/log-book/index.html";
+}
   
-  // Set avatar to first letter of name
-  const firstLetter = (user.displayName || user.username || 'U').charAt(0).toUpperCase();
-  document.getElementById('avatar-letter').textContent = firstLetter;
-}
-
-// 2. TOGGLE DROPDOWN
-function toggleMenu() {
-  const content = document.getElementById('dropdownContent');
-  content.classList.toggle('show');
-}
-
-// Close dropdown if clicking outside
-window.onclick = function(event) {
-  if (!event.target.closest('#profileDropdown')) {
-    const dropdowns = document.getElementsByClassName("dropdown-content");
-    for (let i = 0; i < dropdowns.length; i++) {
-      dropdowns[i].classList.remove('show');
-    }
-  }
-}
-
-// 3. LOGOUT HANDLER
-function handleLogout() {
-  if(confirm("Are you sure you want to logout?")) {
-    // Assuming logout function is in your auth/script.js
-    if (typeof logout === "function") {
-      logout();
-    } else {
-      localStorage.clear();
-      window.location.href = "../../login.html";
-    }
-  }
-}
-
-// Existing menu navigation functions
-function openAttendance() { window.location.href = 'attendance.html'; }
-function openDistribution() { window.location.href = 'distribution.html'; }
-function openCurrentJob() { window.location.href = 'job.html'; }
-function openLogBook() { window.location.href = 'logbook.html'; }
 </script>
-
 </body>
 </html>
