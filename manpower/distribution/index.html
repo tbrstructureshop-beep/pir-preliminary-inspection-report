@@ -430,7 +430,11 @@ async function loadDHHeader() {
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
       document.getElementById("dhJobTitle").textContent = data.jobTitle;
-      
+
+      const toggleTitle = document.getElementById("profileToggleTitle");
+      if (toggleTitle) {
+        toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${data.jobTitle || 'PROFILE'}`;
+      }
       
       // 2. --- PROFILE IMAGE LOGIC ---
       const imgTag = document.getElementById("dhImage");
@@ -616,24 +620,23 @@ function initProfileHeaderLogic() {
   const toggleTitle = document.getElementById("profileToggleTitle");
   const content = document.getElementById("profileCollapseContent");
 
-  // Safety check: make sure elements exist before trying to modify them
   if (!section || !toggleBar) return;
 
   const jobTitle = (user && user.jobTitle) ? user.jobTitle.toLowerCase() : "";
   const isHead = jobTitle.includes("head");
 
   if (!isHead) {
-    // USER IS NOT A HEAD: Setup the Toggle
     section.classList.add("is-toggleable", "collapsed");
     toggleBar.style.display = "flex";
     
-    toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${user.jobTitle || 'PROFILE'}`;
+    // Get the DH title from the text content of the dhJobTitle element
+    const dhJobTitleText = document.getElementById("dhJobTitle").textContent;
+    toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${dhJobTitleText || 'PROFILE'}`;
 
     toggleBar.onclick = () => {
       section.classList.toggle("collapsed");
     };
   } else {
-    // USER IS A HEAD: Keep the clean original layout
     section.style.background = "none";
     section.style.border = "none";
     section.style.boxShadow = "none";
