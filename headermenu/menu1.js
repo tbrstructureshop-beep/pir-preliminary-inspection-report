@@ -1,5 +1,6 @@
 /**
  * menu1.js - Final Inline Responsive Version (Fixed Mobile Sliding)
+ * Updates: Added Unit/Job to Sidebar & 20px Page Buffer
  */
 
 const PIR_MENU = {
@@ -19,7 +20,14 @@ const PIR_MENU = {
     injectStyles() {
         const css = `
             :root { --primary: #0f5361; --header-h: 60px; --side-w: 260px; }
-            body { margin: 0; padding-top: var(--header-h); background-color: #f4f7f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+            
+            /* Added 20px extra buffer to padding-top as requested */
+            body { 
+                margin: 0; 
+                padding-top: calc(var(--header-h) + 20px); 
+                background-color: #f4f7f8; 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            }
             
             /* Header Base */
             .main-header { 
@@ -27,21 +35,18 @@ const PIR_MENU = {
                 background: var(--primary); color: white; display: flex; 
                 align-items: center; justify-content: space-between; padding: 0 16px; 
                 z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                overflow: hidden; /* Prevent content from pushing outside header */
+                overflow: hidden;
             }
 
             .header-left { 
                 display: flex; align-items: center; gap: 12px; 
-                flex-shrink: 1; /* Allow to shrink */
-                transition: all 0.3s ease;
-                min-width: 0;
+                flex-shrink: 1; transition: all 0.3s ease; min-width: 0;
             }
             .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 5px; flex-shrink: 0; }
             
             .brand-name { 
                 font-weight: 700; font-size: 16px; letter-spacing: 0.5px; 
-                white-space: nowrap; transition: all 0.3s ease;
-                opacity: 1;
+                white-space: nowrap; transition: all 0.3s ease; opacity: 1;
             }
 
             /* Header Right Area */
@@ -50,40 +55,26 @@ const PIR_MENU = {
                 cursor: pointer; height: 100%; flex-grow: 1; min-width: 0;
             }
             
-            /* Information Container */
             .info-reveal-container { 
                 display: flex; flex-direction: column; align-items: flex-end; 
                 text-align: right; overflow: hidden; 
                 max-width: 0; opacity: 0; 
                 transition: max-width 0.4s ease, opacity 0.3s ease;
-                pointer-events: none;
-                margin-right: 0;
+                pointer-events: none; margin-right: 0;
             }
 
-            /* Active State Logic */
             .header-right.active .info-reveal-container { 
                 max-width: 500px; opacity: 1; margin-right: 12px; pointer-events: auto;
             }
 
-            /* MOBILE FIX: Force brand to disappear completely */
             @media (max-width: 768px) {
-                .main-header.info-open .brand-name {
-                    max-width: 0;
-                    opacity: 0;
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-                    display: none; /* Physical removal to ensure space */
-                }
-                .header-right.active .info-reveal-container {
-                    max-width: 250px; /* Constrain on mobile so it doesn't push menu btn */
-                }
+                .main-header.info-open .brand-name { max-width: 0; opacity: 0; margin: 0; display: none; }
+                .header-right.active .info-reveal-container { max-width: 250px; }
             }
 
-            /* Info Text Styling */
             .header-name-row { font-size: 14px; font-weight: 600; white-space: nowrap; line-height: 1.2; }
-            .header-id-tag { font-size: 11px; opacity: 0.7; font-family: monospace; margin-left: 5px; font-weight: normal; }
-            .header-detail-row { font-size: 11px; opacity: 0.8; white-space: nowrap; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .header-id-tag { font-size: 11px; opacity: 0.7; font-family: monospace; margin-left: 5px; }
+            .header-detail-row { font-size: 11px; opacity: 0.8; white-space: nowrap; margin-top: 2px; text-transform: uppercase; }
             .header-sep { margin: 0 4px; opacity: 0.5; }
 
             .header-avatar { 
@@ -92,11 +83,17 @@ const PIR_MENU = {
                 transition: 0.3s; object-fit: cover; flex-shrink: 0;
             }
 
-            /* Sidebar & Navigation */
+            /* Sidebar Improvements to include Unit */
             .sidebar { position: fixed; top: 0; left: -270px; width: var(--side-w); height: 100%; background: #fff; z-index: 1002; transition: 0.3s ease-in-out; box-shadow: 4px 0 15px rgba(0,0,0,0.1); color: #333; }
             .sidebar.active { left: 0; }
             .sidebar-header { padding: 30px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
             .sidebar-logo { width: 60px; margin-bottom: 10px; }
+            
+            /* New Sidebar User Info Styles */
+            .sidebar-user-info { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+            .side-name { font-weight: 700; color: var(--primary); font-size: 14px; }
+            .side-unit { font-size: 11px; color: #666; font-weight: 600; margin-top: 2px; }
+
             .nav-links { list-style: none; padding: 15px 0; margin: 0; }
             .nav-links li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; text-decoration: none; color: #444; font-weight: 500; transition: 0.2s; }
             .nav-links li a:hover { background: #f0f7f8; color: var(--primary); }
@@ -141,6 +138,12 @@ const PIR_MENU = {
                 <div class="sidebar-header">
                     <img src="${this.paths.logo}" alt="Logo" class="sidebar-logo">
                     <div style="font-weight:700; color:var(--primary); font-size:13px;">TC MOBILE PIR SYSTEM</div>
+                    
+                    <!-- Added User/Unit Detail to Sidebar -->
+                    <div class="sidebar-user-info">
+                        <div class="side-name" id="s_name">User Name</div>
+                        <div class="side-unit" id="s_unit">Unit Name</div>
+                    </div>
                 </div>
                 <ul class="nav-links">
                     <li><a href="${this.paths.home}"><span class="material-icons">home</span>Home</a></li>
@@ -161,10 +164,16 @@ const PIR_MENU = {
             return;
         }
         const user = JSON.parse(userData);
+        
+        // Update Header
         document.getElementById('h_name').textContent = user.name || "User";
         document.getElementById('h_id').textContent = `(${user.userId || 'N/A'})`;
         document.getElementById('h_unit').textContent = user.unit || "N/A";
         document.getElementById('h_job').textContent = user.jobTitle || "Employee";
+        
+        // Update Sidebar (New)
+        document.getElementById('s_name').textContent = user.name || "User";
+        document.getElementById('s_unit').textContent = user.unit || "N/A";
         
         const avatar = document.getElementById('h_avatar');
         avatar.src = (user.profile && user.profile !== "") 
@@ -180,7 +189,6 @@ const PIR_MENU = {
     toggleInfo() {
         const header = document.getElementById('p_header');
         const rightSide = document.getElementById('headerRight');
-        
         rightSide.classList.toggle('active');
         header.classList.toggle('info-open');
     },
