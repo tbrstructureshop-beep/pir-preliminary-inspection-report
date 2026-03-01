@@ -65,7 +65,6 @@ const PIR_MENU = {
                     </button>
                     <div class="brand-wrapper">
                         <span class="brand-name">TC MOBILE PIR</span>
-                        <span class="brand-sub">Manpower</span>
                     </div>
                 </div>
                 <div class="header-right">
@@ -82,7 +81,8 @@ const PIR_MENU = {
             <nav class="sidebar" id="p_sidebar">
                 <div class="sidebar-header">
                     <img src="${this.paths.logo}" alt="Logo" class="sidebar-logo">
-                    <div style="font-weight:700; color:var(--primary); font-size:13px;">TC MOBILE SYSTEM</div>
+                    <div style="font-weight:700; color:var(--primary); font-size:13px;">TC MOBILE PIR SYSTEM</div>
+                    <span class="brand-sub">Manpower</span>
                 </div>
                 <ul class="nav-links">
                     <li><a href="${this.paths.home}"><span class="material-icons">home</span>Back Home</a></li>
