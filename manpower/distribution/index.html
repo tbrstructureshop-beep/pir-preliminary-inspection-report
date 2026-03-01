@@ -103,11 +103,15 @@
     align-items: center;
     gap: 20px;
     z-index: 1;
+    width: 100%; /* Ensure it takes full width */
+    min-width: 0;   /* Allows children to shrink/wrap correctly */
   }
 
+  /* --- Updated Profile Pic (Fixed Shrinking) --- */
   .profile-pic {
     width: 64px;
     height: 64px;
+    flex-shrink: 0; /* CRITICAL: Prevents the image from being squished */
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(8px);
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -117,12 +121,35 @@
     justify-content: center;
     font-weight: 700;
     font-size: 1.4rem;
+    overflow: hidden;
+  }
+
+  .greeting {
+    min-width: 0; /* Allows the text container to handle overflow */
+    flex: 1;      /* Take up remaining space */
   }
 
   .greeting h1 {
     font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: -0.02em;
+  }
+
+  #dhJobTitle {
+    font-size: 0.85rem; 
+    opacity: 0.8; 
+    font-weight: 500; 
+    margin-top: -4px; 
+    margin-bottom: 4px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.03em;
+    
+    /* Prevent pushing the image */
+    word-wrap: break-word;     /* Break long words if necessary */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;     /* Limit job title to 2 lines max */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .employee-meta {
@@ -288,6 +315,27 @@
     header { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 20px; }
     .section-header { padding: 20px; }
     .section-content { padding: 0 15px 20px; }
+    .profile-info {
+      gap: 12px;
+    }
+    .profile-pic {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+    }
+    
+    .greeting h1 {
+      font-size: 1.1rem;
+    }
+    
+    #dhJobTitle {
+      font-size: 0.75rem;
+    }
+    
+    .employee-meta {
+      flex-direction: column; /* Stack ID and Unit on tiny screens */
+      gap: 2px;
+    }
   }
 </style>
 </head>
@@ -311,7 +359,7 @@
             </div>
             <div class="greeting">
               <h1 id="dhName">Loading Dashboard...</h1>
-              <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
+              <div id="dhJobTitle">...</div> 
               <div class="employee-meta">
                 <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
                 <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
