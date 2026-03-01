@@ -294,26 +294,34 @@
 
 <body>
   <div class="app">
-    <!-- PROFILE HEADER -->
-    <header>
-      <div class="profile-info">
-        <div class="profile-pic">
-          <!-- Image is hidden by default -->
-          <img id="dhImage" src="" style="display:none;">
-          <!-- Your original initials span -->
-          <span id="dhInitials">--</span>
-        </div>
-        <div class="greeting">
-          <h1 id="dhName">Loading Dashboard...</h1>
-          <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
-          <div class="employee-meta">
-            <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
-            <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
-          </div>
-        </div>
+    <!-- PROFILE SECTION -->
+    <div id="profileSection" class="section-card">
+      <!-- This bar is hidden by default; JS will show it if the user is NOT a 'Head' -->
+      <div id="profileToggleBar" class="section-header" style="display: none;">
+        <h2 id="profileToggleTitle"><i class="fas fa-user-circle"></i> PROFILE</h2>
+        <i class="fas fa-chevron-up chevron"></i>
       </div>
-      <div id="dhStatus" class="badge bg-idle">Syncing...</div>
-    </header>
+      
+      <div id="profileCollapseContent" class="section-content" style="padding: 0;">
+        <header>
+          <div class="profile-info">
+            <div class="profile-pic">
+              <img id="dhImage" src="" style="display:none;">
+              <span id="dhInitials">--</span>
+            </div>
+            <div class="greeting">
+              <h1 id="dhName">Loading Dashboard...</h1>
+              <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
+              <div class="employee-meta">
+                <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
+                <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
+              </div>
+            </div>
+          </div>
+          <div id="dhStatus" class="badge bg-idle">Syncing...</div>
+        </header>
+      </div>
+    </div>
 
     <!-- ATTENDANCE SECTION -->
     <div class="section-card" id="attendanceSection">
@@ -602,8 +610,42 @@ function setupCollapse(sectionId) {
   });
 }
 
+function initProfileHeaderLogic() {
+  const section = document.getElementById("profileSection");
+  const toggleBar = document.getElementById("profileToggleBar");
+  const toggleTitle = document.getElementById("profileToggleTitle");
+  const content = document.getElementById("profileCollapseContent");
+
+  // Safety check: make sure elements exist before trying to modify them
+  if (!section || !toggleBar) return;
+
+  const jobTitle = (user && user.jobTitle) ? user.jobTitle.toLowerCase() : "";
+  const isHead = jobTitle.includes("head");
+
+  if (!isHead) {
+    // USER IS NOT A HEAD: Setup the Toggle
+    section.classList.add("is-toggleable", "collapsed");
+    toggleBar.style.display = "flex";
+    
+    toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${user.jobTitle || 'PROFILE'}`;
+
+    toggleBar.onclick = () => {
+      section.classList.toggle("collapsed");
+    };
+  } else {
+    // USER IS A HEAD: Keep the clean original layout
+    section.style.background = "none";
+    section.style.border = "none";
+    section.style.boxShadow = "none";
+    section.style.transform = "none";
+    toggleBar.style.display = "none";
+    content.style.padding = "0";
+  }
+}
+
 // --- IMPORTANT: Fixed DOMContentLoaded ---
 window.addEventListener("DOMContentLoaded", () => {
+  initProfileHeaderLogic(); // <--- Add this line
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
   
