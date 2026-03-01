@@ -282,6 +282,25 @@
   display: none;     /* Hidden by default until we confirm an image exists */
 }
 
+/* Styling for when the header is inside a toggleable card */
+#profileSection.collapsed .section-content {
+  display: none;
+}
+
+#profileSection.is-toggleable {
+  margin-bottom: 20px;
+}
+
+/* Adjust padding when the header is inside the card content area */
+#profileSection.is-toggleable .section-content {
+  padding: 0 28px 28px 28px;
+}
+
+/* Ensure the inner header fills the space correctly when toggleable */
+#profileSection.is-toggleable header {
+  box-shadow: none; /* Let the card handle the shadow */
+}
+
   /* --- RESPONSIVE --- */
   @media (max-width: 768px) {
     body { padding: 20px 10px; }
@@ -295,25 +314,25 @@
 <body>
   <div class="app">
     <!-- PROFILE HEADER -->
-    <header>
-      <div class="profile-info">
-        <div class="profile-pic">
-          <!-- Image is hidden by default -->
-          <img id="dhImage" src="" style="display:none;">
-          <!-- Your original initials span -->
-          <span id="dhInitials">--</span>
-        </div>
-        <div class="greeting">
-          <h1 id="dhName">Loading Dashboard...</h1>
-          <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
-          <div class="employee-meta">
-            <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
-            <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
+    <div id="profileCollapseContent" class="section-content" style="padding: 0;">
+      <header>
+        <div class="profile-info">
+          <div class="profile-pic">
+            <img id="dhImage" src="" style="display:none;">
+            <span id="dhInitials">--</span>
+          </div>
+          <div class="greeting">
+            <h1 id="dhName">Loading Dashboard...</h1>
+            <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
+            <div class="employee-meta">
+              <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
+              <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
+            </div>
           </div>
         </div>
-      </div>
-      <div id="dhStatus" class="badge bg-idle">Syncing...</div>
-    </header>
+        <div id="dhStatus" class="badge bg-idle">Syncing...</div>
+      </header>
+    </div>
 
     <!-- ATTENDANCE SECTION -->
     <div class="section-card" id="attendanceSection">
@@ -396,6 +415,7 @@
   </div>
 
 <script src="../../auth/script.js"></script>
+<script src="headermenu/menu1.js"></script>
 <script>
   
 // 1. Protect the page and get user info
@@ -594,6 +614,41 @@ async function fetchAndRenderLog(unit) {
   }
 }
 
+function initProfileHeaderLogic() {
+  // 1. Get user data from auth.js (already defined in your script as 'user')
+  const jobTitle = (user.jobTitle || "").toLowerCase();
+  
+  // 2. Check if the user is NOT a "Head"
+  const isHead = jobTitle.includes("head");
+
+  const section = document.getElementById("profileSection");
+  const toggleBar = document.getElementById("profileToggleBar");
+  const toggleTitle = document.getElementById("profileToggleTitle");
+  const content = document.getElementById("profileCollapseContent");
+
+  if (!isHead) {
+    // USER IS NOT A HEAD: Setup the Toggle
+    section.classList.add("is-toggleable", "collapsed");
+    toggleBar.style.display = "flex";
+    
+    // Update title to "SEE YOUR [JOB TITLE]"
+    toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${user.jobTitle || 'PROFILE'}`;
+
+    // Add click event for toggling
+    toggleBar.addEventListener("click", () => {
+      section.classList.toggle("collapsed");
+    });
+  } else {
+    // USER IS A HEAD: Keep the clean original layout
+    section.style.background = "none";
+    section.style.border = "none";
+    section.style.boxShadow = "none";
+    section.style.transform = "none";
+    toggleBar.style.display = "none";
+    content.style.padding = "0";
+  }
+}
+
 
 function setupCollapse(sectionId) {
   const section = document.getElementById(sectionId);
@@ -604,9 +659,9 @@ function setupCollapse(sectionId) {
 
 // --- IMPORTANT: Fixed DOMContentLoaded ---
 window.addEventListener("DOMContentLoaded", () => {
+  initProfileHeaderLogic();
   setupCollapse("attendanceSection");
   setupCollapse("logSection");
-  
   loadDHHeader(); 
   
   // Call functions using the 'user' object retrieved at top of script
