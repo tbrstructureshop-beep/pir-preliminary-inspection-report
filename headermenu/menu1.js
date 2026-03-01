@@ -143,7 +143,7 @@ const PIR_MENU = {
                     <div style="font-weight:700; color:var(--primary); font-size:13px;">TC MOBILE PIR SYSTEM</div>
                 </div>
                 <ul class="nav-links">
-                    <li><a href="${this.paths.home}"><span class="material-icons">home</span>Dashboard</a></li>
+                    <li><a href="${this.paths.home}"><span class="material-icons">home</span>Home</a></li>
                     <hr>
                     <li><a href="javascript:void(0)" onclick="PIR_MENU.logout()" style="color:#d32f2f;">
                         <span class="material-icons">logout</span>Sign Out
