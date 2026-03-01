@@ -1,5 +1,5 @@
 /**
- * menu1.js - Clean Avatar-only Header with Info Dropdown
+ * menu1.js - Inline Header Info Version
  */
 
 const PIR_MENU = {
@@ -14,53 +14,61 @@ const PIR_MENU = {
         this.injectStyles();
         this.renderUI();
         this.loadUserSession();
-        this.setupEventListeners();
     },
 
     injectStyles() {
         const css = `
             :root { --primary: #0f5361; --header-h: 60px; --side-w: 260px; }
-            body { margin: 0; padding-top: var(--header-h); background-color: #f4f7f8; }
+            body { margin: 0; padding-top: var(--header-h); background-color: #f4f7f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
             
             /* Header */
-            .main-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-            .header-left { display: flex; align-items: center; gap: 12px; }
-            .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 8px; border-radius: 50%; }
-            .menu-btn:hover { background: rgba(255,255,255,0.1); }
+            .main-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+            .header-left { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+            .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 5px; border-radius: 4px; }
             
             .brand-name { font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
+
+            /* Inline Info Area */
+            .header-right { display: flex; align-items: center; gap: 12px; cursor: pointer; height: 100%; }
             
-            /* Profile Section */
-            .header-right { position: relative; }
-            .avatar-container { cursor: pointer; position: relative; display: flex; align-items: center; }
-            .header-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); transition: 0.2s; object-fit: cover; }
-            .avatar-container:hover .header-avatar { border-color: #fff; transform: scale(1.05); }
-
-            /* Info Dropdown Card */
-            .user-info-card { 
-                position: absolute; top: 52px; right: 0; width: auto; min-width: 220px;
-                background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-                display: none; flex-direction: column; padding: 16px; z-index: 1010;
-                white-space: nowrap; border: 1px solid rgba(0,0,0,0.05);
-                animation: slideFade 0.25s ease-out;
-            }
-            .user-info-card.active { display: flex; }
-            @keyframes slideFade {
-                from { opacity: 0; transform: translateY(-10px); }
-                to { opacity: 1; transform: translateY(0); }
+            .info-reveal-container { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: flex-end; 
+                text-align: right; 
+                overflow: hidden; 
+                max-width: 0; 
+                opacity: 0; 
+                transition: max-width 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+                pointer-events: none;
             }
 
-            /* Nice Text Formatting */
-            .info-line-top { color: #1a1a1a; font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-            .info-userid { color: #777; font-weight: 400; font-size: 13px; font-family: 'Courier New', monospace; }
-            .info-line-bottom { color: #555; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 8px; border-top: 1px solid #eee; margin-top: 8px; padding-top: 8px; }
-            .info-sep { color: #ccc; font-weight: 300; font-size: 14px; }
+            /* When Avatar is clicked, this class is added to header-right */
+            .header-right.active .info-reveal-container { 
+                max-width: 400px; 
+                opacity: 1; 
+                margin-right: 8px;
+                pointer-events: auto;
+            }
+
+            /* Text Styling inside Header */
+            .header-name-row { font-size: 14px; font-weight: 600; white-space: nowrap; }
+            .header-id-tag { font-size: 11px; opacity: 0.7; font-family: monospace; margin-left: 5px; font-weight: normal; }
+            .header-detail-row { font-size: 11px; opacity: 0.8; white-space: nowrap; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .header-sep { margin: 0 4px; opacity: 0.5; }
+
+            .header-avatar { 
+                width: 38px; height: 38px; border-radius: 50%; 
+                border: 2px solid rgba(255,255,255,0.4); 
+                transition: 0.3s; object-fit: cover; flex-shrink: 0;
+            }
+            .header-right:hover .header-avatar { border-color: #fff; }
 
             /* Sidebar */
-            .sidebar { position: fixed; top: 0; left: -270px; width: var(--side-w); height: 100%; background: #fff; z-index: 1002; transition: 0.3s ease-in-out; box-shadow: 4px 0 15px rgba(0,0,0,0.1); font-family: sans-serif; }
+            .sidebar { position: fixed; top: 0; left: -270px; width: var(--side-w); height: 100%; background: #fff; z-index: 1002; transition: 0.3s ease-in-out; box-shadow: 4px 0 15px rgba(0,0,0,0.1); color: #333; }
             .sidebar.active { left: 0; }
             .sidebar-header { padding: 30px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
-            .sidebar-logo { width: 70px; margin-bottom: 12px; }
+            .sidebar-logo { width: 60px; margin-bottom: 10px; }
             .nav-links { list-style: none; padding: 15px 0; margin: 0; }
             .nav-links li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; text-decoration: none; color: #444; font-weight: 500; transition: 0.2s; }
             .nav-links li a:hover { background: #f0f7f8; color: var(--primary); }
@@ -83,23 +91,21 @@ const PIR_MENU = {
                     <span class="brand-name">TC MOBILE PIR</span>
                 </div>
                 
-                <div class="header-right">
-                    <div class="avatar-container" id="profileToggle" onclick="PIR_MENU.toggleDropdown(event)">
-                        <img id="navUserProfile" src="" class="header-avatar" alt="User">
-                        
-                        <!-- The Information Dropdown (No buttons, just info) -->
-                        <div class="user-info-card" id="userInfoCard">
-                            <div class="info-line-top">
-                                <span id="infoName">User Name</span>
-                                <span class="info-userid" id="infoId">(ID000)</span>
-                            </div>
-                            <div class="info-line-bottom">
-                                <span id="infoUnit">Unit Name</span>
-                                <span class="info-sep">│</span>
-                                <span id="infoJob">Job Title</span>
-                            </div>
+                <div class="header-right" id="headerRight" onclick="PIR_MENU.toggleInfo()">
+                    <!-- Hidden Info that slides out -->
+                    <div class="info-reveal-container">
+                        <div class="header-name-row">
+                            <span id="h_name">User Name</span>
+                            <span class="header-id-tag" id="h_id">(0000)</span>
+                        </div>
+                        <div class="header-detail-row">
+                            <span id="h_unit">Unit</span>
+                            <span class="header-sep">│</span>
+                            <span id="h_job">Job Title</span>
                         </div>
                     </div>
+                    
+                    <img id="h_avatar" src="" class="header-avatar" alt="User">
                 </div>
             </header>
 
@@ -108,8 +114,7 @@ const PIR_MENU = {
             <nav class="sidebar" id="p_sidebar">
                 <div class="sidebar-header">
                     <img src="${this.paths.logo}" alt="Logo" class="sidebar-logo">
-                    <div style="font-weight:700; color:var(--primary); font-size:14px;">TC MOBILE PIR SYSTEM</div>
-                    <div style="font-size:10px; opacity:0.6; margin-top:4px; letter-spacing:1px;">MANPOWER</div>
+                    <div style="font-weight:700; color:var(--primary); font-size:13px;">TC MOBILE PIR SYSTEM</div>
                 </div>
                 <ul class="nav-links">
                     <li><a href="${this.paths.home}"><span class="material-icons">home</span>Dashboard</a></li>
@@ -131,28 +136,16 @@ const PIR_MENU = {
         }
         const user = JSON.parse(userData);
         
-        // Update Avatar
-        const profileImg = document.getElementById('navUserProfile');
-        profileImg.src = (user.profile && user.profile !== "") 
+        // Populate Data
+        document.getElementById('h_name').textContent = user.name || "User";
+        document.getElementById('h_id').textContent = `(${user.userId || 'N/A'})`;
+        document.getElementById('h_unit').textContent = user.unit || "N/A";
+        document.getElementById('h_job').textContent = user.jobTitle || "Employee";
+        
+        const avatar = document.getElementById('h_avatar');
+        avatar.src = (user.profile && user.profile !== "") 
             ? user.profile 
             : this.paths.defaultAvatar + encodeURIComponent(user.name);
-
-        // Update Text Info
-        document.getElementById('infoName').textContent = user.name || "User";
-        document.getElementById('infoId').textContent = `(${user.userId || 'N/A'})`;
-        document.getElementById('infoUnit').textContent = user.unit || "General Unit";
-        document.getElementById('infoJob').textContent = user.jobTitle || "Employee";
-    },
-
-    setupEventListeners() {
-        // Close dropdown when clicking outside the profile container
-        window.addEventListener('click', (e) => {
-            const card = document.getElementById('userInfoCard');
-            const toggle = document.getElementById('profileToggle');
-            if (!toggle.contains(e.target)) {
-                card.classList.remove('active');
-            }
-        });
     },
 
     toggleSidebar() {
@@ -160,15 +153,15 @@ const PIR_MENU = {
         document.getElementById('p_overlay').classList.toggle('active');
     },
 
-    toggleDropdown(event) {
-        event.stopPropagation();
-        document.getElementById('userInfoCard').classList.toggle('active');
+    toggleInfo() {
+        document.getElementById('headerRight').classList.toggle('active');
     },
 
     closeAll() {
         document.getElementById('p_sidebar').classList.remove('active');
         document.getElementById('p_overlay').classList.remove('active');
-        document.getElementById('userInfoCard').classList.remove('active');
+        // Optional: close info if overlay is clicked
+        document.getElementById('headerRight').classList.remove('active');
     },
 
     logout() {
@@ -179,7 +172,7 @@ const PIR_MENU = {
     }
 };
 
-// Start
+// Initialize
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => PIR_MENU.init());
 } else {
