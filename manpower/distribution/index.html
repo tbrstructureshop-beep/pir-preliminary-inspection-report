@@ -305,6 +305,7 @@
         </div>
         <div class="greeting">
           <h1 id="dhName">Loading Dashboard...</h1>
+          <div id="dhJobTitle" style="font-size: 0.85rem; opacity: 0.8; font-weight: 500; margin-top: -4px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.03em;">...</div>
           <div class="employee-meta">
             <span><i class="far fa-id-badge"></i> <span id="dhId">...</span></span>
             <span><i class="far fa-building"></i> <span id="dhUnit">...</span></span>
@@ -420,6 +421,8 @@ async function loadDHHeader() {
       document.getElementById("dhName").textContent = data.name;
       document.getElementById("dhId").textContent = data.id;
       document.getElementById("dhUnit").textContent = data.unit;
+      document.getElementById("dhJobTitle").textContent = data.jobTitle;
+      
       
       // 2. --- PROFILE IMAGE LOGIC ---
       const imgTag = document.getElementById("dhImage");
