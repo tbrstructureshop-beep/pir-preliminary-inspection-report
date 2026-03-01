@@ -131,5 +131,9 @@ const PIR_MENU = {
     }
 };
 
-// Start the menu logic
-PIR_MENU.init();
+// Replace the old PIR_MENU.init() with this:
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => PIR_MENU.init());
+} else {
+    PIR_MENU.init();
+}
