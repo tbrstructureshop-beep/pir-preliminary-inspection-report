@@ -431,11 +431,6 @@ async function loadDHHeader() {
       document.getElementById("dhUnit").textContent = data.unit;
       document.getElementById("dhJobTitle").textContent = data.jobTitle;
 
-      const toggleTitle = document.getElementById("profileToggleTitle");
-      if (toggleTitle) {
-        toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${data.jobTitle || 'PROFILE'}`;
-      }
-      
       // 2. --- PROFILE IMAGE LOGIC ---
       const imgTag = document.getElementById("dhImage");
       const initialTag = document.getElementById("dhInitials");
@@ -629,9 +624,8 @@ function initProfileHeaderLogic() {
     section.classList.add("is-toggleable", "collapsed");
     toggleBar.style.display = "flex";
     
-    // Get the DH title from the text content of the dhJobTitle element
-    const dhJobTitleText = document.getElementById("dhJobTitle").textContent;
-    toggleTitle.innerHTML = `<i class="fas fa-user-circle"></i> SEE YOUR ${dhJobTitleText || 'PROFILE'}`;
+    // Updated icon to fa-users-viewfinder and text to SEE YOUR LEADER
+    toggleTitle.innerHTML = `<i class="fas fa-users-viewfinder"></i> SEE YOUR LEADER`;
 
     toggleBar.onclick = () => {
       section.classList.toggle("collapsed");
