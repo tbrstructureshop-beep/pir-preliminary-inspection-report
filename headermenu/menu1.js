@@ -1,5 +1,5 @@
 /**
- * menu1.js - Final Inline Responsive Version
+ * menu1.js - Final Inline Responsive Version (Fixed Mobile Sliding)
  */
 
 const PIR_MENU = {
@@ -27,30 +27,57 @@ const PIR_MENU = {
                 background: var(--primary); color: white; display: flex; 
                 align-items: center; justify-content: space-between; padding: 0 16px; 
                 z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                transition: background 0.3s;
+                overflow: hidden; /* Prevent content from pushing outside header */
             }
 
-            .header-left { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-            .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 5px; }
-            .brand-name { font-weight: 700; font-size: 16px; letter-spacing: 0.5px; white-space: nowrap; transition: 0.3s; }
+            .header-left { 
+                display: flex; align-items: center; gap: 12px; 
+                flex-shrink: 1; /* Allow to shrink */
+                transition: all 0.3s ease;
+                min-width: 0;
+            }
+            .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 5px; flex-shrink: 0; }
+            
+            .brand-name { 
+                font-weight: 700; font-size: 16px; letter-spacing: 0.5px; 
+                white-space: nowrap; transition: all 0.3s ease;
+                opacity: 1;
+            }
 
             /* Header Right Area */
             .header-right { 
                 display: flex; align-items: center; justify-content: flex-end; 
-                cursor: pointer; height: 100%; flex-grow: 1;
+                cursor: pointer; height: 100%; flex-grow: 1; min-width: 0;
             }
             
-            /* Information Container (Hidden by default) */
+            /* Information Container */
             .info-reveal-container { 
                 display: flex; flex-direction: column; align-items: flex-end; 
-                text-align: right; overflow: hidden; max-width: 0; opacity: 0; 
+                text-align: right; overflow: hidden; 
+                max-width: 0; opacity: 0; 
                 transition: max-width 0.4s ease, opacity 0.3s ease;
                 pointer-events: none;
+                margin-right: 0;
             }
 
-            /* State when Avatar is clicked */
+            /* Active State Logic */
             .header-right.active .info-reveal-container { 
-                max-width: 400px; opacity: 1; margin-right: 12px; pointer-events: auto;
+                max-width: 500px; opacity: 1; margin-right: 12px; pointer-events: auto;
+            }
+
+            /* MOBILE FIX: Force brand to disappear completely */
+            @media (max-width: 768px) {
+                .main-header.info-open .brand-name {
+                    max-width: 0;
+                    opacity: 0;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+                    display: none; /* Physical removal to ensure space */
+                }
+                .header-right.active .info-reveal-container {
+                    max-width: 250px; /* Constrain on mobile so it doesn't push menu btn */
+                }
             }
 
             /* Info Text Styling */
@@ -64,29 +91,16 @@ const PIR_MENU = {
                 border: 2px solid rgba(255,255,255,0.4); 
                 transition: 0.3s; object-fit: cover; flex-shrink: 0;
             }
-            .header-right:hover .header-avatar { border-color: #fff; }
-
-            /* MOBILE FIX: When info is revealed on small screens, hide the brand name to save space */
-            @media (max-width: 480px) {
-                .main-header.info-open .brand-name {
-                    display: none;
-                }
-                .header-right.active .info-reveal-container {
-                    max-width: 220px; /* Limits width on small phones */
-                }
-            }
 
             /* Sidebar & Navigation */
             .sidebar { position: fixed; top: 0; left: -270px; width: var(--side-w); height: 100%; background: #fff; z-index: 1002; transition: 0.3s ease-in-out; box-shadow: 4px 0 15px rgba(0,0,0,0.1); color: #333; }
             .sidebar.active { left: 0; }
             .sidebar-header { padding: 30px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
             .sidebar-logo { width: 60px; margin-bottom: 10px; }
-
             .nav-links { list-style: none; padding: 15px 0; margin: 0; }
             .nav-links li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; text-decoration: none; color: #444; font-weight: 500; transition: 0.2s; }
             .nav-links li a:hover { background: #f0f7f8; color: var(--primary); }
             .nav-links hr { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
-
             .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1001; backdrop-filter: blur(2px); }
             .menu-overlay.active { display: block; }
         `;
@@ -147,14 +161,11 @@ const PIR_MENU = {
             return;
         }
         const user = JSON.parse(userData);
-        
-        // Populate Strings
         document.getElementById('h_name').textContent = user.name || "User";
         document.getElementById('h_id').textContent = `(${user.userId || 'N/A'})`;
         document.getElementById('h_unit').textContent = user.unit || "N/A";
         document.getElementById('h_job').textContent = user.jobTitle || "Employee";
         
-        // Populate Image
         const avatar = document.getElementById('h_avatar');
         avatar.src = (user.profile && user.profile !== "") 
             ? user.profile 
@@ -168,11 +179,10 @@ const PIR_MENU = {
 
     toggleInfo() {
         const header = document.getElementById('p_header');
-        const info = document.getElementById('headerRight');
+        const rightSide = document.getElementById('headerRight');
         
-        info.classList.toggle('active');
-        // This class triggers the mobile CSS media query to hide the brand name
-        header.classList.toggle('info-open'); 
+        rightSide.classList.toggle('active');
+        header.classList.toggle('info-open');
     },
 
     closeAll() {
@@ -190,7 +200,6 @@ const PIR_MENU = {
     }
 };
 
-// Initialize on Load
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => PIR_MENU.init());
 } else {
