@@ -1,15 +1,13 @@
 /**
- * menu1.js - Standalone Header & Sidebar Component
- * This script handles UI injection, Session management, and Navigation.
+ * menu1.js - Standalone Header & Sidebar Component (Man Power Version)
  */
 
 const PIR_MENU = {
-    // ADJUST THESE PATHS to match your server structure
     paths: {
         home: "/home/index.html",
         login: "/index.html",
         logo: "/assets/logo.png",
-        defaultAvatar: "https://ui-avatars.com/api/?background=0f5361&color=fff&name=" // Fallback if no profile pic
+        defaultAvatar: "https://ui-avatars.com/api/?background=0f5361&color=fff&name=" 
     },
 
     init() {
@@ -27,9 +25,13 @@ const PIR_MENU = {
             .main-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
             .header-left, .header-right { display: flex; align-items: center; gap: 12px; }
             .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; }
-            .brand-name { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
             
-            /* User Meta in Header */
+            /* Brand Styling with Subtitle */
+            .brand-wrapper { display: flex; flex-direction: column; line-height: 1.1; }
+            .brand-name { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+            .brand-sub { font-size: 10px; font-weight: 400; text-transform: uppercase; opacity: 0.8; letter-spacing: 1px; }
+            
+            /* User Meta */
             .user-info { text-align: right; line-height: 1.2; font-family: sans-serif; }
             #navUserName { font-size: 14px; font-weight: 600; display: block; }
             #navUserRole { font-size: 11px; opacity: 0.8; }
@@ -41,13 +43,11 @@ const PIR_MENU = {
             .sidebar-header { padding: 25px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
             .sidebar-logo { width: 60px; margin-bottom: 10px; }
 
-            /* Links */
             .nav-links { list-style: none; padding: 15px 0; margin: 0; }
             .nav-links li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; text-decoration: none; color: #444; font-weight: 500; transition: 0.2s; }
             .nav-links li a:hover { background: #f0f7f8; color: var(--primary); }
             .nav-links hr { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
 
-            /* Overlay */
             .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1001; backdrop-filter: blur(2px); }
             .menu-overlay.active { display: block; }
         `;
@@ -63,7 +63,10 @@ const PIR_MENU = {
                     <button class="menu-btn" onclick="PIR_MENU.toggle()">
                         <span class="material-icons">menu</span>
                     </button>
-                    <span class="brand-name">TC PIR</span>
+                    <div class="brand-wrapper">
+                        <span class="brand-name">TC MOBILE PIR</span>
+                        <span class="brand-sub">Manpower</span>
+                    </div>
                 </div>
                 <div class="header-right">
                     <div class="user-info">
@@ -83,8 +86,6 @@ const PIR_MENU = {
                 </div>
                 <ul class="nav-links">
                     <li><a href="${this.paths.home}"><span class="material-icons">home</span>Back Home</a></li>
-                    <li><a href="/home/new-inspection.html"><span class="material-icons">add_circle_outline</span>New Inspection</a></li>
-                    <li><a href="/home/reports.html"><span class="material-icons">description</span>History</a></li>
                     <hr>
                     <li><a href="javascript:void(0)" onclick="PIR_MENU.logout()"><span class="material-icons">logout</span>Sign Out</a></li>
                 </ul>
@@ -94,18 +95,12 @@ const PIR_MENU = {
     },
 
     loadUserSession() {
-        // This pulls the JSON object you created in the login script
         const userData = sessionStorage.getItem("user");
-
         if (!userData) {
-            console.error("No session found. Redirecting...");
             window.location.replace(this.paths.login);
             return;
         }
-
         const user = JSON.parse(userData);
-
-        // Map the API data to the UI
         document.getElementById('navUserName').textContent = user.name || "User";
         document.getElementById('navUserRole').textContent = user.jobTitle || "Employee";
         
@@ -113,7 +108,6 @@ const PIR_MENU = {
         if (user.profile && user.profile !== "") {
             profileImg.src = user.profile;
         } else {
-            // Use an avatar generator if profile image is missing
             profileImg.src = this.paths.defaultAvatar + encodeURIComponent(user.name);
         }
     },
@@ -125,13 +119,12 @@ const PIR_MENU = {
 
     logout() {
         if (confirm("Are you sure you want to sign out?")) {
-            sessionStorage.clear(); // Clears everything including userSheetId, name, etc.
+            sessionStorage.clear();
             window.location.replace(this.paths.login);
         }
     }
 };
 
-// Replace the old PIR_MENU.init() with this:
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => PIR_MENU.init());
 } else {
