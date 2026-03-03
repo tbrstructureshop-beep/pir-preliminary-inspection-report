@@ -587,7 +587,8 @@
       pickers.until = flatpickr("#f_until", fpConfig);
       pickers.restStart = flatpickr("#f_rest_start", fpConfig);
       pickers.restEnd = flatpickr("#f_rest_end", fpConfig);
-      this.refresh();
+      
+      await this.refresh(); // Add await here
       document.getElementById('otForm').onsubmit = (e) => { e.preventDefault(); logic.save(); };
     },
     
@@ -836,7 +837,18 @@
     },
     
     closeModal() { document.getElementById('formModal').style.display = 'none'; },
-    toggleLoader(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+    toggleLoader(show) { 
+      const loader = document.getElementById('loader');
+      if (show) {
+        loader.style.display = 'flex'; 
+      } else {
+        // Add a 300ms delay to ensure the UI has finished rendering 
+        // the new cards before the screen unblocks
+        setTimeout(() => {
+          loader.style.display = 'none'; 
+        }, 300);
+      }
+    }
   };
 
   const logic = {
@@ -912,8 +924,8 @@
         };
         
         await this.call('saveOvertime', [payload]);
-        ui.closeModal();
         await ui.refresh(); // Page stays blocked until data is back
+        ui.closeModal();
       } catch(e) { 
         alert(e); 
         ui.toggleLoader(false); // Unblock only if there is an error
