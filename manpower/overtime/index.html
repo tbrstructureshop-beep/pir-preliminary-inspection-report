@@ -641,29 +641,44 @@
       unitSelect.value = curUnit;
       nameSelect.value = curName;
     },
-
-      render() {
-        const grid = document.getElementById('grid');
-        const selectedUnit = document.getElementById('select-unit').value;
-        const selectedName = document.getElementById('select-name').value;
+    
+    render() {
+      const grid = document.getElementById('grid');
+      const selectedUnit = document.getElementById('select-unit').value;
+      const selectedName = document.getElementById('select-name').value;
+      
+      // --- STEP 1: SECURITY FILTER (Based on Job Title) ---
+      const isManager = currentUser.jobTitle && currentUser.jobTitle.toUpperCase().includes("HEAD");
+      const securityFiltered = this.data.filter(item => {
         
-        // 1. Filter data based on Unit and Name Dropdowns
-        const baseFiltered = this.data.filter(item => {
-          const matchUnit = selectedUnit === 'ALL' || item.Unit === selectedUnit;
-          const matchName = selectedName === 'ALL' || item.Employee === selectedName;
-          return matchUnit && matchName;
-        });
-        
-        // 2. Update Tab Counters based on these filters
-        const counts = { OPEN: 0, REJECTED: 0, SUBMITTED: 0 };
-        baseFiltered.forEach(item => { if(counts[item.Status] !== undefined) counts[item.Status]++; });
-        
-        document.getElementById('cnt-OPEN').innerText = counts.OPEN;
-        document.getElementById('cnt-REJECTED').innerText = counts.REJECTED;
-        document.getElementById('cnt-SUBMITTED').innerText = counts.SUBMITTED;
-        
-        // 3. Further filter by the active Tab (OPEN/REJECTED/SUBMITTED)
-        const finalDisplay = baseFiltered.filter(item => item.Status === this.filter);
+        if (isManager) {
+          // HEADs see everyone in their specific Unit
+          return item.Unit === currentUser.unit;
+        } else {
+          // Non-HEADs see ONLY their own records (by PN/userId)
+          return item['Personal Number'] === currentUser.userId;
+        }
+      });
+      
+      // --- STEP 2: UI DROPDOWN FILTERS (Applied to the security-filtered data) ---
+      const baseFiltered = securityFiltered.filter(item => {
+        const matchUnit = selectedUnit === 'ALL' || item.Unit === selectedUnit;
+        const matchName = selectedName === 'ALL' || item.Employee === selectedName;
+        return matchUnit && matchName;
+      });
+      
+      // --- STEP 3: UPDATE COUNTERS ---
+      const counts = { OPEN: 0, REJECTED: 0, SUBMITTED: 0 };
+      baseFiltered.forEach(item => { 
+        if(counts[item.Status] !== undefined) counts[item.Status]++; 
+      });
+      
+      document.getElementById('cnt-OPEN').innerText = counts.OPEN;
+      document.getElementById('cnt-REJECTED').innerText = counts.REJECTED;
+      document.getElementById('cnt-SUBMITTED').innerText = counts.SUBMITTED;
+      
+      // --- STEP 4: FILTER BY ACTIVE TAB ---
+      const finalDisplay = baseFiltered.filter(item => item.Status === this.filter);
         
         grid.innerHTML = '';
         if (!finalDisplay.length) {
