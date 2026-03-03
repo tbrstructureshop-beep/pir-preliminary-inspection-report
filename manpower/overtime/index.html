@@ -116,37 +116,6 @@
     }
     .nav-item.active { background: white; color: var(--primary); box-shadow: var(--shadow); }
 
-    /* --- MOBILE REVISIONS --- */
-    @media (max-width: 600px) {
-      .nav-bar {
-        padding: 0.75rem 1rem;
-        justify-content: center; /* Centers items on mobile */
-      }
-      
-      .brand {
-        width: 100%; /* Force brand to take full width */
-        justify-content: flex-start; /* Keep logo left-aligned */
-        margin-bottom: 5px;
-      }
-
-      .nav-tabs {
-        width: 100%; /* Tabs take full width below logo */
-        justify-content: space-between;
-      }
-
-      .nav-item {
-        flex: 1; /* Tabs grow to fill the width equally */
-        justify-content: center;
-        font-size: 0.75rem;
-        padding: 10px 5px;
-      }
-
-      .modal { padding: 0; }
-      .modal-content { height: 100%; max-height: 100%; border-radius: 0; }
-      .form-grid { grid-template-columns: 1fr; }
-      .col-span-2 { grid-column: span 1; }
-    }
-
     /* --- LAYOUT --- */
     .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
@@ -248,19 +217,112 @@
     }
     
     .rejection-box label { color: #991b1b; }
+
+    .filter-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; /* Aligns button to the right */
+      gap: 12px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    
+    /* The actual bar - initially collapsed */
+    .filter-section { 
+      display: flex; /* Flex instead of grid for horizontal look */
+      gap: 1rem; 
+      background: white; 
+      padding: 0; /* No padding when closed */
+      border-radius: var(--radius-md); 
+      border: 1px solid transparent;
+  
+      /* Hiding logic */
+      max-width: 0;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Expanded state */
+    .filter-section.active {
+      max-width: 800px; /* Adjust based on your filter width */
+      opacity: 1;
+      visibility: visible;
+      padding: 0.8rem 1.2rem;
+      border-color: var(--border);
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+   .btn-filter-toggle {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     background: white;
+     border: 1px solid var(--border);
+     color: var(--text-main);
+     padding: 10px 16px;
+     border-radius: 12px;
+     cursor: pointer;
+     font-weight: 700;
+     transition: 0.2s;
+     flex-shrink: 0; /* Prevents button from squishing */
+   }
+
+    .btn-filter-toggle.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .filter-group { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px;
+      min-width: 180px; 
+    }
+    
+    .filter-group label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; gap: 4px; }
+    .filter-group select { 
+      padding: 10px; border-radius: 8px; border: 1px solid var(--border); 
+      font-family: inherit; font-weight: 600; color: var(--text-main); outline: none;
+    }
     
     #loader { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7); z-index: 3000; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; }
     .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* --- MERGED MOBILE REVISIONS --- */
+    
     @media (max-width: 600px) {
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .filter-wrapper {
+        flex-direction: column-reverse; /* Button on bottom or top */
+        align-items: stretch;
+      }
+      
+      .filter-section.active {
+        flex-direction: column;
+        max-width: 100%;
+      }
+      
+      .filter-section { 
+        grid-template-columns: 1fr; 
+      }
+      
+      /* Navigation Bar */
+      
       .nav-bar {
         padding: 0.75rem 1rem;
         justify-content: center; /* Centers items on mobile */
-      }
-
-      .header h1 {
-        font-size: 1.5rem;
       }
       
       .brand {
@@ -268,28 +330,73 @@
         justify-content: flex-start; /* Keep logo left-aligned */
         margin-bottom: 5px;
       }
-
+      
+      /* Navigation Tabs */
       .nav-tabs {
         width: 100%; /* Tabs take full width below logo */
         justify-content: space-between;
       }
-
+      
       .nav-item {
         flex: 1; /* Tabs grow to fill the width equally */
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
         justify-content: center;
-        font-size: 0.75rem;
+        gap: 2px; 
+        position: relative; 
         padding: 10px 5px;
+        font-size: 0.75rem;
+        /* min-width: 90px; */ /* Optional: uncomment if you want a minimum size */
       }
-
-      .modal { padding: 0; }
-      .modal-content { height: 100%; max-height: 100%; border-radius: 0; }
-      .form-grid { grid-template-columns: 1fr; }
-      .col-span-2 { grid-column: span 1; }
+      
+      .nav-label {
+        display: flex; 
+        align-items: center; 
+        gap: 6px;
+      }
     }
+      
+  /* Tab Counter Styling */
+  .tab-counter { 
+    font-size: 0.7rem; 
+    background: var(--primary-light); 
+    color: var(--primary); 
+    padding: 2px 8px; 
+    border-radius: 10px; 
+    font-weight: 800; 
+    margin-top: 2px;
+  }
+
+  .nav-item.active .tab-counter { 
+    background: var(--primary); 
+    color: white; 
+  }
+  
+  /* Modals & Forms */
+  .modal { 
+    padding: 0; 
+  }
+
+  .modal-content { 
+    height: 100%; 
+    max-height: 100%; 
+    border-radius: 0; 
+  }
+
+  .form-grid { 
+    grid-template-columns: 1fr; 
+  }
+
+  .col-span-2 { 
+    grid-column: span 1; 
+  }
+}
+
+
   </style>
 </head>
 <body>
-
   <nav class="nav-bar">
     <div class="brand">
       <i class="material-icons-round">flight_takeoff</i>
@@ -300,18 +407,52 @@
     </div>
     <div class="nav-tabs">
       <button class="nav-item active" id="tab-OPEN" onclick="ui.switchTab('OPEN')">
-        <i class="material-icons-round" style="font-size:18px">schedule</i> Pending
+        <div class="nav-label">
+          <i class="material-icons-round">schedule</i> 
+          <span>Pending</span>
+        </div>
+        <span class="tab-counter" id="cnt-OPEN">0</span>
       </button>
+      
       <button class="nav-item" id="tab-REJECTED" onclick="ui.switchTab('REJECTED')">
-        <i class="material-icons-round" style="font-size:18px">cancel</i> Rejected
+        <div class="nav-label">
+          <i class="material-icons-round">cancel</i> 
+          <span>Rejected</span>
+        
+        </div>
+        <span class="tab-counter" id="cnt-REJECTED">0</span>
       </button>
+      
       <button class="nav-item" id="tab-SUBMITTED" onclick="ui.switchTab('SUBMITTED')">
-        <i class="material-icons-round" style="font-size:18px">check_circle</i> Processed
+        <div class="nav-label">
+          <i class="material-icons-round">check_circle</i> 
+          <span>Processed</span>
+        </div>
+        <span class="tab-counter" id="cnt-SUBMITTED">0</span>
       </button>
     </div>
   </nav>
-
+  
   <main class="container">
+    <div class="filter-wrapper">
+      <!-- The filter bar is now inside the wrapper and comes BEFORE the button -->
+      <div class="filter-section" id="filter-bar">
+        <div class="filter-group">
+          <label><i class="material-icons-round">filter_alt</i> Filter Unit</label>
+          <select id="select-unit" onchange="ui.render()"><option value="ALL">All Units</option></select>
+        </div>
+        <div class="filter-group">
+          <label><i class="material-icons-round">person_search</i> Filter Name</label>
+          <select id="select-name" onchange="ui.render()"><option value="ALL">All Personnel</option></select>
+        </div>
+      </div>
+      
+      <!-- The Toggle Button -->
+      <button class="btn-filter-toggle" id="btn-toggle-filters" onclick="ui.toggleFilters()">
+        <i class="material-icons-round">filter_list</i>
+        <span>Filter Data</span>
+      </button>
+    </div>
     <div id="grid" class="grid"></div>
   </main>
 
@@ -439,7 +580,7 @@
   const ui = {
     data: [],
     filter: 'OPEN',
-
+    
     init() {
       pickers.from = flatpickr("#f_from", fpConfig);
       pickers.until = flatpickr("#f_until", fpConfig);
@@ -448,67 +589,122 @@
       this.refresh();
       document.getElementById('otForm').onsubmit = (e) => { e.preventDefault(); logic.save(); };
     },
-
+    
+    toggleFilters() {
+      const bar = document.getElementById('filter-bar');
+      const btn = document.getElementById('btn-toggle-filters');
+      
+      const isActive = bar.classList.toggle('active');
+      btn.classList.toggle('active');
+      
+      // Change icon/text based on state
+      btn.querySelector('span').innerText = isActive ? 'Close Filters' : 'Filter Data';
+      btn.querySelector('i').innerText = isActive ? 'close' : 'filter_list';
+    },
+    
     async refresh() {
       this.toggleLoader(true);
       try {
         this.data = await logic.call('getRecords');
+        this.populateDropdowns(); // Fill Unit and Name filters
         this.render();
       } catch(e) { 
         console.error("Refresh Error:", e);
-        alert("Failed to load data. Check console.");
+        alert("Failed to load data.");
       }
       this.toggleLoader(false);
     },
-
-    render() {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      const filtered = this.data.filter(r => r.Status === this.filter);
+    
+    populateDropdowns() {
+      const units = new Set();
+      const names = new Set();
       
-      if (!filtered.length) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 6rem 2rem; opacity: 0.5;">
-          <i class="material-icons-round" style="font-size: 64px; color: var(--primary);">folder_open</i>
-          <p style="font-weight:700; margin-top:1rem;">No ${this.filter.toLowerCase()} records found</p>
-        </div>`;
-        return;
-      }
+      this.data.forEach(item => {
+        if (item.Unit) units.add(item.Unit);
+        if (item.Employee) names.add(item.Employee);
+      });
+      
+      const unitSelect = document.getElementById('select-unit');
+      const nameSelect = document.getElementById('select-name');
+      
+      // Save current selections
+      const curUnit = unitSelect.value;
+      const curName = nameSelect.value;
+      
+      unitSelect.innerHTML = '<option value="ALL">All Units</option>';
+      nameSelect.innerHTML = '<option value="ALL">All Personnel</option>';
+      
+      Array.from(units).sort().forEach(u => unitSelect.innerHTML += `<option value="${u}">${u}</option>`);
+      Array.from(names).sort().forEach(n => nameSelect.innerHTML += `<option value="${n}">${n}</option>`);
+      
+      unitSelect.value = curUnit;
+      nameSelect.value = curName;
+    },
 
-      filtered.forEach(item => {
-        const hasRest = item['Rest Start'] && item['Rest Start'] !== "";
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.onclick = () => this.openModal(item);
+      render() {
+        const grid = document.getElementById('grid');
+        const selectedUnit = document.getElementById('select-unit').value;
+        const selectedName = document.getElementById('select-name').value;
         
-        // Safety check for Timestamp
-        const datePart = item.Timestamp ? item.Timestamp.split('T')[0] : '--';
+        // 1. Filter data based on Unit and Name Dropdowns
+        const baseFiltered = this.data.filter(item => {
+          const matchUnit = selectedUnit === 'ALL' || item.Unit === selectedUnit;
+          const matchName = selectedName === 'ALL' || item.Employee === selectedName;
+          return matchUnit && matchName;
+        });
         
-        card.innerHTML = `
+        // 2. Update Tab Counters based on these filters
+        const counts = { OPEN: 0, REJECTED: 0, SUBMITTED: 0 };
+        baseFiltered.forEach(item => { if(counts[item.Status] !== undefined) counts[item.Status]++; });
+        
+        document.getElementById('cnt-OPEN').innerText = counts.OPEN;
+        document.getElementById('cnt-REJECTED').innerText = counts.REJECTED;
+        document.getElementById('cnt-SUBMITTED').innerText = counts.SUBMITTED;
+        
+        // 3. Further filter by the active Tab (OPEN/REJECTED/SUBMITTED)
+        const finalDisplay = baseFiltered.filter(item => item.Status === this.filter);
+        
+        grid.innerHTML = '';
+        if (!finalDisplay.length) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem 2rem; opacity: 0.5;">
+          <i class="material-icons-round" style="font-size: 48px;">folder_open</i>
+          <p>No records found matching criteria</p>
+          </div>`;
+          return;
+        }
+        
+        finalDisplay.forEach(item => {
+          const hasRest = item['Rest Start'] && item['Rest Start'] !== "";
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.onclick = () => this.openModal(item);
+          
+          card.innerHTML = `
           <span class="status-badge status-${item.Status}">${item.Status}</span>
           <div class="card-title">${item.Employee}</div>
-          <span class="card-subtitle">PN: ${item['Personal Number']} | Unit: ${item['Unit'] || '-'}</span>
+          <span class="card-subtitle">PN: ${item['Personal Number']} | Unit: ${item.Unit || '-'}</span>
           <div class="timeline">
-            <div class="timeline-row"><i class="material-icons-round">login</i> ${logic.formatDate(item['From DateTime'])}</div>
-            <div class="timeline-row"><i class="material-icons-round">logout</i> ${logic.formatDate(item['Until DateTime'])}</div>
+          <div class="timeline-row"><i class="material-icons-round">login</i> ${logic.formatDate(item['From DateTime'])}</div>
+          <div class="timeline-row"><i class="material-icons-round">logout</i> ${logic.formatDate(item['Until DateTime'])}</div>
           </div>
           ${hasRest ? '<div style="margin-bottom:1rem;"><span class="rest-tag">REST PERIOD INCLUDED</span></div>' : ''}
           <div class="card-footer">
-             <div style="font-size: 0.65rem; color: var(--text-muted)">${datePart}</div>
-             <div class="stat-box">
-               <span class="stat-label">Total Duration</span>
-               <span class="stat-value">${item['Total Time']}</span>
-             </div>
+          <div style="font-size: 0.65rem; color: var(--text-muted)">${item.Timestamp ? item.Timestamp.split('T')[0] : '--'}</div>
+          <div class="stat-box">
+          <span class="stat-label">Total Duration</span>
+          <span class="stat-value">${item['Total Time']}</span>
           </div>
-        `;
-        grid.appendChild(card);
-      });
-    },
+          </div>
+          `;
+          grid.appendChild(card);
+        });
+      },
 
-    switchTab(t) {
-      this.filter = t;
-      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.id === 'tab-'+t));
-      this.render();
-    },
+     switchTab(t) {
+       this.filter = t;
+       document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.id === 'tab-'+t));
+       this.render();
+     },
 
     openModal(item = null) {
       const form = document.getElementById('otForm');
