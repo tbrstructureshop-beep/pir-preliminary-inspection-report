@@ -604,16 +604,16 @@
     },
     
     async refresh() {
-      this.toggleLoader(true);
+      this.toggleLoader(true); // Block the page
       try {
         this.data = await logic.call('getRecords');
-        this.populateDropdowns(); // Fill Unit and Name filters
+        this.populateDropdowns(); 
         this.render();
       } catch(e) { 
         console.error("Refresh Error:", e);
         alert("Failed to load data.");
       }
-      this.toggleLoader(false);
+      this.toggleLoader(false); // Unblock the page only after rendering is done
     },
     
     populateDropdowns() {
@@ -884,22 +884,24 @@
       const d = new Date(str);
       return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
     },
-
+    
     async save() {
-      ui.toggleLoader(true);
-      const fileInput = document.getElementById('f_file');
-      let evidenceUrl = document.querySelector('#evidenceLink a')?.href || "";
+      ui.toggleLoader(true); // Start Block
       try {
+        const fileInput = document.getElementById('f_file');
+        let evidenceUrl = document.querySelector('#evidenceLink a')?.href || "";
+        
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
           const base64 = await this.toBase64(file);
           evidenceUrl = await this.call('uploadFile', [base64, file.name]);
         }
+        
         const payload = {
           id: document.getElementById('f_id').value,
           employee: document.getElementById('f_employee').value,
           pn: document.getElementById('f_pn').value,
-          unit: document.getElementById('f_unit').value, // ADD THIS LINE
+          unit: document.getElementById('f_unit').value,
           from: document.getElementById('f_from').value,
           until: document.getElementById('f_until').value,
           rest_start: document.getElementById('f_rest_toggle').checked ? document.getElementById('f_rest_start').value : "",
@@ -908,20 +910,27 @@
           remarks: document.getElementById('f_remarks').value,
           evidence: evidenceUrl
         };
+        
         await this.call('saveOvertime', [payload]);
-        ui.closeModal(); ui.refresh();
-      } catch(e) { alert(e); }
-      finally { ui.toggleLoader(false); }
+        ui.closeModal();
+        await ui.refresh(); // Page stays blocked until data is back
+      } catch(e) { 
+        alert(e); 
+        ui.toggleLoader(false); // Unblock only if there is an error
+      }
     },
 
     async finalize() {
       if (!confirm("Finalize record for HC? No further edits allowed.")) return;
-      ui.toggleLoader(true);
+      ui.toggleLoader(true); 
       try {
         await this.call('changeStatus', [document.getElementById('f_id').value]);
-        ui.closeModal(); ui.refresh();
-      } catch(e) { alert(e); }
-      ui.toggleLoader(false);
+        ui.closeModal();
+        await ui.refresh(); 
+      } catch(e) { 
+        alert(e); 
+        ui.toggleLoader(false); 
+      }
     },
 
     toBase64: (f) => new Promise((res, rej) => {
@@ -959,10 +968,12 @@
           reason: reason
         }]);
         ui.closeModal();
-        ui.refresh();
-      } catch(e) { alert(e); }
-      ui.toggleLoader(false);
-    }, // <-- COMMA ADDED HERE
+        await ui.refresh();
+      } catch(e) { 
+        alert(e); 
+        ui.toggleLoader(false); 
+      }
+    },
 
     async deleteRecord() {
       if (!confirm("Are you sure you want to PERMANENTLY delete this record?")) return;
@@ -970,12 +981,14 @@
       try {
         await this.call('deleteRecord', [document.getElementById('f_id').value]);
         ui.closeModal();
-        ui.refresh();
-      } catch(e) { alert(e); }
-      ui.toggleLoader(false);
+        await ui.refresh();
+      } catch(e) { 
+        alert(e); 
+        ui.toggleLoader(false); 
+      }
     }
   };
-
+  
   ui.init();
 </script>
 </body>
