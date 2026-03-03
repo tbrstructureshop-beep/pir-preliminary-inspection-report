@@ -757,15 +757,21 @@
         
         document.getElementById('evidenceLink').innerHTML = item['Evidence File URL'] ? 
           `<a href="${item['Evidence File URL']}" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">View Attachment</a>` : '';
+
       } else {
-        document.getElementById('f_unit').value = '';
-        document.getElementById('rest_fields').style.display = 'none';
-        document.getElementById('f_rest_toggle').checked = false;
-        document.getElementById('display_main').innerText = "00:00";
-        document.getElementById('display_human').innerText = "00 HH : 00 MM";
-        document.getElementById('display_decimal').innerText = "0,00 Hrs";
-        document.getElementById('evidenceLink').innerHTML = '';
-      }
+      // --- AUTO-FILL FOR NEW ENTRIES ---
+      document.getElementById('f_employee').value = currentUser.name || '';
+      document.getElementById('f_pn').value = currentUser.userId || '';
+      document.getElementById('f_unit').value = currentUser.unit || '';
+      
+      // Clear the rest
+      document.getElementById('rest_fields').style.display = 'none';
+      document.getElementById('f_rest_toggle').checked = false;
+      document.getElementById('display_main').innerText = "00:00";
+      document.getElementById('display_human').innerText = "00 HH : 00 MM";
+      document.getElementById('display_decimal').innerText = "0,00 Hrs";
+      document.getElementById('evidenceLink').innerHTML = '';
+    }
       
       // Disable inputs if submitted
       form.querySelectorAll('input, textarea').forEach(el => { 
