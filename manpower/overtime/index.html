@@ -628,10 +628,8 @@
       
       const isActive = bar.classList.toggle('active');
       btn.classList.toggle('active');
-      
-      // Change icon/text based on state
-      btn.querySelector('span').innerText = isActive ? 'Close Filters' : 'Filter Data';
-      btn.querySelector('i').innerText = isActive ? 'close' : 'filter_list';
+      // Update UI state
+      btn.querySelector('span').innerText = isActive ? 'Hide Filters' : 'Filter Data';
     },
     
     async refresh() {
