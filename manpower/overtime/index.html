@@ -582,13 +582,13 @@
     data: [],
     filter: 'OPEN',
     
-    init() {
+    async init() { // <--- ADD ASYNC HERE
       pickers.from = flatpickr("#f_from", fpConfig);
       pickers.until = flatpickr("#f_until", fpConfig);
       pickers.restStart = flatpickr("#f_rest_start", fpConfig);
       pickers.restEnd = flatpickr("#f_rest_end", fpConfig);
       
-      await this.refresh(); // Add await here
+      await this.refresh(); // Now this will work
       document.getElementById('otForm').onsubmit = (e) => { e.preventDefault(); logic.save(); };
     },
     
