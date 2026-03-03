@@ -16,90 +16,103 @@ const PIR_MENU = {
         this.loadUserSession();
     },
 
-    injectStyles() {
+injectStyles() {
         const css = `
-            :root { --primary: #0f5361; --header-h: 60px; --side-w: 260px; }
-            
-            /* 20px extra space below header */
-            body { 
-                margin: 0; 
-                padding-top: calc(var(--header-h) + 20px); 
-                background-color: #f4f7f8; 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            :root { 
+                --primary: #0f5361; 
+                --primary-soft: #1b6f7a;
+                --primary-light: #4f8f97;
+                --bg-gradient: linear-gradient(135deg, #0f2f36, #1f535c);
+                --card-bg: #ffffff;
+                --text-dark: #0e2a30;
+                --text-muted: #6b8b91;
+                --header-h: 60px; 
+                --side-w: 260px; 
             }
             
+            body { 
+                margin: 0; 
+                padding-top: calc(var(--header-h) + 40px); /* Space for fixed header */
+                padding-bottom: 40px;
+                background: var(--bg-gradient); 
+                min-height: 100vh;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            }
+
+            /* --- HEADER NAVIGATION (Already in your script) --- */
             .main-header { 
                 position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); 
                 background: var(--primary); color: white; display: flex; 
                 align-items: center; justify-content: space-between; padding: 0 16px; 
                 z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             }
+            /* ... keep existing .header-left, .brand-name, etc. from your script here ... */
 
-            .header-left { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-            .menu-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; display: flex; align-items: center; padding: 5px; }
+            /* --- GLOBAL DASHBOARD LAYOUT (The part you want to centralize) --- */
+            .container {
+                max-width: 960px;
+                width: 95%;
+                margin: 0 auto;
+            }
+
+            .page-title-section {
+                text-align: center;
+                color: #fff;
+                margin-bottom: 32px;
+            }
+
+            .page-title-section h1 { margin: 0; font-size: 1.8rem; letter-spacing: .5px; }
+            .page-title-section p { margin-top: 8px; opacity: .85; font-size: .95rem; }
+
+            .menu-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 20px;
+            }
+
+            .menu-card {
+                background: var(--card-bg);
+                border-radius: 18px;
+                padding: 24px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: transform .25s ease, box-shadow .25s ease;
+            }
+
+            .menu-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 28px 55px rgba(0,0,0,0.35);
+            }
+
+            .menu-top { display: flex; align-items: center; gap: 14px; }
+
+            .menu-icon {
+                width: 54px; height: 54px; border-radius: 14px;
+                background: linear-gradient(135deg, var(--primary-soft), var(--primary-light));
+                display: flex; align-items: center; justify-content: center; font-size: 26px;
+            }
+
+            .menu-title { font-size: 1.15rem; font-weight: 600; color: var(--text-dark); }
+            .menu-desc { margin-top: 14px; color: var(--text-muted); font-size: .9rem; line-height: 1.5; }
+
+            .menu-action { margin-top: 22px; }
+            .menu-action button {
+                width: 100%; border: none; border-radius: 14px; padding: 12px 14px;
+                background: var(--primary); color: #fff; font-size: .95rem;
+                font-weight: 500; cursor: pointer; transition: background .25s ease;
+            }
+
+            .menu-action button:hover { background: var(--primary-soft); }
+
+            @media (max-width: 480px) {
+                .page-title-section h1 { font-size: 1.5rem; }
+            }
             
-            .brand-name { 
-                font-weight: 700; font-size: 16px; letter-spacing: 0.5px; 
-                white-space: nowrap; transition: opacity 0.3s;
-            }
-
-            .header-right { 
-                display: flex; align-items: center; justify-content: flex-end; 
-                cursor: pointer; height: 100%; flex-grow: 1; min-width: 0;
-            }
-            
-            /* The Container that slides out */
-            .info-reveal-container { 
-                display: flex; flex-direction: column; align-items: flex-end; 
-                text-align: right; overflow: hidden; 
-                max-width: 0; opacity: 0; 
-                transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
-                pointer-events: none; margin-right: 0;
-            }
-
-            /* Expanded State */
-            .header-right.active .info-reveal-container { 
-                max-width: 500px; opacity: 1; margin-right: 12px; pointer-events: auto;
-            }
-
-            /* MOBILE FIX FOR CLIPPING */
-            @media (max-width: 768px) {
-                /* Hide brand when info is open to give full width to the Unit/Name */
-                .main-header.info-open .brand-name {
-                    display: none;
-                }
-
-                .header-right.active .info-reveal-container { 
-                    /* Allow the container to take up almost the full screen width */
-                    max-width: calc(100vw - 100px); 
-                }
-
-                .header-name-row { font-size: 13px; }
-                .header-detail-row { font-size: 10px; }
-            }
-
-            .header-name-row { font-size: 14px; font-weight: 600; white-space: nowrap; line-height: 1.2; }
-            .header-id-tag { font-size: 11px; opacity: 0.7; font-family: monospace; margin-left: 5px; }
-            .header-detail-row { font-size: 11px; opacity: 0.8; white-space: nowrap; margin-top: 2px; text-transform: uppercase; }
-            .header-sep { margin: 0 4px; opacity: 0.5; }
-
-            .header-avatar { 
-                width: 38px; height: 38px; border-radius: 50%; 
-                border: 2px solid rgba(255,255,255,0.4); 
-                object-fit: cover; flex-shrink: 0;
-            }
-
-            /* Sidebar Settings */
-            .sidebar { position: fixed; top: 0; left: -270px; width: var(--side-w); height: 100%; background: #fff; z-index: 1002; transition: 0.3s; box-shadow: 4px 0 15px rgba(0,0,0,0.1); color: #333; }
-            .sidebar.active { left: 0; }
-            .sidebar-header { padding: 30px 20px; background: #f8f9fa; border-bottom: 1px solid #eee; text-align: center; }
-            .sidebar-logo { width: 60px; margin-bottom: 10px; }
-            .nav-links { list-style: none; padding: 15px 0; margin: 0; }
-            .nav-links li a { display: flex; align-items: center; gap: 15px; padding: 14px 25px; text-decoration: none; color: #444; font-weight: 500; }
-            .nav-links li a:hover { background: #f0f7f8; color: var(--primary); }
-            .nav-links hr { border: 0; border-top: 1px solid #eee; margin: 10px 0; }
-            .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1001; backdrop-filter: blur(2px); }
-            .menu-overlay.active { display: block; }
+            /* Sidebar and Overlay CSS (keep your existing sidebar code here) */
+            .sidebar { ... }
+            .menu-overlay { ... }
         `;
         const styleTag = document.createElement("style");
         styleTag.innerHTML = css;
