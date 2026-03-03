@@ -620,56 +620,44 @@
     populateDropdowns() {
       const unitSelect = document.getElementById('select-unit');
       const nameSelect = document.getElementById('select-name');
-      
-      // 1. Identify Role
       const isHead = currentUser.jobTitle && currentUser.jobTitle.toUpperCase().includes("HEAD");
+      
       const units = new Set();
       const names = new Set();
       
-      // 2. Loop through data
+      // ALWAYS add the current user to the sets so the filter never breaks
+      units.add(currentUser.unit);
+      names.add(currentUser.name);
+      
       this.data.forEach(item => {
-        // --- ADDED: ONLY LOOK AT DATA FOR THE CURRENT TAB STATUS ---
+        // Keep your tab-specific logic
         if (item.Status !== this.filter) return;
         
-        const isOwner = item['Personal Number'] === currentUser.userId;
         const isInMyUnit = item.Unit === currentUser.unit;
         
         if (isHead) {
-          // HEADs see names/units in their unit ONLY if they exist in this tab
           if (isInMyUnit) {
             if (item.Unit) units.add(item.Unit);
             if (item.Employee) names.add(item.Employee);
           }
-        } else {
-          // Regular users only see their own name if it exists in this tab
-          if (isOwner) {
-            if (item.Unit) units.add(item.Unit);
-            if (item.Employee) names.add(item.Employee);
-          }
         }
+        // Employees don't need to loop here because we added them above
       });
       
-      // 3. Update Unit Dropdown
       unitSelect.innerHTML = isHead ? '<option value="ALL">All Units</option>' : '';
-      Array.from(units).sort().forEach(u => {
-        unitSelect.innerHTML += `<option value="${u}">${u}</option>`;
-      });
+      Array.from(units).sort().forEach(u => unitSelect.innerHTML += `<option value="${u}">${u}</option>`);
       
-      // 4. Update Name Dropdown
       nameSelect.innerHTML = isHead ? '<option value="ALL">All Personnel</option>' : '';
-      Array.from(names).sort().forEach(n => {
-        nameSelect.innerHTML += `<option value="${n}">${n}</option>`;
-      });
+      Array.from(names).sort().forEach(n => nameSelect.innerHTML += `<option value="${n}">${n}</option>`);
       
-      // 5. Selection Logic
       if (!isHead) {
-        // Fixed: Regular users always locked to their own info
         unitSelect.value = currentUser.unit;
         nameSelect.value = currentUser.name;
       } else {
-        // Managers default to "ALL" so they don't miss data when switching tabs
-        unitSelect.value = "ALL";
-        nameSelect.value = "ALL";
+        
+        // For managers, only reset to ALL if the previous selection is no longer in the list
+        if (!units.has(unitSelect.value)) unitSelect.value = "ALL";
+        if (!names.has(nameSelect.value)) nameSelect.value = "ALL";
       }
     },
     
@@ -700,7 +688,8 @@
       
       // --- STEP 3: UPDATE COUNTERS ---
       const counts = { OPEN: 0, REJECTED: 0, SUBMITTED: 0 };
-      baseFiltered.forEach(item => { 
+
+      securityFiltered.forEach(item => { 
         if(counts[item.Status] !== undefined) counts[item.Status]++; 
       });
       
