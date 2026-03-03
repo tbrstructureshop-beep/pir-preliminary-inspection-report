@@ -617,29 +617,54 @@
     },
     
     populateDropdowns() {
-      const units = new Set();
-      const names = new Set();
-      
-      this.data.forEach(item => {
-        if (item.Unit) units.add(item.Unit);
-        if (item.Employee) names.add(item.Employee);
-      });
-      
       const unitSelect = document.getElementById('select-unit');
       const nameSelect = document.getElementById('select-name');
       
-      // Save current selections
-      const curUnit = unitSelect.value;
-      const curName = nameSelect.value;
+      // 1. Identify Role
+      const isHead = currentUser.jobTitle && currentUser.jobTitle.toUpperCase().includes("HEAD");
+      const units = new Set();
+      const names = new Set();
       
-      unitSelect.innerHTML = '<option value="ALL">All Units</option>';
-      nameSelect.innerHTML = '<option value="ALL">All Personnel</option>';
+      // 2. Loop through data and only collect items the user is allowed to see
+      this.data.forEach(item => {
+        const isOwner = item['Personal Number'] === currentUser.userId;
+        const isInMyUnit = item.Unit === currentUser.unit;
+        
+        if (isHead) {
+          // HEADs see all names and units within their own department
+          if (isInMyUnit) {
+            if (item.Unit) units.add(item.Unit);
+            if (item.Employee) names.add(item.Employee);
+          }
+        } else {
+          // Regular users only see their own name and their own unit
+          if (isOwner) {
+            if (item.Unit) units.add(item.Unit);
+            if (item.Employee) names.add(item.Employee);
+          }
+        }
+      });
       
-      Array.from(units).sort().forEach(u => unitSelect.innerHTML += `<option value="${u}">${u}</option>`);
-      Array.from(names).sort().forEach(n => nameSelect.innerHTML += `<option value="${n}">${n}</option>`);
+      // 3. Update Unit Dropdown
+      // If HEAD, allow "All Units" (of their department). If not, only show their specific unit.
+      unitSelect.innerHTML = isHead ? '<option value="ALL">All Units</option>' : '';
+      Array.from(units).sort().forEach(u => {
+        unitSelect.innerHTML += `<option value="${u}">${u}</option>`;
+      });
       
-      unitSelect.value = curUnit;
-      nameSelect.value = curName;
+      // 4. Update Name Dropdown
+      // If HEAD, allow "All Personnel". If not, only show their specific name.
+      nameSelect.innerHTML = isHead ? '<option value="ALL">All Personnel</option>' : '';
+      Array.from(names).sort().forEach(n => {
+        nameSelect.innerHTML += `<option value="${n}">${n}</option>`;
+      });
+      
+      // 5. Default Selection
+      // If a regular user, the dropdown only has one option, so we select it.
+      if (!isHead) {
+        unitSelect.value = currentUser.unit;
+        nameSelect.value = currentUser.name;
+      }
     },
     
     render() {
