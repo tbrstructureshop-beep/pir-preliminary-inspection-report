@@ -461,30 +461,48 @@
     </div>
   </nav>
   
-  <main class="container">
-    <div class="filter-wrapper">
-      <!-- Header row with the toggle button -->
-      <div class="filter-header">
-        <button class="btn-filter-toggle" id="btn-toggle-filters" onclick="ui.toggleFilters()">
-          <i class="material-icons-round">filter_list</i>
-          <span>Filter Data</span>
-        </button>
+<main class="container">
+  <div class="action-bar">
+    <h2 style="font-size: 1.2rem; font-weight: 800;">Activity Log</h2>
+    <button class="btn-filter-pill" onclick="ui.toggleFilters(true)">
+      <i class="material-icons-round">tune</i>
+      <span>Filters</span>
+    </button>
+  </div>
+
+  <!-- New Filter Drawer -->
+  <div class="filter-overlay" id="filterOverlay" onclick="ui.toggleFilters(false)"></div>
+  <aside class="filter-drawer" id="filterDrawer">
+    <div class="drawer-header">
+      <h3 style="font-weight: 800; color: var(--primary)">Filter Records</h3>
+      <i class="material-icons-round" style="cursor:pointer" onclick="ui.toggleFilters(false)">close</i>
+    </div>
+    
+    <div class="drawer-body">
+      <div class="filter-field">
+        <label>Unit / Department</label>
+        <select id="select-unit" onchange="ui.render()">
+          <option value="ALL">All Units</option>
+        </select>
       </div>
       
-      <!-- The slide-down bar -->
-      <div class="filter-section" id="filter-bar">
-        <div class="filter-group">
-          <label><i class="material-icons-round">filter_alt</i> Unit / Department</label>
-          <select id="select-unit" onchange="ui.render()"><option value="ALL">All Units</option></select>
-        </div>
-        <div class="filter-group">
-          <label><i class="material-icons-round">person_search</i> Personnel Name</label>
-          <select id="select-name" onchange="ui.render()"><option value="ALL">All Personnel</option></select>
-        </div>
+      <div class="filter-field">
+        <label>Personnel Name</label>
+        <select id="select-name" onchange="ui.render()">
+          <option value="ALL">All Personnel</option>
+        </select>
       </div>
     </div>
-    <div id="grid" class="grid"></div>
-  </main>
+
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="ui.toggleFilters(false)">
+        Show Results
+      </button>
+    </div>
+  </aside>
+
+  <div id="grid" class="grid"></div>
+</main>
 
   <button class="fab" onclick="ui.openModal()">
     <i class="material-icons-round">add</i>
