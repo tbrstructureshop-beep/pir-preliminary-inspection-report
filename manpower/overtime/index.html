@@ -725,42 +725,63 @@
     openModal(item = null) {
       const form = document.getElementById('otForm');
       const status = item ? item.Status : 'NEW';
-      const isSubmitted = status === 'SUBMITTED';
+      
+      // 1. Identify Roles
+      const isOwner = item ? (item['Personal Number'] === currentUser.userId) : true; 
+      const isHead = currentUser.jobTitle && currentUser.jobTitle.toUpperCase().includes("HEAD");
+      const isManagerForThisUnit = item ? (isHead && item.Unit === currentUser.unit) : isHead;
+      
+      // 2. Define Permissions
+      // Owners can edit if status is OPEN or REJECTED. Managers CANNOT edit employee fields.
+      const canEditFields = (status === 'NEW' || status === 'OPEN' || status === 'REJECTED') && isOwner;
+  
+      // Managers see Action buttons only for OPEN records that are NOT their own
+      const canManagerAction = status === 'OPEN' && isManagerForThisUnit && !isOwner;
       
       form.reset();
       document.getElementById('f_id').value = item ? item.ID : '';
-      document.getElementById('modalTitle').innerText = item ? 'Update Record' : 'New Duty Entry';
+      document.getElementById('modalTitle').innerText = item ? 'Review Entry' : 'New Duty Entry';
+
+      document.getElementById('saveBtn').style.display = canEditFields ? 'flex' : 'none';
+      document.getElementById('deleteBtn').style.display = (canEditFields && item) ? 'flex' : 'none';
       
-      // Handle Rejection Reason UI
+      document.getElementById('rejectBtn').style.display = canManagerAction ? 'flex' : 'none';
+      document.getElementById('submitBtn').style.display = canManagerAction ? 'flex' : 'none';
+      
+      // --- FIELD LOCKING ---
+      // Disable all inputs if the user is not the owner (Managers can only view, not edit)
+      form.querySelectorAll('input, textarea, select').forEach(el => {
+        // Exception: Manager needs to type in the rejection reason box
+        if (el.id === 'f_rejection_reason') {
+          el.disabled = !canManagerAction; 
+        } else {
+          el.disabled = !canEditFields;
+        }
+      });
+      
+      // --- DATA POPULATION ---
       const rejectContainer = document.getElementById('rejection_container');
       const rejectInput = document.getElementById('f_rejection_reason');
       
-      if (status === 'REJECTED') {
-        rejectContainer.style.display = 'block';
-        rejectInput.value = item['Rejection Reason'] || '';
-        rejectInput.disabled = true;
-      } else if (status === 'OPEN' && item) {
-        rejectContainer.style.display = 'block';
-        rejectInput.value = '';
-        rejectInput.disabled = false;
-      } else {
-        rejectContainer.style.display = 'none';
-      }
-
-      // Button Visibility Logic
-      document.getElementById('deleteBtn').style.display = (status === 'OPEN' || status === 'REJECTED') ? 'flex' : 'none';
-      document.getElementById('rejectBtn').style.display = (status === 'OPEN' && item) ? 'flex' : 'none';
-      document.getElementById('submitBtn').style.display = (status === 'OPEN' && item) ? 'flex' : 'none';
-      document.getElementById('saveBtn').style.display = isSubmitted ? 'none' : 'flex';
-      
       if (item) {
-        pickers.from.setDate(item['From DateTime']);
-        pickers.until.setDate(item['Until DateTime']);
+        // Fill form with existing data
         document.getElementById('f_employee').value = item.Employee;
         document.getElementById('f_pn').value = item['Personal Number'];
         document.getElementById('f_unit').value = item.Unit || '';
         document.getElementById('f_remarks').value = item.Remarks || '';
-      
+        pickers.from.setDate(item['From DateTime']);
+        pickers.until.setDate(item['Until DateTime']);
+        
+        // Rejection Reason logic
+        
+        if (status === 'REJECTED' || canManagerAction) {
+          rejectContainer.style.display = 'block';
+          rejectInput.value = item['Rejection Reason'] || '';
+        } else {
+          rejectContainer.style.display = 'none';
+        }
+        
+        // Rest Period logic
         const hasRest = item['Rest Start'] && item['Rest Start'] !== "";
         document.getElementById('f_rest_toggle').checked = hasRest;
         document.getElementById('rest_fields').style.display = hasRest ? 'grid' : 'none';
@@ -771,28 +792,15 @@
         logic.calc();
         
         document.getElementById('evidenceLink').innerHTML = item['Evidence File URL'] ? 
-          `<a href="${item['Evidence File URL']}" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">View Attachment</a>` : '';
-
+          `<a href="${item['Evidence File URL']}" target="_blank">View Attachment</a>` : '';
       } else {
-      // --- AUTO-FILL FOR NEW ENTRIES ---
-      document.getElementById('f_employee').value = currentUser.name || '';
-      document.getElementById('f_pn').value = currentUser.userId || '';
-      document.getElementById('f_unit').value = currentUser.unit || '';
-      
-      // Clear the rest
-      document.getElementById('rest_fields').style.display = 'none';
-      document.getElementById('f_rest_toggle').checked = false;
-      document.getElementById('display_main').innerText = "00:00";
-      document.getElementById('display_human').innerText = "00 HH : 00 MM";
-      document.getElementById('display_decimal').innerText = "0,00 Hrs";
-      document.getElementById('evidenceLink').innerHTML = '';
-    }
-      
-      // Disable inputs if submitted
-      form.querySelectorAll('input, textarea').forEach(el => { 
-        if(el.id !== 'f_id' && el.id !== 'f_rejection_reason') el.disabled = isSubmitted; 
-      });
-
+        // New Record Auto-fill
+        document.getElementById('f_employee').value = currentUser.name;
+        document.getElementById('f_pn').value = currentUser.userId;
+        document.getElementById('f_unit').value = currentUser.unit;
+        rejectContainer.style.display = 'none';
+        logic.calc();
+      }
       document.getElementById('formModal').style.display = 'flex';
     },
     
