@@ -463,23 +463,25 @@
   
   <main class="container">
     <div class="filter-wrapper">
-      <!-- The filter bar is now inside the wrapper and comes BEFORE the button -->
+      <!-- Header row with the toggle button -->
+      <div class="filter-header">
+        <button class="btn-filter-toggle" id="btn-toggle-filters" onclick="ui.toggleFilters()">
+          <i class="material-icons-round">filter_list</i>
+          <span>Filter Data</span>
+        </button>
+      </div>
+      
+      <!-- The slide-down bar -->
       <div class="filter-section" id="filter-bar">
         <div class="filter-group">
-          <label><i class="material-icons-round">filter_alt</i> Filter Unit</label>
+          <label><i class="material-icons-round">filter_alt</i> Unit / Department</label>
           <select id="select-unit" onchange="ui.render()"><option value="ALL">All Units</option></select>
         </div>
         <div class="filter-group">
-          <label><i class="material-icons-round">person_search</i> Filter Name</label>
+          <label><i class="material-icons-round">person_search</i> Personnel Name</label>
           <select id="select-name" onchange="ui.render()"><option value="ALL">All Personnel</option></select>
         </div>
       </div>
-      
-      <!-- The Toggle Button -->
-      <button class="btn-filter-toggle" id="btn-toggle-filters" onclick="ui.toggleFilters()">
-        <i class="material-icons-round">filter_list</i>
-        <span>Filter Data</span>
-      </button>
     </div>
     <div id="grid" class="grid"></div>
   </main>
