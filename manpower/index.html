@@ -187,6 +187,23 @@ body {
       </div>
     </div>
 
+    <!-- NEW: Overtime -->
+    <div class="menu-card">
+      <div>
+        <div class="menu-top">
+          <div class="menu-icon">⏱️</div>
+          <div class="menu-title">Overtime</div>
+        </div>
+        <div class="menu-desc">
+          Submit and track overtime requests, view approval status, and manage 
+          your extra work hours history.
+        </div>
+      </div>
+      <div class="menu-action">
+        <button onclick="openOvertime()">Manage Overtime</button>
+      </div>
+    </div>
+
     <!-- NEW: My Current Job -->
     <div class="menu-card">
       <div>
@@ -244,6 +261,10 @@ function openCurrentJob() {
 // New function for My Log Book
 function openLogBook() {
   window.location.href = "/manpower/log-book/index.html";
+}
+
+function openOvertime() {
+  window.location.href = "/manpower/overtime/index.html";
 }
   
 </script>
