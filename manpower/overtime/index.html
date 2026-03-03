@@ -45,6 +45,7 @@
       color: var(--text-main); 
       line-height: 1.5;
       min-height: 100vh;
+      padding-top: 95px;
     }
 
     /* --- NAVIGATION --- */
@@ -208,6 +209,24 @@
       font-family: inherit; font-size: 0.95rem; transition: 0.2s; background: #fcfcfd;
     }
 
+    .header {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 32px;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: .5px;
+    }
+    
+    .header p {
+      margin-top: 8px;
+      opacity: .85;
+      font-size: .95rem;
+    }
+
     /* Toggle & Calc Display */
     .toggle-container { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--bg); border-radius: 10px; margin-bottom: 0.5rem; }
     .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
@@ -258,6 +277,10 @@
       .nav-bar {
         padding: 0.75rem 1rem;
         justify-content: center; /* Centers items on mobile */
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
       }
       
       .brand {
