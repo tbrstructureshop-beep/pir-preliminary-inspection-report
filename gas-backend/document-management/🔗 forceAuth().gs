@@ -1,0 +1,1 @@
+function forceAuth() { SpreadsheetApp.getActiveSpreadsheet(); }
