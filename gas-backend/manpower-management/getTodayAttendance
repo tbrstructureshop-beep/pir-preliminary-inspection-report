@@ -1,0 +1,92 @@
+function getTodayAttendance(targetUnit) {
+  const ss = SpreadsheetApp.openById(CONFIG.ATTENDANCE_ID);
+  const todayStr = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd");
+  
+  const attSheet = ss.getSheetByName(CONFIG.SHEET_NAME);
+  const logSheet = ss.getSheetByName("LOG_MANHOUR");
+  
+  if (!attSheet) return [];
+  const attRows = attSheet.getDataRange().getValues();
+  const logRows = logSheet ? logSheet.getDataRange().getValues() : [];
+  
+  attRows.shift(); 
+  if (logRows.length > 0) logRows.shift();
+
+  const searchUnit = targetUnit ? targetUnit.toString().toLowerCase().trim() : "";
+  const personnelMap = {};
+
+  // --- PASS 1: ATTENDANCE ---
+  attRows.forEach(row => {
+    // Trim and stringify IDs immediately
+    const id = row[0] ? row[0].toString().trim() : "";
+    const name = row[1] ? row[1].toString().trim() : "";
+    const title = row[2] ? row[2].toString().toUpperCase().trim() : "";
+    const rowUnit = row[3] ? row[3].toString().toLowerCase().trim() : "";
+    const timestamp = row[4];
+    const action = row[5] ? row[5].toString().toUpperCase().trim() : "";
+
+    // Validation
+    if (!id || title.includes("DEPARTMENT HEAD") || (searchUnit && rowUnit !== searchUnit)) return;
+    if (!(timestamp instanceof Date)) return;
+
+    const rowDateStr = Utilities.formatDate(timestamp, CONFIG.TIMEZONE, "yyyy-MM-dd");
+    if (rowDateStr === todayStr) {
+      if (!personnelMap[id]) {
+        personnelMap[id] = { 
+          id: id, name: name, clockIn: "-", clockOut: "-", 
+          isDuty: false, activeTasksCount: 0 
+        };
+      }
+      const timeStr = Utilities.formatDate(timestamp, CONFIG.TIMEZONE, "HH:mm");
+      if (action.includes("IN")) {
+        personnelMap[id].clockIn = timeStr;
+        personnelMap[id].isDuty = true;
+      } else if (action.includes("OUT")) {
+        personnelMap[id].clockOut = timeStr;
+        personnelMap[id].isDuty = false;
+      }
+    }
+  });
+
+  // --- PASS 2: MANHOUR LOG LOGIC ---
+  const globalTaskTracker = {};
+
+  logRows.forEach(log => {
+    const rawTimestamp = log[0];
+    const logTimestamp = rawTimestamp instanceof Date ? rawTimestamp : new Date(rawTimestamp);
+    
+    const woId = log[1] ? log[1].toString().trim() : "";
+    const empId = log[3] ? log[3].toString().trim() : ""; // TRIMMING IS KEY
+    const taskCode = log[4] ? log[4].toString().trim() : ""; 
+    const action = log[5] ? log[5].toString().toUpperCase().trim() : ""; // TRIMMING IS KEY
+
+    if (isNaN(logTimestamp.getTime())) return;
+    
+    const logDateStr = Utilities.formatDate(logTimestamp, CONFIG.TIMEZONE, "yyyy-MM-dd");
+
+    // We check personnelMap[empId] - this only works if IDs match perfectly
+    if (logDateStr === todayStr && personnelMap[empId]) {
+      if (!globalTaskTracker[empId]) globalTaskTracker[empId] = {};
+      
+      const taskKey = woId + "_" + taskCode;
+      const normalizedAction = (action.includes("STO") || action.includes("END")) ? "STOP" : action;
+      
+      globalTaskTracker[empId][taskKey] = normalizedAction;
+    }
+  });
+
+  // --- PASS 3: FINAL STATUS ASSIGNMENT ---
+  return Object.values(personnelMap).map(person => {
+    const tasks = globalTaskTracker[person.id] || {};
+    // Use .includes or ensure strict START match after trimming
+    const hasUnfinishedJob = Object.values(tasks).some(status => status === "START");
+
+    if (person.isDuty) {
+      person.status = hasUnfinishedJob ? "On Task" : "Idle";
+    } else {
+      person.status = hasUnfinishedJob ? "Required STOP" : "Completely STOP";
+    }
+
+    return person;
+  });
+}
