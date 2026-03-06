@@ -1,0 +1,42 @@
+function processAttendance(payload) {
+  const ss = SpreadsheetApp.openById(CONFIG.ATTENDANCE_ID);
+  const sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
+  const now = new Date();
+  let durationSeconds = 0;
+
+  if (payload.action === "CLOCK OUT") {
+    durationSeconds = calculateSeconds(payload.userId, now);
+  }
+
+  // Row: [ID, Name, Title, Unit, Timestamp, Action, DurationSeconds]
+  sheet.appendRow([
+    payload.userId,
+    payload.name,
+    payload.title,
+    payload.unit,
+    now,
+    payload.action,
+    durationSeconds || "" 
+  ]);
+  
+  return { success: true };
+}
+
+function calculateSeconds(userId, clockOutTime) {
+  const sheet = SpreadsheetApp.openById(CONFIG.ATTENDANCE_ID).getSheetByName(CONFIG.SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+  const todayStr = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd");
+
+  // Look for the LATEST "CLOCK IN" for this user today
+  for (let i = data.length - 1; i >= 1; i--) {
+    const rowId = data[i][0];
+    const rowDate = Utilities.formatDate(new Date(data[i][4]), CONFIG.TIMEZONE, "yyyy-MM-dd");
+    const rowAction = data[i][5];
+
+    if (rowId == userId && rowDate === todayStr && rowAction === "CLOCK IN") {
+      const lastClockIn = new Date(data[i][4]);
+      return Math.floor((clockOutTime - lastClockIn) / 1000); // Return seconds
+    }
+  }
+  return 0;
+}
